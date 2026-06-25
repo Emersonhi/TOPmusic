@@ -14,6 +14,7 @@ import { t } from '@/translations';
 
 const programIcons = [Piano, Guitar, Drum, Mic2, Headphones, Users];
 const programColors = ['#8B6FD4', '#5B9ED4', '#D4845B', '#5BD4A8', '#D4C45B', '#D45B8B'];
+const programIds = ['piano', 'guitar', 'drums', 'voice', 'production', 'ensembles'];
 const pillarIcons = [Award, Heart, Clock, Music2];
 const facultyColors = ['#8B6FD4', '#5B9ED4', '#5BD4A8', '#D4845B'];
 const facultyInitials = ['EM', 'MR', 'SC', 'JW'];
@@ -101,7 +102,7 @@ function Programs() {
             const Icon = programIcons[i];
             const color = programColors[i];
             return (
-              <div key={i} className="p-8 rounded-xl transition-all duration-300 cursor-pointer" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }}
+              <Link key={i} href={`/enroll?program=${programIds[i]}`} className="block p-8 rounded-xl transition-all duration-300" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(201,168,76,0.35)'; el.style.transform = 'translateY(-4px)'; el.style.boxShadow = '0 20px 60px rgba(0,0,0,0.4)'; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(201,168,76,0.1)'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}>
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-6" style={{ background: `${color}20` }}>
@@ -114,7 +115,7 @@ function Programs() {
                     <span key={l} className="px-3 py-1 rounded-full text-xs font-ui tracking-wide" style={{ background: `${color}15`, color, border: `1px solid ${color}30` }}>{l}</span>
                   ))}
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
