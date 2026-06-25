@@ -1,3 +1,42 @@
+export const footerT = {
+  en: {
+    tagline: 'Where musical journeys begin. World-class instruction for all ages, all styles, all ambitions.',
+    programs: 'Programs',
+    programList: ['Piano', 'Guitar & Bass', 'Drums & Percussion', 'Voice', 'Music Production', 'Early Childhood Music', 'Group Ensembles', 'Summer Intensives'],
+    quickLinks: 'Quick Links',
+    links: [
+      { href: '/faculty', label: 'Our Faculty' },
+      { href: '/enroll', label: 'Enroll' },
+      { href: '/contact', label: 'Contact' },
+      { href: '/login', label: 'Student Login' },
+      { href: '/login?role=parent', label: 'Parent Login' },
+      { href: '/#faq', label: 'FAQ' },
+      { href: '/#about', label: 'About Us' },
+    ],
+    contact: 'Contact',
+    rights: 'All rights reserved.',
+    legal: ['Privacy Policy', 'Terms of Service', 'Accessibility'],
+  },
+  fr: {
+    tagline: 'Là où les parcours musicaux commencent. Enseignement de classe mondiale pour tous les âges, tous les styles, toutes les ambitions.',
+    programs: 'Programmes',
+    programList: ['Piano', 'Guitare & Basse', 'Batterie & Percussions', 'Chant', 'Production musicale', 'Musique petite enfance', 'Ensembles de groupe', 'Stages intensifs estivaux'],
+    quickLinks: 'Liens rapides',
+    links: [
+      { href: '/faculty', label: 'Notre corps enseignant' },
+      { href: '/enroll', label: "S'inscrire" },
+      { href: '/contact', label: 'Contact' },
+      { href: '/login', label: 'Connexion élève' },
+      { href: '/login?role=parent', label: 'Connexion parent' },
+      { href: '/#faq', label: 'FAQ' },
+      { href: '/#about', label: 'À propos' },
+    ],
+    contact: 'Contact',
+    rights: 'Tous droits réservés.',
+    legal: ['Politique de confidentialité', "Conditions d'utilisation", 'Accessibilité'],
+  },
+};
+
 export const enrollPageT = {
   en: {
     eyebrow: 'Join TOPmusic', title: 'Enroll Today',
