@@ -29,8 +29,8 @@ function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden" style={{ background: 'var(--ink)' }}>
       <div className="absolute inset-0">
-        <img src="/key.jpg" alt="" className="w-full h-full object-cover" style={{ opacity: 0.18 }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(13,11,15,0.5) 0%, rgba(13,11,15,0.7) 60%, var(--ink) 100%)' }} />
+        <img src="/key.jpg" alt="" className="w-full h-full object-cover" style={{ opacity: 0.4 }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(13,11,15,0.3) 0%, rgba(13,11,15,0.5) 60%, var(--ink) 100%)' }} />
       </div>
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ width: '60vw', height: '60vw', background: 'radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%)' }} />
