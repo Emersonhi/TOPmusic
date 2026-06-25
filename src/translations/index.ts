@@ -265,7 +265,7 @@ export const shopPageT = {
     featuredTitle: 'Faculty Picks',
     featuredSub: 'Hand-selected by our master teachers — the books they actually use in lessons.',
     products: [
-      { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Beginner', price: '$24.99', color: '#8B6FD4', image: '/Alfred_Piano_Course.jpg' },
+      { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Beginner', price: '$24.99', color: '#8B6FD4', image: '/All_Alfred.jpg' },
       { id: 2, title: 'The Real Book – Volume I', category: 'Piano / Jazz', level: 'Intermediate', price: '$44.99', color: '#8B6FD4' },
       { id: 3, title: 'Hal Leonard Guitar Method – Complete Edition', category: 'Guitar', level: 'Beginner', price: '$22.99', color: '#5B9ED4' },
       { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Drums', level: 'Intermediate', price: '$19.99', color: '#D4C45B' },
@@ -296,7 +296,7 @@ export const shopPageT = {
     featuredTitle: 'Sélection des enseignants',
     featuredSub: 'Choisis à la main par nos maîtres enseignants — les livres qu\'ils utilisent vraiment en cours.',
     products: [
-      { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Débutant', price: '24,99$', color: '#8B6FD4', image: '/Alfred_Piano_Course.jpg' },
+      { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Débutant', price: '24,99$', color: '#8B6FD4', image: '/All_Alfred.jpg' },
       { id: 2, title: 'The Real Book – Volume I', category: 'Piano / Jazz', level: 'Intermédiaire', price: '44,99$', color: '#8B6FD4' },
       { id: 3, title: 'Hal Leonard Guitar Method – Édition complète', category: 'Guitare', level: 'Débutant', price: '22,99$', color: '#5B9ED4' },
       { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Batterie', level: 'Intermédiaire', price: '19,99$', color: '#D4C45B' },
