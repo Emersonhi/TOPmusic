@@ -84,12 +84,13 @@ export default function ShopPage() {
                   className="p-6 rounded-2xl flex flex-col"
                   style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }}
                 >
-                  {/* Book cover placeholder */}
-                  <div
-                    className="w-full h-40 rounded-xl mb-5 flex items-center justify-center"
-                    style={{ background: `${product.color}15`, border: `1px solid ${product.color}30` }}
-                  >
-                    <BookOpen size={40} style={{ color: product.color, opacity: 0.7 }} />
+                  {/* Book cover */}
+                  <div className="w-full h-40 rounded-xl mb-5 overflow-hidden flex items-center justify-center" style={{ background: `${product.color}15`, border: `1px solid ${product.color}30` }}>
+                    {product.image ? (
+                      <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <BookOpen size={40} style={{ color: product.color, opacity: 0.7 }} />
+                    )}
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs font-ui px-2 py-0.5 rounded-full" style={{ background: `${product.color}20`, color: product.color }}>{product.category}</span>
