@@ -247,10 +247,75 @@ export const programsPageT = {
   },
 };
 
+export const shopPageT = {
+  en: {
+    eyebrow: 'TOPmusic Store',
+    title: 'Sheet Music & Materials',
+    sub: 'Curated books, method series, and learning resources recommended by our faculty for every instrument and level.',
+    heroCta: 'Browse All',
+    categoriesTitle: 'Shop by Instrument',
+    categories: [
+      { id: 'piano', label: 'Piano', desc: 'Method books, classical repertoire, jazz studies & theory', color: '#8B6FD4' },
+      { id: 'guitar', label: 'Guitar & Bass', desc: 'Chord books, fingerstyle, rock technique & bass method', color: '#5B9ED4' },
+      { id: 'voice', label: 'Voice', desc: 'Vocal technique, songbooks, musical theatre collections', color: '#D4845B' },
+      { id: 'theory', label: 'Theory & Ear Training', desc: 'Harmony, sight-reading, ear training & composition workbooks', color: '#5BD4A8' },
+      { id: 'drums', label: 'Drums & Percussion', desc: 'Groove studies, jazz drumming, Latin rhythms & rudiments', color: '#D4C45B' },
+      { id: 'production', label: 'Music Production', desc: 'Mixing, sound design, Ableton & Logic reference guides', color: '#D45B8B' },
+    ],
+    featuredTitle: 'Faculty Picks',
+    featuredSub: 'Hand-selected by our master teachers — the books they actually use in lessons.',
+    products: [
+      { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Beginner', price: '$24.99', color: '#8B6FD4' },
+      { id: 2, title: 'The Real Book – Volume I', category: 'Piano / Jazz', level: 'Intermediate', price: '$44.99', color: '#8B6FD4' },
+      { id: 3, title: 'Hal Leonard Guitar Method – Complete Edition', category: 'Guitar', level: 'Beginner', price: '$22.99', color: '#5B9ED4' },
+      { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Drums', level: 'Intermediate', price: '$19.99', color: '#D4C45B' },
+      { id: 5, title: 'Ear Training for the Contemporary Musician', category: 'Theory', level: 'All Levels', price: '$28.99', color: '#5BD4A8' },
+      { id: 6, title: 'The Contemporary Singer – Elements of Vocal Technique', category: 'Voice', level: 'All Levels', price: '$26.99', color: '#D4845B' },
+    ],
+    callouts: [
+      { title: 'Can\'t Find What You\'re Looking For?', desc: 'Ask your teacher. We can order any book directly through the studio — often at a discount for enrolled students.', cta: 'Ask Your Teacher', href: '/contact', color: '#8B6FD4' },
+      { title: 'Free Resources for Students', desc: 'Enrolled students get access to our digital library of scales, etudes, backing tracks, and practice guides — included with every program.', cta: 'Explore Student Portal', href: '/login', color: '#5BD4A8' },
+    ],
+    shopNote: 'All books listed are available through major retailers. Enrolled students receive purchasing guidance and recommendations tailored to their specific program and level.',
+    requestBtn: 'Request a Recommendation',
+  },
+  fr: {
+    eyebrow: 'Boutique TOPmusic',
+    title: 'Partitions & Matériel',
+    sub: 'Livres, méthodes et ressources d\'apprentissage recommandés par notre corps enseignant pour chaque instrument et niveau.',
+    heroCta: 'Tout parcourir',
+    categoriesTitle: 'Acheter par instrument',
+    categories: [
+      { id: 'piano', label: 'Piano', desc: 'Méthodes, répertoire classique, études jazz & théorie', color: '#8B6FD4' },
+      { id: 'guitar', label: 'Guitare & Basse', desc: 'Livres d\'accords, fingerstyle, technique rock & méthode basse', color: '#5B9ED4' },
+      { id: 'voice', label: 'Chant', desc: 'Technique vocale, recueils de chansons, collections de comédie musicale', color: '#D4845B' },
+      { id: 'theory', label: 'Théorie & Formation auditive', desc: 'Harmonie, lecture à vue, formation auditive & cahiers de composition', color: '#5BD4A8' },
+      { id: 'drums', label: 'Batterie & Percussions', desc: 'Études de groove, batterie jazz, rythmes latins & rudiments', color: '#D4C45B' },
+      { id: 'production', label: 'Production musicale', desc: 'Mixage, sound design, guides de référence Ableton & Logic', color: '#D45B8B' },
+    ],
+    featuredTitle: 'Sélection des enseignants',
+    featuredSub: 'Choisis à la main par nos maîtres enseignants — les livres qu\'ils utilisent vraiment en cours.',
+    products: [
+      { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Débutant', price: '24,99$', color: '#8B6FD4' },
+      { id: 2, title: 'The Real Book – Volume I', category: 'Piano / Jazz', level: 'Intermédiaire', price: '44,99$', color: '#8B6FD4' },
+      { id: 3, title: 'Hal Leonard Guitar Method – Édition complète', category: 'Guitare', level: 'Débutant', price: '22,99$', color: '#5B9ED4' },
+      { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Batterie', level: 'Intermédiaire', price: '19,99$', color: '#D4C45B' },
+      { id: 5, title: 'Ear Training for the Contemporary Musician', category: 'Théorie', level: 'Tous niveaux', price: '28,99$', color: '#5BD4A8' },
+      { id: 6, title: 'The Contemporary Singer – Éléments de technique vocale', category: 'Chant', level: 'Tous niveaux', price: '26,99$', color: '#D4845B' },
+    ],
+    callouts: [
+      { title: 'Vous ne trouvez pas ce que vous cherchez ?', desc: 'Demandez à votre enseignant. Nous pouvons commander n\'importe quel livre directement via le studio — souvent à tarif réduit pour les élèves inscrits.', cta: 'Contacter le studio', href: '/contact', color: '#8B6FD4' },
+      { title: 'Ressources gratuites pour les élèves', desc: 'Les élèves inscrits ont accès à notre bibliothèque numérique de gammes, études, pistes d\'accompagnement et guides de pratique — inclus dans chaque programme.', cta: 'Portail élève', href: '/login', color: '#5BD4A8' },
+    ],
+    shopNote: 'Tous les livres listés sont disponibles chez les grands détaillants. Les élèves inscrits reçoivent des conseils d\'achat et des recommandations adaptés à leur programme et niveau spécifiques.',
+    requestBtn: 'Demander une recommandation',
+  },
+};
+
 export const t = {
   en: {
     nav: {
-      programs: 'Programs', faculty: 'Faculty', about: 'About', contact: 'Contact',
+      programs: 'Programs', faculty: 'Faculty', about: 'About', contact: 'Contact', shop: 'Shop',
       login: 'Login', enroll: 'Enroll',
     },
     hero: {
@@ -339,7 +404,7 @@ export const t = {
 
   fr: {
     nav: {
-      programs: 'Programmes', faculty: 'Enseignants', about: 'À propos', contact: 'Contact',
+      programs: 'Programmes', faculty: 'Enseignants', about: 'À propos', contact: 'Contact', shop: 'Boutique',
       login: 'Connexion', enroll: "S'inscrire",
     },
     hero: {
