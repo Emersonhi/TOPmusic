@@ -7,7 +7,6 @@ import {
   Clock, Award, Heart, ChevronRight, ChevronLeft,
   Check, Quote
 } from 'lucide-react';
-import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
@@ -156,13 +155,12 @@ function About() {
             </Link>
           </div>
           <div className="flex flex-col gap-6">
-            <div className="relative w-full rounded-xl overflow-hidden" style={{ aspectRatio: '16/9', border: '1px solid rgba(201,168,76,0.15)' }}>
-              <Image
+            <div className="relative w-full rounded-xl overflow-hidden" style={{ border: '1px solid rgba(201,168,76,0.15)' }}>
+              <img
                 src="/piano-student.jpg"
                 alt="Student learning piano at TOPmusic"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="w-full h-full object-cover rounded-xl"
+                style={{ maxHeight: '340px' }}
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
