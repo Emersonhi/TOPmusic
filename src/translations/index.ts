@@ -254,7 +254,7 @@ export const t = {
       login: 'Login', enroll: 'Enroll',
     },
     hero: {
-      badge: "New York's Premier Music School",
+      badge: "From First Notes to Standing Ovations",
       headline1: 'Where Music',
       headline2: 'Becomes Art.',
       sub: 'Piano, Guitar, Bass, Drums, Voice, and Music Production — taught by world-class artists with personalized methods for every age, every style, every dream.',
@@ -343,7 +343,7 @@ export const t = {
       login: 'Connexion', enroll: "S'inscrire",
     },
     hero: {
-      badge: "L'École de Musique Phare de New York",
+      badge: "Des premières notes aux ovations debout",
       headline1: 'Là où la Musique',
       headline2: "Devient Art.",
       sub: 'Piano, Guitare, Basse, Batterie, Chant et Production musicale — enseignés par des artistes de renommée mondiale avec des méthodes personnalisées pour chaque âge, chaque style, chaque rêve.',
