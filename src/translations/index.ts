@@ -1,3 +1,100 @@
+export const enrollPageT = {
+  en: {
+    eyebrow: 'Join TOPmusic', title: 'Enroll Today',
+    sub: 'Your first 30-minute lesson is completely free. No credit card required.',
+    steps: ['Student Info', 'Program', 'Schedule', 'Confirm'],
+    step0: {
+      heading: 'About the Student',
+      studentName: 'Student Name *', namePlaceholder: 'Full name',
+      age: 'Age', agePlaceholder: 'e.g. 12',
+      parentName: 'Parent / Guardian Name (if student is under 18)', parentPlaceholder: 'Parent name',
+      email: 'Email *', emailPlaceholder: 'you@email.com',
+      phone: 'Phone', phonePlaceholder: '(555) 000-0000',
+    },
+    step1: {
+      heading: 'Choose Your Program',
+      experienceLabel: 'Experience Level',
+      experiences: ['Beginner', 'Intermediate', 'Advanced', 'Professional'],
+      programs: [
+        { id: 'piano', label: 'Piano', desc: 'Classical, jazz, pop — all styles' },
+        { id: 'guitar', label: 'Guitar', desc: 'Acoustic & electric' },
+        { id: 'bass', label: 'Bass', desc: 'Electric & upright bass' },
+        { id: 'drums', label: 'Drums', desc: 'All styles, all levels' },
+        { id: 'voice', label: 'Voice', desc: 'Pop, classical, musical theatre' },
+        { id: 'production', label: 'Music Production', desc: 'Ableton, Logic, mixing' },
+      ],
+    },
+    step2: {
+      heading: 'Schedule Preferences',
+      lessonLength: 'Lesson Length', lengths: ['30 min', '45 min', '60 min'],
+      frequency: 'Frequency', frequencies: ['1 lesson / week', '2 lessons / week', '3 lessons / week'],
+      preferredDays: 'Preferred Days', days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      format: 'Lesson Format', formats: ['In-Person', 'Online', 'Hybrid'],
+    },
+    step3: {
+      heading: 'Confirm Enrollment',
+      fields: ['Student', 'Program', 'Experience', 'Lesson Length', 'Frequency', 'Format', 'Preferred Days', 'Email'],
+      freeNote: 'Your first 30-minute lesson is completely free. No credit card required.',
+      notesLabel: 'Additional Notes (optional)', notesPlaceholder: 'Anything else we should know?',
+      confirm: 'Confirm Enrollment',
+    },
+    back: 'Back', continue: 'Continue',
+    done: {
+      heading: "You're Enrolled!",
+      message: (name: string, email: string) => `Welcome to TOPmusic, ${name}! We will reach out to ${email} within 24 hours to confirm your first lesson and match you with the perfect teacher.`,
+      program: 'Program', length: 'Lesson Length', frequency: 'Frequency', format: 'Format',
+      backHome: 'Back to Home',
+    },
+  },
+  fr: {
+    eyebrow: 'Rejoindre TOPmusic', title: "S'inscrire aujourd'hui",
+    sub: 'Votre premier cours de 30 minutes est entièrement gratuit. Aucune carte de crédit requise.',
+    steps: ["Infos élève", 'Programme', 'Horaires', 'Confirmer'],
+    step0: {
+      heading: "À propos de l'élève",
+      studentName: "Nom de l'élève *", namePlaceholder: 'Nom complet',
+      age: 'Âge', agePlaceholder: 'ex. 12',
+      parentName: 'Nom du parent / tuteur (si élève mineur)', parentPlaceholder: 'Nom du parent',
+      email: 'Email *', emailPlaceholder: 'vous@email.com',
+      phone: 'Téléphone', phonePlaceholder: '(555) 000-0000',
+    },
+    step1: {
+      heading: 'Choisissez votre programme',
+      experienceLabel: 'Niveau',
+      experiences: ['Débutant', 'Intermédiaire', 'Avancé', 'Professionnel'],
+      programs: [
+        { id: 'piano', label: 'Piano', desc: 'Classique, jazz, pop — tous styles' },
+        { id: 'guitar', label: 'Guitare', desc: 'Acoustique & électrique' },
+        { id: 'bass', label: 'Basse', desc: 'Basse électrique & contrebasse' },
+        { id: 'drums', label: 'Batterie', desc: 'Tous styles, tous niveaux' },
+        { id: 'voice', label: 'Chant', desc: 'Pop, classique, comédie musicale' },
+        { id: 'production', label: 'Production musicale', desc: 'Ableton, Logic, mixage' },
+      ],
+    },
+    step2: {
+      heading: 'Préférences horaires',
+      lessonLength: 'Durée du cours', lengths: ['30 min', '45 min', '60 min'],
+      frequency: 'Fréquence', frequencies: ['1 cours / semaine', '2 cours / semaine', '3 cours / semaine'],
+      preferredDays: 'Jours préférés', days: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      format: 'Format du cours', formats: ['En présentiel', 'En ligne', 'Hybride'],
+    },
+    step3: {
+      heading: "Confirmer l'inscription",
+      fields: ['Élève', 'Programme', 'Niveau', 'Durée du cours', 'Fréquence', 'Format', 'Jours préférés', 'Email'],
+      freeNote: 'Votre premier cours de 30 minutes est entièrement gratuit. Aucune carte de crédit requise.',
+      notesLabel: 'Notes supplémentaires (optionnel)', notesPlaceholder: 'Autre chose à savoir ?',
+      confirm: "Confirmer l'inscription",
+    },
+    back: 'Retour', continue: 'Continuer',
+    done: {
+      heading: 'Vous êtes inscrit !',
+      message: (name: string, email: string) => `Bienvenue chez TOPmusic, ${name} ! Nous vous contacterons à ${email} dans les 24 heures pour confirmer votre premier cours et vous associer au professeur idéal.`,
+      program: 'Programme', length: 'Durée du cours', frequency: 'Fréquence', format: 'Format',
+      backHome: 'Retour à l\'accueil',
+    },
+  },
+};
+
 export const programsPageT = {
   en: {
     eyebrow: 'What We Offer',
