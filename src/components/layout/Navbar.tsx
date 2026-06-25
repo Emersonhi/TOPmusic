@@ -2,17 +2,21 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Music2 } from 'lucide-react';
-
-const links = [
-  { href: '/#programs', label: 'Programs' },
-  { href: '/#faculty', label: 'Faculty' },
-  { href: '/#about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-];
+import { useLang } from '@/context/LanguageContext';
+import { t } from '@/translations';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { lang, toggle } = useLang();
+  const tr = t[lang].nav;
+
+  const links = [
+    { href: '/#programs', label: tr.programs },
+    { href: '/#faculty', label: tr.faculty },
+    { href: '/#about', label: tr.about },
+    { href: '/contact', label: tr.contact },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -62,33 +66,37 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* CTA */}
+        {/* CTA + language toggle */}
         <div className="hidden md:flex items-center gap-3">
+          {/* Language toggle */}
+          <button
+            onClick={toggle}
+            className="flex items-center gap-1 px-3 py-1.5 rounded font-ui text-xs tracking-widest uppercase transition-all duration-200"
+            style={{ border: '1px solid rgba(201,168,76,0.3)', color: 'var(--gold)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.1)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+          >
+            <span style={{ opacity: lang === 'en' ? 1 : 0.4 }}>EN</span>
+            <span style={{ color: 'rgba(201,168,76,0.4)' }}>|</span>
+            <span style={{ opacity: lang === 'fr' ? 1 : 0.4 }}>FR</span>
+          </button>
           <Link
             href="/login"
             className="px-5 py-2 rounded font-ui text-sm tracking-widest uppercase transition-all duration-200"
             style={{ color: 'var(--gold)', border: '1px solid var(--gold-muted)' }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.1)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = 'transparent';
-            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.1)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
           >
-            Login
+            {tr.login}
           </Link>
           <Link
             href="/enroll"
             className="px-5 py-2 rounded font-ui text-sm tracking-widest uppercase transition-all duration-200"
             style={{ background: 'var(--gold)', color: 'var(--ink)' }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = 'var(--gold-light)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = 'var(--gold)';
-            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--gold-light)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--gold)'; }}
           >
-            Enroll
+            {tr.enroll}
           </Link>
         </div>
 
@@ -119,14 +127,21 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link href="/login" className="font-ui text-sm tracking-widest uppercase" style={{ color: 'var(--gold)' }} onClick={() => setOpen(false)}>Login</Link>
+          <button
+            onClick={toggle}
+            className="text-left font-ui text-sm tracking-widest uppercase"
+            style={{ color: 'var(--gold)' }}
+          >
+            {lang === 'en' ? '🇫🇷 Français' : '🇺🇸 English'}
+          </button>
+          <Link href="/login" className="font-ui text-sm tracking-widest uppercase" style={{ color: 'var(--gold)' }} onClick={() => setOpen(false)}>{tr.login}</Link>
           <Link
             href="/enroll"
             className="px-5 py-3 rounded font-ui text-sm tracking-widest uppercase text-center"
             style={{ background: 'var(--gold)', color: 'var(--ink)' }}
             onClick={() => setOpen(false)}
           >
-            Enroll Now
+            {tr.enroll}
           </Link>
         </div>
       )}
