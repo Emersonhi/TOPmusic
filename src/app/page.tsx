@@ -7,6 +7,7 @@ import {
   Clock, Award, Heart, ChevronRight, ChevronLeft,
   Check, Quote
 } from 'lucide-react';
+import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
@@ -154,7 +155,17 @@ function About() {
               Start Your Trial Lesson <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-6">
+            <div className="relative w-full rounded-xl overflow-hidden" style={{ aspectRatio: '16/9', border: '1px solid rgba(201,168,76,0.15)' }}>
+              <Image
+                src="/piano-student.jpg"
+                alt="Student learning piano at TOPmusic"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {pillars.map((p, i) => {
               const Icon = p.icon;
               return (
@@ -167,6 +178,7 @@ function About() {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
       </div>
