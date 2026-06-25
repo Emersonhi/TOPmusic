@@ -6,6 +6,8 @@ import { ArrowRight, Check } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 import { programsPageT } from '@/translations';
 
+const programIds = ['piano', 'guitar', 'drums', 'voice', 'production', 'ensembles'];
+
 const colors = ['#8B6FD4', '#5B9ED4', '#D4845B', '#5BD4A8', '#D4C45B', '#D45B8B'];
 
 export default function ProgramsPage() {
@@ -27,7 +29,7 @@ export default function ProgramsPage() {
           {tr.programs.map((prog, i) => {
             const color = colors[i];
             return (
-              <div key={prog.id} id={prog.id} className="p-8 rounded-2xl" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }}>
+              <div key={prog.id} id={prog.id} className="p-8 rounded-2xl" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }} >
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2">
                     <div className="flex items-center gap-3 mb-4">
@@ -69,7 +71,7 @@ export default function ProgramsPage() {
                       <div className="gold-line my-4" />
                       <p className="text-xs font-ui" style={{ color: 'var(--mist)' }}>{tr.firstLesson}</p>
                     </div>
-                    <Link href="/enroll"
+                    <Link href={`/enroll?program=${programIds[i]}`}
                       className="mt-4 py-4 rounded-xl font-ui text-sm tracking-widest uppercase flex items-center justify-center gap-2 transition-all duration-200"
                       style={{ background: `${color}20`, color, border: `1px solid ${color}40` }}
                       onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = `${color}35`; }}

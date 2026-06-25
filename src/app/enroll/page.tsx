@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Check, ChevronRight, Music2, CheckCircle } from 'lucide-react';
@@ -8,18 +9,27 @@ import { enrollPageT } from '@/translations';
 
 const colors = ['#8B6FD4', '#5B9ED4', '#5B9ED4', '#D4845B', '#5BD4A8', '#D4C45B'];
 
-export default function EnrollPage() {
+function EnrollForm() {
   const { lang } = useLang();
   const tr = enrollPageT[lang];
+  const searchParams = useSearchParams();
 
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
   const [data, setData] = useState({
     studentName: '', age: '', parentName: '', email: '', phone: '',
-    program: '', length: '45 min', frequency: tr.step2.frequencies[0],
+    program: searchParams.get('program') || '', length: '45 min', frequency: tr.step2.frequencies[0],
     format: tr.step2.formats[0], experience: tr.step1.experiences[0], notes: '',
     days: [] as string[],
   });
+
+  useEffect(() => {
+    const p = searchParams.get('program');
+    if (p) {
+      setData(f => ({ ...f, program: p }));
+      setStep(1);
+    }
+  }, [searchParams]);
 
   const toggleDay = (d: string) => setData(f => ({ ...f, days: f.days.includes(d) ? f.days.filter(x => x !== d) : [...f.days, d] }));
 
@@ -251,5 +261,13 @@ export default function EnrollPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function EnrollPage() {
+  return (
+    <Suspense>
+      <EnrollForm />
+    </Suspense>
   );
 }
