@@ -56,11 +56,11 @@ export const enrollPageT = {
       experiences: ['Beginner', 'Intermediate', 'Advanced', 'Professional'],
       programs: [
         { id: 'piano', label: 'Piano', desc: 'Classical, jazz, pop — all styles' },
-        { id: 'guitar', label: 'Guitar', desc: 'Acoustic & electric' },
-        { id: 'bass', label: 'Bass', desc: 'Electric & upright bass' },
-        { id: 'drums', label: 'Drums', desc: 'All styles, all levels' },
+        { id: 'guitar', label: 'Guitar & Bass', desc: 'Acoustic, electric & bass' },
+        { id: 'drums', label: 'Drums & Percussion', desc: 'All styles, all levels' },
         { id: 'voice', label: 'Voice', desc: 'Pop, classical, musical theatre' },
         { id: 'production', label: 'Music Production', desc: 'Ableton, Logic, mixing' },
+        { id: 'ensembles', label: 'Ensembles & Groups', desc: 'Band, chamber, choir' },
       ],
     },
     step2: {
@@ -103,11 +103,11 @@ export const enrollPageT = {
       experiences: ['Débutant', 'Intermédiaire', 'Avancé', 'Professionnel'],
       programs: [
         { id: 'piano', label: 'Piano', desc: 'Classique, jazz, pop — tous styles' },
-        { id: 'guitar', label: 'Guitare', desc: 'Acoustique & électrique' },
-        { id: 'bass', label: 'Basse', desc: 'Basse électrique & contrebasse' },
-        { id: 'drums', label: 'Batterie', desc: 'Tous styles, tous niveaux' },
+        { id: 'guitar', label: 'Guitare & Basse', desc: 'Acoustique, électrique & basse' },
+        { id: 'drums', label: 'Batterie & Percussions', desc: 'Tous styles, tous niveaux' },
         { id: 'voice', label: 'Chant', desc: 'Pop, classique, comédie musicale' },
         { id: 'production', label: 'Production musicale', desc: 'Ableton, Logic, mixage' },
+        { id: 'ensembles', label: 'Ensembles & Groupes', desc: 'Groupe, chambre, chœur' },
       ],
     },
     step2: {
