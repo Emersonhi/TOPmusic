@@ -58,8 +58,8 @@ export default function ContactPage() {
 
               <div className="space-y-5">
                 {[
-                  { icon: MapPin, label: 'Studio Location', value: '123 Harmony Avenue\nNew York, NY 10001' },
-                  { icon: Phone, label: 'Phone', value: '(212) 555-0100' },
+                  { icon: MapPin, label: 'Studio Location', value: '255 Gamelin\nGatineau, J8Y 1W8' },
+                  { icon: Phone, label: 'Phone', value: '(819) 598 0808' },
                   { icon: Mail, label: 'Email', value: 'hello@topmusic.com' },
                   { icon: Clock, label: 'Hours', value: 'Mon–Fri: 9am – 9pm\nSat–Sun: 10am – 6pm' },
                 ].map((item, i) => {

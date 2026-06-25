@@ -90,14 +90,14 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin size={16} style={{ color: 'var(--gold)', marginTop: 2, flexShrink: 0 }} />
-                <span className="text-sm font-ui" style={{ color: 'var(--mist)' }}>123 Harmony Avenue<br />New York, NY 10001</span>
+                <span className="text-sm font-ui" style={{ color: 'var(--mist)' }}>255 Gamelin<br />Gatineau, J8Y 1W8</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} style={{ color: 'var(--gold)', flexShrink: 0 }} />
-                <a href="tel:+12125550100" className="text-sm font-ui transition-colors" style={{ color: 'var(--mist)' }}
+                <a href="tel:+18195980808" className="text-sm font-ui transition-colors" style={{ color: 'var(--mist)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--ivory)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--mist)')}
-                >(212) 555-0100</a>
+                >(819) 598 0808</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={16} style={{ color: 'var(--gold)', flexShrink: 0 }} />
