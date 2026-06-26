@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOPmusic Note Explorer</title>
+<style>
+  :root {
+    --primary: #6c63ff;
+    --secondary: #ff6584;
+    --success: #43d98a;
+    --danger: #ff6b6b;
+    --bg: #f0f4ff;
+    --text: #2d2d2d;
+    --muted: #888;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  body::before { content:''; position:fixed; inset:0; background: linear-gradient(135deg,#e0e7ff 0%,#fce4ec 50%,#e8f5e9 100%); z-index:-1; }
+
+  header { text-align:center; padding:18px 10px 4px; }
+  header h1 { font-size:2rem; color:var(--primary); letter-spacing:1px; }
+  header p { color:var(--muted); font-size:.95rem; }
+
+  .lang-toggle { display:flex; justify-content:center; gap:8px; padding:8px 0 2px; }
+  .lang-btn { padding:5px 18px; border:2px solid var(--primary); border-radius:50px; background:white; color:var(--primary); font-weight:700; font-size:.9rem; cursor:pointer; transition:.18s; }
+  .lang-btn.active { background:var(--primary); color:white; }
+
+  .topbar { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; padding:10px 16px; }
+  .pill { background:white; border-radius:50px; padding:6px 16px; font-size:.85rem; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,.1); display:flex; align-items:center; gap:6px; }
+  .pill span.val { color:var(--primary); font-size:1rem; }
+  .progress-wrap { width:100%; max-width:420px; margin:0 auto 4px; background:#dde; border-radius:20px; height:10px; overflow:hidden; }
+  .progress-bar { height:100%; background:linear-gradient(90deg,var(--primary),var(--secondary)); border-radius:20px; transition:width .4s; }
+
+  .controls { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; padding:6px 16px; }
+  .ctrl-btn { padding:7px 14px; border:none; border-radius:50px; cursor:pointer; font-size:.82rem; font-weight:700; transition:.2s; box-shadow:0 2px 6px rgba(0,0,0,.12); }
+  .ctrl-btn.active { transform:scale(1.06); box-shadow:0 3px 10px rgba(0,0,0,.2); }
+  .btn-clef { background:#ede7ff; color:#5c35cc; }
+  .btn-clef.active { background:var(--primary); color:white; }
+  .btn-diff { background:#fff3e0; color:#e65100; }
+  .btn-diff.active { background:#ff9800; color:white; }
+  .btn-timer { background:#e3f2fd; color:#1565c0; }
+  .btn-timer.active { background:#2196f3; color:white; }
+  .btn-reset { background:#fce4ec; color:#c62828; }
+  .btn-lb { background:#e8f5e9; color:#2e7d32; }
+
+  .main-card { background:white; border-radius:24px; box-shadow:0 8px 32px rgba(108,99,255,.13); max-width:640px; margin:8px auto; padding:20px 24px; }
+
+  .feedback { text-align:center; font-size:1.4rem; font-weight:800; min-height:36px; transition:.3s; }
+  .feedback.correct { color:var(--success); }
+  .feedback.wrong { color:var(--danger); }
+
+  .timer-display { text-align:center; font-size:2.2rem; font-weight:900; color:var(--primary); display:none; }
+  .timer-display.urgent { color:var(--danger); animation:pulse .5s infinite alternate; }
+  @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.12)} }
+
+  #staffSvg { width:100%; display:block; margin:10px 0; }
+
+  .note-btns { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:14px 0 8px; }
+  .note-btn {
+    min-width:68px; height:68px; padding:0 10px; border:none; border-radius:34px; font-size:1.1rem; font-weight:900;
+    cursor:pointer; transition:.18s; box-shadow:0 4px 12px rgba(0,0,0,.15);
+    display:flex; align-items:center; justify-content:center; line-height:1.1; text-align:center;
+  }
+  .note-btn:hover { transform:scale(1.1); }
+  .note-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+  .note-btn:nth-child(1){background:#ff6b6b;color:white;}
+  .note-btn:nth-child(2){background:#ff9f43;color:white;}
+  .note-btn:nth-child(3){background:#ffd166;color:#333;}
+  .note-btn:nth-child(4){background:#43d98a;color:white;}
+  .note-btn:nth-child(5){background:#26c6da;color:white;}
+  .note-btn:nth-child(6){background:#6c63ff;color:white;}
+  .note-btn:nth-child(7){background:#ff6584;color:white;}
+
+  #pianoWrap { margin:10px 0 4px; display:flex; justify-content:center; }
+  #pianoSvg { width:100%; max-width:560px; display:block; }
+
+  .mode-toggle { display:flex; justify-content:center; gap:6px; margin:6px 0 2px; }
+  .mode-btn { padding:4px 14px; border:2px solid #ccc; border-radius:50px; background:white; color:#666; font-size:.8rem; font-weight:700; cursor:pointer; transition:.18s; }
+  .mode-btn.active { border-color:var(--primary); background:var(--primary); color:white; }
+
+  .lb-modal { position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:100; }
+  .lb-modal.show { display:flex; }
+  .lb-box { background:white; border-radius:20px; padding:28px; width:340px; max-width:95vw; box-shadow:0 12px 40px rgba(0,0,0,.25); }
+  .lb-box h2 { text-align:center; color:var(--primary); margin-bottom:14px; }
+  .lb-row { display:flex; justify-content:space-between; padding:6px 8px; border-radius:8px; font-size:.9rem; }
+  .lb-row:nth-child(odd){background:#f4f4ff;}
+  .lb-row.gold{background:#fff8e1;font-weight:700;}
+  .lb-empty{text-align:center;color:var(--muted);padding:18px;}
+  .lb-close{display:block;margin:16px auto 0;padding:8px 28px;background:var(--primary);color:white;border:none;border-radius:50px;cursor:pointer;font-weight:700;}
+  .lb-reset{display:block;margin:8px auto 0;padding:6px 20px;background:#fee;color:#c62828;border:1px solid #fcc;border-radius:50px;cursor:pointer;font-size:.82rem;}
+
+  .gameover { display:none; text-align:center; padding:10px 0; }
+  .gameover h2 { font-size:1.8rem; color:var(--primary); }
+  .gameover p { font-size:1.1rem; color:var(--muted); margin:6px 0; }
+  .gameover .score-big { font-size:3rem; font-weight:900; color:var(--secondary); }
+  .gameover .stars { font-size:2.4rem; }
+  .gameover .play-again { margin-top:14px; padding:12px 32px; background:var(--primary); color:white; border:none; border-radius:50px; font-size:1.1rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(108,99,255,.35); transition:.2s; }
+  .gameover .play-again:hover { transform:scale(1.05); }
+  .name-input { margin-top:10px; }
+  .name-input input { padding:8px 16px; border:2px solid var(--primary); border-radius:50px; font-size:1rem; outline:none; }
+  .name-input button { margin-left:8px; padding:8px 18px; background:var(--success); color:white; border:none; border-radius:50px; cursor:pointer; font-weight:700; }
+
+  .badge-row { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; min-height:28px; margin-bottom:4px; }
+  .badge { font-size:1.3rem; animation:pop .3s; }
+  @keyframes pop { from{transform:scale(0)} to{transform:scale(1)} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎵 TOP<span data-t="title">music Note Explorer</span></h1>
+  <p data-t="subtitle">Can you name every note on the staff?</p>
+</header>
+
+<div class="lang-toggle">
+  <button class="lang-btn active" id="langEN">🇬🇧 English</button>
+  <button class="lang-btn" id="langFR">🇫🇷 Français</button>
+</div>
+
+<div class="topbar">
+  <div class="pill">✅ <span data-t="score">Score</span>: <span class="val" id="scoreVal">0</span></div>
+  <div class="pill">🎯 <span data-t="attempts">Attempts</span>: <span class="val" id="attVal">0</span></div>
+  <div class="pill">📊 <span data-t="accuracy">Accuracy</span>: <span class="val" id="accVal">—</span></div>
+  <div style="width:100%;display:flex;justify-content:center;">
+    <div class="progress-wrap"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn btn-clef active" id="btnTreble" data-t="treble">🎼 Treble</button>
+  <button class="ctrl-btn btn-clef" id="btnBass" data-t="bass">🎸 Bass</button>
+  <button class="ctrl-btn btn-clef" id="btnMixed" data-t="mixed">🔀 Mixed</button>
+  <button class="ctrl-btn btn-diff active" id="btnBeg" data-t="beginner">⭐ Beginner</button>
+  <button class="ctrl-btn btn-diff" id="btnInt" data-t="intermediate">⭐⭐ Intermediate</button>
+  <button class="ctrl-btn btn-diff" id="btnAdv" data-t="advanced">⭐⭐⭐ Advanced</button>
+  <button class="ctrl-btn btn-timer" id="btnT30">⏱ 30s</button>
+  <button class="ctrl-btn btn-timer" id="btnT60">⏱ 60s</button>
+  <button class="ctrl-btn btn-timer" id="btnT120">⏱ 2min</button>
+  <button class="ctrl-btn btn-timer active" id="btnTFree" data-t="free">♾ Free</button>
+  <button class="ctrl-btn btn-lb" id="btnLB" data-t="leaderboard">🏆 Leaderboard</button>
+  <button class="ctrl-btn btn-reset" id="btnReset" data-t="reset">🔄 Reset</button>
+</div>
+
+<div class="main-card">
+  <div class="timer-display" id="timerDisplay">⏱ 60</div>
+  <div class="feedback" id="feedback"></div>
+  <div class="badge-row" id="badgeRow"></div>
+
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="modeLetters" data-t="modeLetters">A B C</button>
+    <button class="mode-btn" id="modeSolfege" data-t="modeSolfege">Do Ré Mi</button>
+  </div>
+
+  <div id="gameArea">
+    <svg id="staffSvg" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="note-btns" id="noteBtns"></div>
+    <div id="pianoWrap">
+      <svg id="pianoSvg" viewBox="0 0 560 110" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+  </div>
+
+  <div class="gameover" id="gameOver">
+    <div class="stars" id="goStars"></div>
+    <h2 data-t="timesUp">Time's Up! 🎉</h2>
+    <div class="score-big" id="goScore">0</div>
+    <p id="goAcc"></p>
+    <div class="name-input">
+      <input type="text" id="playerName" data-t-placeholder="yourName" maxlength="16">
+      <button id="btnSaveScore" data-t="save">💾 Save</button>
+    </div>
+    <button class="play-again" id="btnPlayAgain" data-t="playAgain">▶ Play Again</button>
+  </div>
+</div>
+
+<div class="lb-modal" id="lbModal">
+  <div class="lb-box">
+    <h2 data-t="leaderboard">🏆 Leaderboard</h2>
+    <div id="lbList"></div>
+    <button class="lb-close" id="btnCloseLB" data-t="close">Close</button>
+    <button class="lb-reset" id="btnResetLB" data-t="resetScores">🗑 Reset Scores</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var LANGS = {
+    en: {
+      title: 'music Note Explorer',
+      subtitle: 'Can you name every note on the staff?',
+      score: 'Score', attempts: 'Attempts', accuracy: 'Accuracy',
+      treble: '🎼 Treble', bass: '🎸 Bass', mixed: '🔀 Mixed',
+      beginner: '⭐ Beginner', intermediate: '⭐⭐ Intermediate', advanced: '⭐⭐⭐ Advanced',
+      free: '♾ Free', leaderboard: '🏆 Leaderboard', reset: '🔄 Reset',
+      modeLetters: 'A B C', modeSolfege: 'Do Ré Mi',
+      prompt: 'Name that note! 🎶',
+      correct: ['Great job! 🌟','Awesome! 🎉','You got it! 🏆','Perfect! ✨','Amazing! 🚀','Brilliant! 💫'],
+      wrong: ['Try again! 🤔','Almost! Keep going 💪','Not quite! 🎵','One more try! 🌈'],
+      timesUp: "Time's Up! 🎉",
+      accuracyLabel: 'Accuracy',
+      yourName: 'Your name…',
+      save: '💾 Save', playAgain: '▶ Play Again',
+      close: 'Close', resetScores: '🗑 Reset Scores',
+      noScores: 'No scores yet!',
+      pts: 'pts'
+    },
+    fr: {
+      title: 'music Explorateur de Notes',
+      subtitle: 'Peux-tu nommer chaque note sur la portée ?',
+      score: 'Score', attempts: 'Essais', accuracy: 'Précision',
+      treble: '🎼 Sol', bass: '🎸 Fa', mixed: '🔀 Mixte',
+      beginner: '⭐ Débutant', intermediate: '⭐⭐ Intermédiaire', advanced: '⭐⭐⭐ Avancé',
+      free: '♾ Libre', leaderboard: '🏆 Classement', reset: '🔄 Réinitialiser',
+      modeLetters: 'A B C', modeSolfege: 'Do Ré Mi',
+      prompt: 'Nomme cette note ! 🎶',
+      correct: ['Bravo ! 🌟','Super ! 🎉','Bien joué ! 🏆','Parfait ! ✨','Incroyable ! 🚀','Brillant ! 💫'],
+      wrong: ['Réessaie ! 🤔','Presque ! Continue 💪','Pas tout à fait ! 🎵','Encore un essai ! 🌈'],
+      timesUp: 'Temps écoulé ! 🎉',
+      accuracyLabel: 'Précision',
+      yourName: 'Ton prénom…',
+      save: '💾 Sauvegarder', playAgain: '▶ Rejouer',
+      close: 'Fermer', resetScores: '🗑 Effacer les scores',
+      noScores: 'Aucun score encore !',
+      pts: 'pts'
+    }
+  };
+
+  var LETTER_TO_SOLFEGE = { C:'Do', D:'Ré', E:'Mi', F:'Fa', G:'Sol', A:'La', B:'Si' };
+  var BUTTON_LETTERS = ['A','B','C','D','E','F','G'];
+  var LINE_Y = [118, 106, 94, 82, 70];
+  function stepY(s) { return 118 - s * 6; }
+  function mkNote(name, steps) {
+    var y = stepY(steps), ledgers = [], s;
+    if (steps < 0) { for (s = -2; s >= steps - 1; s -= 2) if (s < 0) ledgers.push(stepY(s)); }
+    else if (steps > 8) { for (s = 10; s <= steps + 1; s += 2) ledgers.push(stepY(s)); }
+    return { n: name, y: y, ledgers: ledgers };
+  }
+
+  var TREBLE_ALL = [
+    mkNote('A3',-4), mkNote('B3',-3), mkNote('C4',-2), mkNote('D4',-1),
+    mkNote('E4', 0), mkNote('F4', 1), mkNote('G4', 2), mkNote('A4', 3),
+    mkNote('B4', 4), mkNote('C5', 5), mkNote('D5', 6), mkNote('E5', 7),
+    mkNote('F5', 8), mkNote('G5', 9), mkNote('A5',10), mkNote('B5',11),
+    mkNote('C6',12), mkNote('D6',13)
+  ];
+  var BASS_ALL = [
+    mkNote('C2',-4), mkNote('D2',-3), mkNote('E2',-2), mkNote('F2',-1),
+    mkNote('G2', 0), mkNote('A2', 1), mkNote('B2', 2), mkNote('C3', 3),
+    mkNote('D3', 4), mkNote('E3', 5), mkNote('F3', 6), mkNote('G3', 7),
+    mkNote('A3', 8), mkNote('B3', 9), mkNote('C4',10), mkNote('D4',11),
+    mkNote('E4',12), mkNote('F4',13)
+  ];
+
+  function getPool(clef, d) {
+    var src = clef === 'bass' ? BASS_ALL : TREBLE_ALL;
+    if (d === 'beginner')     return src.filter(function(n){ return n.ledgers.length === 0; }).slice(0,9);
+    if (d === 'intermediate') return src.filter(function(n){ return n.ledgers.length === 0; });
+    return src;
+  }
+
+  var WHITE_LETTERS = ['C','D','E','F','G','A','B'];
+  var BLACK_AFTER   = ['C','D','F','G','A'];
+  var WHITE_NOTES   = [];
+  for (var oct = 2; oct <= 6; oct++) WHITE_LETTERS.forEach(function(w){ WHITE_NOTES.push(w+oct); });
+
+  var lang = 'en', noteMode = 'letters', clefMode = 'treble', diff = 'beginner', timerSec = 0;
+  var score = 0, attempts = 0, streak = 0;
+  var currentNote = null, answered = false;
+  var timerInterval = null, timeLeft = 0;
+  var badges = [], AC = null;
+
+  function t(key) { return (LANGS[lang] && LANGS[lang][key]) || LANGS.en[key] || key; }
+  function noteLetter(noteName) { return noteName[0]; }
+
+  function applyLang() {
+    document.querySelectorAll('[data-t]').forEach(function(el) {
+      el.textContent = t(el.getAttribute('data-t'));
+    });
+    document.querySelectorAll('[data-t-placeholder]').forEach(function(el) {
+      el.placeholder = t(el.getAttribute('data-t-placeholder'));
+    });
+    document.getElementById('langEN').classList.toggle('active', lang === 'en');
+    document.getElementById('langFR').classList.toggle('active', lang === 'fr');
+    setFeedback(t('prompt'), '');
+  }
+
+  function getAC() { if (!AC) AC = new (window.AudioContext||window.webkitAudioContext)(); return AC; }
+  function playTone(freq, type, dur, vol) {
+    try {
+      var ac=getAC(), o=ac.createOscillator(), g=ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type=type||'sine'; o.frequency.value=freq;
+      g.gain.setValueAtTime(vol||.18, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, ac.currentTime+(dur||.25));
+      o.start(); o.stop(ac.currentTime+(dur||.25));
+    } catch(e){}
+  }
+  function playCorrect() { playTone(523,'sine',.12); setTimeout(function(){playTone(659,'sine',.15);},100); setTimeout(function(){playTone(784,'sine',.2);},220); }
+  function playWrong()   { playTone(220,'sawtooth',.18,.12); setTimeout(function(){playTone(196,'sawtooth',.18,.1);},150); }
+
+  function drawStaff(note, state) {
+    var svg = document.getElementById('staffSvg'), html = '', i;
+    for (i=0;i<LINE_Y.length;i++) html += '<line x1="50" y1="'+LINE_Y[i]+'" x2="450" y2="'+LINE_Y[i]+'" stroke="#aaa" stroke-width="1.8"/>';
+    if (note.clef==='treble')
+      html += '<text x="55" y="138" font-size="100" fill="#6c63ff" font-family="serif" opacity=".85">&#119070;</text>';
+    else
+      html += '<text x="58" y="108" font-size="62" fill="#6c63ff" font-family="serif" opacity=".85">&#119074;</text>';
+    if (note.ledgers) for (i=0;i<note.ledgers.length;i++) html += '<line x1="228" y1="'+note.ledgers[i]+'" x2="272" y2="'+note.ledgers[i]+'" stroke="#555" stroke-width="2.2"/>';
+    var fill = state==='correct'?'#43d98a':state==='wrong'?'#ff6b6b':'#3a3a80';
+    var nx=250, ny=note.y;
+    html += '<ellipse cx="'+nx+'" cy="'+ny+'" rx="13" ry="10" fill="'+fill+'" transform="rotate(-15,'+nx+','+ny+')"/>';
+    var sd = ny>=94?-1:1, sx = sd===-1?nx+12:nx-12;
+    html += '<line x1="'+sx+'" y1="'+ny+'" x2="'+sx+'" y2="'+(ny+sd*48)+'" stroke="'+fill+'" stroke-width="2.5"/>';
+    svg.innerHTML = html;
+  }
+
+  function drawPiano(highlightNote) {
+    var svg=document.getElementById('pianoSvg'), wW=16, wH=88, bW=11, bH=54;
+    var total=WHITE_NOTES.length*wW, ox=(560-total)/2, html='', i, k, x, isHL;
+    for (i=0;i<WHITE_NOTES.length;i++) {
+      k=WHITE_NOTES[i]; x=ox+i*wW; isHL=highlightNote&&k===highlightNote;
+      html+='<rect x="'+(x+1)+'" y="10" width="'+(wW-2)+'" height="'+wH+'" rx="3" fill="'+(isHL?'#43d98a':'#fff')+'" stroke="#bbb" stroke-width="1"/>';
+      html+='<text x="'+(x+wW/2)+'" y="'+(10+wH-7)+'" text-anchor="middle" font-size="7" fill="'+(isHL?'white':'#bbb')+'">'+k[0]+'</text>';
+    }
+    for (i=0;i<WHITE_NOTES.length;i++) {
+      k=WHITE_NOTES[i];
+      if (BLACK_AFTER.indexOf(k[0])!==-1) {
+        x=ox+i*wW+wW-bW/2;
+        html+='<rect x="'+x+'" y="10" width="'+bW+'" height="'+bH+'" rx="2" fill="#222" stroke="#000" stroke-width="1"/>';
+      }
+    }
+    svg.innerHTML=html;
+  }
+
+  function buildButtons() {
+    var wrap=document.getElementById('noteBtns');
+    wrap.innerHTML='';
+    BUTTON_LETTERS.forEach(function(l) {
+      var label = noteMode==='solfege' ? LETTER_TO_SOLFEGE[l] : l;
+      var b=document.createElement('button');
+      b.className='note-btn'; b.textContent=label;
+      b.addEventListener('click', function(){ guess(l); });
+      wrap.appendChild(b);
+    });
+  }
+  function setBtns(dis) { document.querySelectorAll('.note-btn').forEach(function(b){b.disabled=dis;}); }
+  function setFeedback(msg,cls) { var f=document.getElementById('feedback'); f.textContent=msg; f.className='feedback '+(cls||''); }
+  function updateStats() {
+    document.getElementById('scoreVal').textContent=score;
+    document.getElementById('attVal').textContent=attempts;
+    var acc=attempts?Math.round(score/attempts*100):0;
+    document.getElementById('accVal').textContent=attempts?acc+'%':'—';
+    document.getElementById('progBar').style.width=Math.min(score*5,100)+'%';
+  }
+  function checkBadge() {
+    var nb=[];
+    if(score===5  &&badges.indexOf('🥉')<0){nb.push('🥉');badges.push('🥉');}
+    if(score===10 &&badges.indexOf('🥈')<0){nb.push('🥈');badges.push('🥈');}
+    if(score===20 &&badges.indexOf('🥇')<0){nb.push('🥇');badges.push('🥇');}
+    if(streak===5 &&badges.indexOf('🔥')<0){nb.push('🔥');badges.push('🔥');}
+    if(streak===10&&badges.indexOf('⚡')<0){nb.push('⚡');badges.push('⚡');}
+    if(nb.length){var row=document.getElementById('badgeRow');nb.forEach(function(b){var s=document.createElement('span');s.className='badge';s.textContent=b;row.appendChild(s);});}
+  }
+
+  function pickNote() {
+    var active=clefMode==='mixed'?(Math.random()<.5?'treble':'bass'):clefMode;
+    var pool=getPool(active,diff);
+    var note=pool[Math.floor(Math.random()*pool.length)];
+    return {n:note.n, y:note.y, ledgers:note.ledgers, clef:active};
+  }
+
+  function nextNote() {
+    currentNote=pickNote(); answered=false;
+    drawStaff(currentNote,''); drawPiano(null);
+    setFeedback(t('prompt'),''); setBtns(false);
+  }
+
+  function guess(letter) {
+    if (answered) return;
+    attempts++;
+    var correct = noteLetter(currentNote.n) === letter;
+    if (correct) {
+      score++; streak++; answered=true;
+      drawStaff(currentNote,'correct'); drawPiano(currentNote.n); playCorrect();
+      var msgs=t('correct'); setFeedback(msgs[Math.floor(Math.random()*msgs.length)],'correct');
+      checkBadge(); updateStats(); setBtns(true);
+      setTimeout(function(){ if(!timerInterval||timeLeft>0) nextNote(); }, 900);
+    } else {
+      streak=0; drawStaff(currentNote,'wrong'); playWrong();
+      var errs=t('wrong'); setFeedback(errs[Math.floor(Math.random()*errs.length)],'wrong');
+      setTimeout(function(){ drawStaff(currentNote,''); setFeedback(t('prompt'),''); }, 700);
+      updateStats();
+    }
+  }
+
+  function tick() {
+    timeLeft--;
+    var td=document.getElementById('timerDisplay');
+    td.textContent='⏱ '+timeLeft;
+    if(timeLeft<=10) td.classList.add('urgent');
+    if(timeLeft<=0){clearInterval(timerInterval);timerInterval=null;showGameOver();}
+  }
+  function showGameOver() {
+    document.getElementById('gameArea').style.display='none';
+    document.getElementById('gameOver').style.display='block';
+    document.getElementById('goScore').textContent=score;
+    var acc=attempts?Math.round(score/attempts*100):0;
+    document.getElementById('goAcc').textContent=t('accuracyLabel')+': '+(attempts?acc+'%':'—');
+    document.getElementById('goStars').textContent=acc>=90?'⭐⭐⭐':acc>=70?'⭐⭐':acc>=50?'⭐':'';
+    document.querySelector('#gameOver h2').textContent=t('timesUp');
+  }
+
+  function resetGame() {
+    clearInterval(timerInterval); timerInterval=null;
+    score=0; attempts=0; streak=0; badges=[];
+    document.getElementById('badgeRow').innerHTML='';
+    updateStats();
+    document.getElementById('gameOver').style.display='none';
+    document.getElementById('gameArea').style.display='block';
+    var td=document.getElementById('timerDisplay');
+    if(timerSec){timeLeft=timerSec;td.style.display='block';td.textContent='⏱ '+timeLeft;td.classList.remove('urgent');timerInterval=setInterval(tick,1000);}
+    else td.style.display='none';
+    buildButtons(); nextNote();
+  }
+
+  function setClef(c) {
+    clefMode=c;
+    ['btnTreble','btnBass','btnMixed'].forEach(function(id){document.getElementById(id).classList.remove('active');});
+    document.getElementById({treble:'btnTreble',bass:'btnBass',mixed:'btnMixed'}[c]).classList.add('active');
+    nextNote();
+  }
+  function setDiff(d) {
+    diff=d;
+    ['btnBeg','btnInt','btnAdv'].forEach(function(id){document.getElementById(id).classList.remove('active');});
+    document.getElementById({beginner:'btnBeg',intermediate:'btnInt',advanced:'btnAdv'}[d]).classList.add('active');
+    nextNote();
+  }
+  function setTimer(s) {
+    clearInterval(timerInterval); timerInterval=null; timerSec=s;
+    ['btnT30','btnT60','btnT120','btnTFree'].forEach(function(id){document.getElementById(id).classList.remove('active');});
+    document.getElementById({0:'btnTFree',30:'btnT30',60:'btnT60',120:'btnT120'}[s]).classList.add('active');
+    resetGame();
+  }
+  function setNoteMode(m) {
+    noteMode=m;
+    document.getElementById('modeLetters').classList.toggle('active', m==='letters');
+    document.getElementById('modeSolfege').classList.toggle('active', m==='solfege');
+    buildButtons();
+  }
+  function setLang(l) { lang=l; applyLang(); buildButtons(); }
+
+  function getLB(){try{return JSON.parse(localStorage.getItem('nlb')||'[]');}catch(e){return[];}}
+  function saveLBData(d){try{localStorage.setItem('nlb',JSON.stringify(d));}catch(e){}}
+  function showLB(){
+    var lb=getLB(), list=document.getElementById('lbList');
+    document.querySelector('.lb-box h2').textContent=t('leaderboard');
+    list.innerHTML=lb.length?lb.map(function(e,i){
+      return '<div class="lb-row '+(i===0?'gold':'')+'"><span>'+(i+1)+'. '+e.name+'</span><span>'+e.score+' '+t('pts')+' · '+e.acc+'%</span></div>';
+    }).join(''):'<div class="lb-empty">'+t('noScores')+'</div>';
+    document.getElementById('lbModal').classList.add('show');
+  }
+  function saveScore(){
+    var name=document.getElementById('playerName').value.trim()||'Anonymous';
+    var acc=attempts?Math.round(score/attempts*100):0;
+    var lb=getLB(); lb.push({name:name,score:score,acc:acc});
+    lb.sort(function(a,b){return b.score-a.score||b.acc-a.acc;});
+    saveLBData(lb.slice(0,10));
+    document.getElementById('playerName').value='';
+    showLB();
+  }
+
+  document.getElementById('langEN').addEventListener('click',    function(){ setLang('en'); });
+  document.getElementById('langFR').addEventListener('click',    function(){ setLang('fr'); });
+  document.getElementById('modeLetters').addEventListener('click',function(){ setNoteMode('letters'); });
+  document.getElementById('modeSolfege').addEventListener('click',function(){ setNoteMode('solfege'); });
+  document.getElementById('btnTreble').addEventListener('click', function(){ setClef('treble'); });
+  document.getElementById('btnBass').addEventListener('click',   function(){ setClef('bass'); });
+  document.getElementById('btnMixed').addEventListener('click',  function(){ setClef('mixed'); });
+  document.getElementById('btnBeg').addEventListener('click',    function(){ setDiff('beginner'); });
+  document.getElementById('btnInt').addEventListener('click',    function(){ setDiff('intermediate'); });
+  document.getElementById('btnAdv').addEventListener('click',    function(){ setDiff('advanced'); });
+  document.getElementById('btnT30').addEventListener('click',    function(){ setTimer(30); });
+  document.getElementById('btnT60').addEventListener('click',    function(){ setTimer(60); });
+  document.getElementById('btnT120').addEventListener('click',   function(){ setTimer(120); });
+  document.getElementById('btnTFree').addEventListener('click',  function(){ setTimer(0); });
+  document.getElementById('btnLB').addEventListener('click',     showLB);
+  document.getElementById('btnReset').addEventListener('click',  resetGame);
+  document.getElementById('btnCloseLB').addEventListener('click',function(){ document.getElementById('lbModal').classList.remove('show'); });
+  document.getElementById('btnResetLB').addEventListener('click',function(){ saveLBData([]); showLB(); });
+  document.getElementById('btnSaveScore').addEventListener('click', saveScore);
+  document.getElementById('btnPlayAgain').addEventListener('click', resetGame);
+
+  applyLang();
+  buildButtons();
+  nextNote();
+  drawPiano(null);
+})();
+</script>
+</body>
+</html>
