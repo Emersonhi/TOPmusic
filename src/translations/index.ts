@@ -270,7 +270,7 @@ export const shopPageT = {
       { id: 3, title: 'Hal Leonard Guitar Method – Complete Edition', category: 'Guitar', level: 'Beginner', price: '$22.99', color: '#5B9ED4', image: '/all_guitar.png' },
       { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Drums', level: 'Intermediate', price: '$19.99', color: '#D4C45B' },
       { id: 5, title: 'Ear Training for the Contemporary Musician', category: 'Theory', level: 'All Levels', price: '$28.99', color: '#5BD4A8' },
-      { id: 6, title: 'The Contemporary Singer – Elements of Vocal Technique', category: 'Voice', level: 'All Levels', price: '$26.99', color: '#D4845B' },
+      { id: 6, title: 'The Contemporary Singer – Elements of Vocal Technique', category: 'Voice', level: 'All Levels', price: '$26.99', color: '#D4845B', image: '/star.jpg' },
     ],
     callouts: [
       { title: 'Can\'t Find What You\'re Looking For?', desc: 'Ask your teacher. We can order any book directly through the studio — often at a discount for enrolled students.', cta: 'Ask Your Teacher', href: '/contact', color: '#8B6FD4' },
@@ -301,7 +301,7 @@ export const shopPageT = {
       { id: 3, title: 'Hal Leonard Guitar Method – Édition complète', category: 'Guitare', level: 'Débutant', price: '22,99$', color: '#5B9ED4', image: '/all_guitar.png' },
       { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Batterie', level: 'Intermédiaire', price: '19,99$', color: '#D4C45B' },
       { id: 5, title: 'Ear Training for the Contemporary Musician', category: 'Théorie', level: 'Tous niveaux', price: '28,99$', color: '#5BD4A8' },
-      { id: 6, title: 'The Contemporary Singer – Éléments de technique vocale', category: 'Chant', level: 'Tous niveaux', price: '26,99$', color: '#D4845B' },
+      { id: 6, title: 'The Contemporary Singer – Éléments de technique vocale', category: 'Chant', level: 'Tous niveaux', price: '26,99$', color: '#D4845B', image: '/star.jpg' },
     ],
     callouts: [
       { title: 'Vous ne trouvez pas ce que vous cherchez ?', desc: 'Demandez à votre enseignant. Nous pouvons commander n\'importe quel livre directement via le studio — souvent à tarif réduit pour les élèves inscrits.', cta: 'Contacter le studio', href: '/contact', color: '#8B6FD4' },
