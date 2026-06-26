@@ -48,12 +48,13 @@ export default function ShopPage() {
           <h2 className="text-3xl font-display mb-10 text-center" style={{ color: 'var(--ivory)' }}>{tr.categoriesTitle}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {tr.categories.map(cat => (
-              <div
+              <Link
                 key={cat.id}
-                className="p-6 rounded-2xl group cursor-pointer transition-all duration-200"
+                href={`/shop/category/${cat.id}`}
+                className="p-6 rounded-2xl transition-all duration-200"
                 style={{ background: 'var(--surface-2)', border: `1px solid ${cat.color}25` }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${cat.color}60`; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `${cat.color}25`; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${cat.color}60`; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `${cat.color}25`; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
               >
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${cat.color}20` }}>
@@ -64,7 +65,7 @@ export default function ShopPage() {
                     <p className="text-sm font-ui leading-relaxed" style={{ color: 'var(--mist)' }}>{cat.desc}</p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
