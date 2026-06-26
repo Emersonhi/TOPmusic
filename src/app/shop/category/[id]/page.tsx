@@ -11,12 +11,12 @@ import dynamic from 'next/dynamic';
 // Load viewer only client-side (OSMD uses browser APIs)
 const SheetMusicViewer = dynamic(() => import('@/components/SheetMusicViewer'), { ssr: false });
 
-type Sheet = { title: string; level: string; image?: string; musicxml?: string; file?: string };
+type Sheet = { title: string; level: string; image?: string; musicxml?: string; file?: string; midi?: string };
 
 // ── Add sheets here ──────────────────────────────────────────────────────────
 const SHEETS: Record<string, Sheet[]> = {
   piano: [
-    { title: 'Holiday Time', level: 'Beginner', musicxml: '/holiday-time.mxl', file: '/holiday-time.pdf' },
+    { title: 'Holiday Time', level: 'Beginner', musicxml: '/holiday-time.mxl', file: '/holiday-time.pdf', midi: '/holiday-time.mid' },
   ],
   guitar: [],
   voice: [],
@@ -117,7 +117,7 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
             {/* Content */}
             <div className="flex-1 overflow-auto p-6">
               {active.musicxml ? (
-                <SheetMusicViewer src={active.musicxml} color={category.color} />
+                <SheetMusicViewer src={active.musicxml} midi={active.midi} color={category.color} />
               ) : active.file ? (
                 <iframe
                   src={active.file}
