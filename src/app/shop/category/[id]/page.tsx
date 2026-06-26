@@ -16,7 +16,7 @@ type Sheet = { title: string; level: string; image?: string; musicxml?: string; 
 // ── Add sheets here ──────────────────────────────────────────────────────────
 const SHEETS: Record<string, Sheet[]> = {
   piano: [
-    { title: 'Holiday Time', level: 'Beginner', file: '/holiday-time.pdf' },
+    { title: 'Holiday Time', level: 'Beginner', musicxml: '/holiday-time.mxl', file: '/holiday-time.pdf' },
   ],
   guitar: [],
   voice: [],
