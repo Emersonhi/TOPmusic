@@ -79,13 +79,16 @@ export default function ShopPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {tr.products.map(product => (
-                <div
+                <Link
                   key={product.id}
-                  className="p-6 rounded-2xl flex flex-col"
-                  style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }}
+                  href={`/shop/${product.id}`}
+                  className="p-6 rounded-2xl flex flex-col transition-all duration-200 group"
+                  style={{ background: 'var(--surface-2)', border: `1px solid rgba(201,168,76,0.1)` }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${product.color}50`; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,168,76,0.1)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
                 >
                   {/* Book cover */}
-                  <div className="w-full h-40 rounded-xl mb-5 overflow-hidden flex items-center justify-center" style={{ background: '#ffffff', border: `1px solid ${product.color}30` }}>
+                  <div className="w-full h-48 rounded-xl mb-5 overflow-hidden flex items-center justify-center" style={{ background: '#ffffff', border: `1px solid ${product.color}30` }}>
                     {product.image ? (
                       <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
                     ) : (
@@ -96,20 +99,13 @@ export default function ShopPage() {
                     <span className="text-xs font-ui px-2 py-0.5 rounded-full" style={{ background: `${product.color}20`, color: product.color }}>{product.category}</span>
                     <span className="text-xs font-ui" style={{ color: 'var(--mist)' }}>{product.level}</span>
                   </div>
-                  <h3 className="font-ui font-semibold mb-3 leading-snug flex-1" style={{ color: 'var(--ivory)' }}>{product.title}</h3>
-                  <div className="flex items-center justify-between mt-auto pt-4" style={{ borderTop: '1px solid rgba(201,168,76,0.1)' }}>
-                    <span className="font-display text-xl" style={{ color: product.color }}>{product.price}</span>
-                    <Link
-                      href="/contact"
-                      className="text-xs font-ui tracking-widest uppercase px-4 py-2 rounded transition-all duration-200"
-                      style={{ background: `${product.color}20`, color: product.color, border: `1px solid ${product.color}30` }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = `${product.color}35`; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = `${product.color}20`; }}
-                    >
-                      {tr.requestBtn.split(' ')[0]}
-                    </Link>
+                  <h3 className="font-ui font-semibold leading-snug flex-1" style={{ color: 'var(--ivory)' }}>{product.title}</h3>
+                  <div className="flex items-center justify-end mt-4 pt-4" style={{ borderTop: '1px solid rgba(201,168,76,0.1)' }}>
+                    <span className="text-xs font-ui tracking-widest uppercase flex items-center gap-1 transition-all duration-200" style={{ color: product.color }}>
+                      {lang === 'fr' ? 'Voir' : 'View'} <ArrowRight size={12} />
+                    </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
