@@ -30,8 +30,10 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
   }
 
   // Sheets can be added here per category id
-  const sheets: Record<string, { title: string; level: string; image?: string }[]> = {
-    piano: [],
+  const sheets: Record<string, { title: string; level: string; image?: string; file?: string }[]> = {
+    piano: [
+      { title: 'Holiday Time', level: 'Beginner', file: '/holiday-time.pdf' },
+    ],
     guitar: [],
     voice: [],
     theory: [],
@@ -91,21 +93,37 @@ export default function CategoryPage({ params }: { params: Promise<{ id: string 
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categorySheets.map((sheet, i) => (
-                <div
-                  key={i}
-                  className="p-6 rounded-2xl flex flex-col transition-all duration-200"
-                  style={{ background: 'var(--surface-2)', border: `1px solid ${category.color}25` }}
-                >
-                  {sheet.image && (
-                    <div className="w-full h-44 rounded-xl mb-4 overflow-hidden" style={{ background: '#fff' }}>
-                      <img src={sheet.image} alt={sheet.title} className="w-full h-full object-cover" />
-                    </div>
-                  )}
-                  <h3 className="font-ui font-semibold mb-2 leading-snug" style={{ color: 'var(--ivory)' }}>{sheet.title}</h3>
-                  <span className="text-xs font-ui" style={{ color: 'var(--mist)' }}>{levelLabel}: {sheet.level}</span>
-                </div>
-              ))}
+              {categorySheets.map((sheet, i) => {
+                const CardTag = sheet.file ? 'a' : 'div';
+                const cardProps = sheet.file ? { href: sheet.file, target: '_blank', rel: 'noopener noreferrer' } : {};
+                return (
+                  <CardTag
+                    key={i}
+                    {...cardProps}
+                    className="p-6 rounded-2xl flex flex-col transition-all duration-200"
+                    style={{ background: 'var(--surface-2)', border: `1px solid ${category.color}25`, cursor: sheet.file ? 'pointer' : 'default', textDecoration: 'none' }}
+                    onMouseEnter={(e: React.MouseEvent<HTMLElement>) => { if (sheet.file) { (e.currentTarget as HTMLElement).style.borderColor = `${category.color}60`; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; } }}
+                    onMouseLeave={(e: React.MouseEvent<HTMLElement>) => { if (sheet.file) { (e.currentTarget as HTMLElement).style.borderColor = `${category.color}25`; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; } }}
+                  >
+                    {sheet.image ? (
+                      <div className="w-full h-44 rounded-xl mb-4 overflow-hidden" style={{ background: '#fff' }}>
+                        <img src={sheet.image} alt={sheet.title} className="w-full h-full object-cover" />
+                      </div>
+                    ) : (
+                      <div className="w-full h-44 rounded-xl mb-4 flex items-center justify-center" style={{ background: `${category.color}10`, border: `1px dashed ${category.color}40` }}>
+                        <FileMusic size={40} style={{ color: category.color, opacity: 0.5 }} />
+                      </div>
+                    )}
+                    <h3 className="font-ui font-semibold mb-2 leading-snug" style={{ color: 'var(--ivory)' }}>{sheet.title}</h3>
+                    <span className="text-xs font-ui mb-3" style={{ color: 'var(--mist)' }}>{levelLabel}: {sheet.level}</span>
+                    {sheet.file && (
+                      <span className="mt-auto text-xs font-ui tracking-widest uppercase flex items-center gap-1" style={{ color: category.color }}>
+                        {lang === 'fr' ? 'Ouvrir le PDF' : 'Open PDF'} <ArrowRight size={12} />
+                      </span>
+                    )}
+                  </CardTag>
+                );
+              })}
             </div>
           )}
         </div>
