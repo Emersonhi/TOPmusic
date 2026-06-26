@@ -266,7 +266,7 @@ export const shopPageT = {
     featuredSub: 'Hand-selected by our master teachers — the books they actually use in lessons.',
     products: [
       { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Beginner', price: '$24.99', color: '#8B6FD4', image: '/All_Alfred.jpg' },
-      { id: 2, title: 'Piano Books', category: 'Piano', level: 'All Levels', price: '$44.99', color: '#8B6FD4' },
+      { id: 2, title: 'Piano Books', category: 'Piano', level: 'All Levels', price: '$44.99', color: '#8B6FD4', image: '/pino.jpg' },
       { id: 3, title: 'Hal Leonard Guitar Method – Complete Edition', category: 'Guitar', level: 'Beginner', price: '$22.99', color: '#5B9ED4', image: '/all_guitar.png' },
       { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Drums', level: 'Intermediate', price: '$19.99', color: '#D4C45B' },
       { id: 5, title: 'Ear Training for the Contemporary Musician', category: 'Theory', level: 'All Levels', price: '$28.99', color: '#5BD4A8' },
@@ -297,7 +297,7 @@ export const shopPageT = {
     featuredSub: 'Choisis à la main par nos maîtres enseignants — les livres qu\'ils utilisent vraiment en cours.',
     products: [
       { id: 1, title: 'Alfred\'s Adult All-in-One Piano Course', category: 'Piano', level: 'Débutant', price: '24,99$', color: '#8B6FD4', image: '/All_Alfred.jpg' },
-      { id: 2, title: 'Livres de Piano', category: 'Piano', level: 'Tous niveaux', price: '44,99$', color: '#8B6FD4' },
+      { id: 2, title: 'Livres de Piano', category: 'Piano', level: 'Tous niveaux', price: '44,99$', color: '#8B6FD4', image: '/pino.jpg' },
       { id: 3, title: 'Hal Leonard Guitar Method – Édition complète', category: 'Guitare', level: 'Débutant', price: '22,99$', color: '#5B9ED4', image: '/all_guitar.png' },
       { id: 4, title: 'Modern Drummer – Funk & R&B', category: 'Batterie', level: 'Intermédiaire', price: '19,99$', color: '#D4C45B' },
       { id: 5, title: 'Ear Training for the Contemporary Musician', category: 'Théorie', level: 'Tous niveaux', price: '28,99$', color: '#5BD4A8' },
