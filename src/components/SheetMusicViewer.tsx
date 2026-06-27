@@ -19,7 +19,8 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
   const noteCountRef       = useRef(0);
   const cursorConsumedRef  = useRef(0);
   const cursorStepRef      = useRef(0);
-  const coloredEls         = useRef<SVGElement[]>([]);
+  const highlightRectRef   = useRef<SVGRectElement | null>(null);
+  const currentMeasureRef  = useRef(-1);
 
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState('');
@@ -83,37 +84,58 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
     cursorPositionsRef.current = buildCursorMap(osmdRef.current);
   }, [zoom, loading]);
 
-  // ── Color notes under cursor ───────────────────────────────────────────────
-  const applyNoteColor = useCallback((noteColor: string) => {
-    // Reset previously colored elements
-    coloredEls.current.forEach(el => {
-      el.style.fill = '';
-      el.style.stroke = '';
-    });
-    coloredEls.current = [];
-    if (!noteColor || !osmdRef.current) return;
+  // ── Highlight current measure ──────────────────────────────────────────────
+  const highlightMeasure = useCallback((measureIndex: number, hlColor: string) => {
+    highlightRectRef.current?.remove();
+    highlightRectRef.current = null;
+    if (measureIndex < 0 || !osmdRef.current || !containerRef.current) return;
     try {
-      const gnotes = osmdRef.current.cursor.GNotesUnderCursor();
-      if (!gnotes) return;
-      gnotes.forEach((gn: any) => {
-        // Try known OSMD APIs to reach the SVG element
-        const el: Element | null =
-          gn.getSVGGElement?.() ??
-          gn.vfnote?.[0]?.attrs?.el ??
-          null;
-        if (!el) return;
-        el.querySelectorAll('path, rect, circle, ellipse').forEach(child => {
-          (child as SVGElement).style.fill   = noteColor;
-          (child as SVGElement).style.stroke = noteColor;
-          coloredEls.current.push(child as SVGElement);
-        });
+      const measureList = osmdRef.current.graphic.measureList;
+      const row = measureList[measureIndex];
+      if (!row?.length) return;
+
+      const unitInPx = osmdRef.current.zoom * 10;
+
+      // Combine bounding boxes across all staves in this measure
+      let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+      row.forEach((gm: any) => {
+        const ps = gm?.PositionAndShape ?? gm?.positionAndShape ?? gm?.boundingBox;
+        if (!ps) return;
+        const pos  = ps.AbsolutePosition ?? ps.absolutePosition ?? ps;
+        const size = ps.Size ?? ps.size;
+        if (!pos || !size) return;
+        const mx = (pos.x ?? pos.X ?? 0) * unitInPx;
+        const my = (pos.y ?? pos.Y ?? 0) * unitInPx;
+        const mw = (size.width ?? size.Width ?? 0) * unitInPx;
+        const mh = (size.height ?? size.Height ?? 0) * unitInPx;
+        x1 = Math.min(x1, mx);
+        y1 = Math.min(y1, my);
+        x2 = Math.max(x2, mx + mw);
+        y2 = Math.max(y2, my + mh);
       });
+      if (!isFinite(x1)) return;
+
+      const svg = containerRef.current.querySelector('svg');
+      if (!svg) return;
+
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x',      String(x1 - 4));
+      rect.setAttribute('y',      String(y1 - 4));
+      rect.setAttribute('width',  String(x2 - x1 + 8));
+      rect.setAttribute('height', String(y2 - y1 + 8));
+      rect.setAttribute('fill',   hlColor);
+      rect.setAttribute('opacity', '0.18');
+      rect.setAttribute('rx', '6');
+      svg.insertBefore(rect, svg.firstChild);
+      highlightRectRef.current = rect;
     } catch {}
   }, []);
 
   // ── Reset cursor ───────────────────────────────────────────────────────────
   const resetCursor = useCallback(() => {
-    applyNoteColor('');
+    highlightRectRef.current?.remove();
+    highlightRectRef.current = null;
+    currentMeasureRef.current = -1;
     noteCountRef.current    = 0;
     cursorConsumedRef.current = 0;
     cursorStepRef.current   = 0;
@@ -121,16 +143,15 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
       osmdRef.current?.cursor?.reset();
       osmdRef.current?.cursor?.show();
     } catch {}
-  }, [applyNoteColor]);
+  }, []);
 
   // ── Advance cursor on each Note On ─────────────────────────────────────────
-  const advanceCursor = useCallback((noteColor: string) => {
+  const advanceCursor = useCallback((hlColor: string) => {
     const positions = cursorPositionsRef.current;
     if (!positions.length || !osmdRef.current) return;
 
     noteCountRef.current += 1;
 
-    // Advance cursor steps until consumed notes >= noteCount
     while (
       cursorStepRef.current < positions.length &&
       cursorConsumedRef.current < noteCountRef.current
@@ -139,8 +160,16 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
       cursorStepRef.current += 1;
       try { osmdRef.current.cursor.next(); } catch {}
     }
-    applyNoteColor(noteColor);
-  }, [applyNoteColor]);
+
+    // Highlight measure only when it changes
+    try {
+      const mi = osmdRef.current.cursor.iterator.CurrentMeasureIndex ?? -1;
+      if (mi !== currentMeasureRef.current) {
+        currentMeasureRef.current = mi;
+        highlightMeasure(mi, hlColor);
+      }
+    } catch {}
+  }, [highlightMeasure]);
 
   // ── Stop ───────────────────────────────────────────────────────────────────
   const stopAll = useCallback(() => {
