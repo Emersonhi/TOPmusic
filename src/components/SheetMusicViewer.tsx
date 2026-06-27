@@ -19,6 +19,7 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
   const noteCountRef       = useRef(0);
   const cursorConsumedRef  = useRef(0);
   const cursorStepRef      = useRef(0);
+  const coloredEls         = useRef<SVGElement[]>([]);
 
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState('');
@@ -82,8 +83,37 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
     cursorPositionsRef.current = buildCursorMap(osmdRef.current);
   }, [zoom, loading]);
 
+  // ── Color notes under cursor ───────────────────────────────────────────────
+  const applyNoteColor = useCallback((noteColor: string) => {
+    // Reset previously colored elements
+    coloredEls.current.forEach(el => {
+      el.style.fill = '';
+      el.style.stroke = '';
+    });
+    coloredEls.current = [];
+    if (!noteColor || !osmdRef.current) return;
+    try {
+      const gnotes = osmdRef.current.cursor.GNotesUnderCursor();
+      if (!gnotes) return;
+      gnotes.forEach((gn: any) => {
+        // Try known OSMD APIs to reach the SVG element
+        const el: Element | null =
+          gn.getSVGGElement?.() ??
+          gn.vfnote?.[0]?.attrs?.el ??
+          null;
+        if (!el) return;
+        el.querySelectorAll('path, rect, circle, ellipse').forEach(child => {
+          (child as SVGElement).style.fill   = noteColor;
+          (child as SVGElement).style.stroke = noteColor;
+          coloredEls.current.push(child as SVGElement);
+        });
+      });
+    } catch {}
+  }, []);
+
   // ── Reset cursor ───────────────────────────────────────────────────────────
   const resetCursor = useCallback(() => {
+    applyNoteColor('');
     noteCountRef.current    = 0;
     cursorConsumedRef.current = 0;
     cursorStepRef.current   = 0;
@@ -91,10 +121,10 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
       osmdRef.current?.cursor?.reset();
       osmdRef.current?.cursor?.show();
     } catch {}
-  }, []);
+  }, [applyNoteColor]);
 
   // ── Advance cursor on each Note On ─────────────────────────────────────────
-  const advanceCursor = useCallback(() => {
+  const advanceCursor = useCallback((noteColor: string) => {
     const positions = cursorPositionsRef.current;
     if (!positions.length || !osmdRef.current) return;
 
@@ -109,7 +139,8 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
       cursorStepRef.current += 1;
       try { osmdRef.current.cursor.next(); } catch {}
     }
-  }, []);
+    applyNoteColor(noteColor);
+  }, [applyNoteColor]);
 
   // ── Stop ───────────────────────────────────────────────────────────────────
   const stopAll = useCallback(() => {
@@ -153,7 +184,7 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
         if (event.name === 'Note on' && event.velocity > 0) {
           const note = midiNoteToName(event.noteNumber);
           instrumentRef.current.play(note, ac.currentTime, { gain: event.velocity / 127 });
-          advanceCursor();
+          advanceCursor(color);
         }
       });
 
@@ -170,7 +201,7 @@ export default function SheetMusicViewer({ src, midi, color = '#8B6FD4' }: Props
     } catch {
       setError('Could not load MIDI file.');
     }
-  }, [midi, playing, stopAll, resetCursor, advanceCursor, tempo]);
+  }, [midi, playing, stopAll, resetCursor, advanceCursor, tempo, color]);
 
   useEffect(() => {
     if (playerRef.current && playing) playerRef.current.tempo = tempo;
