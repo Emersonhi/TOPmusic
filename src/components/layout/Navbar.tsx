@@ -16,7 +16,7 @@ export default function Navbar() {
     { href: '/#faculty', label: tr.faculty },
     { href: '/#about', label: tr.about },
     { href: '/shop', label: tr.shop },
-    { href: '/sight-reading', label: tr.sightReading },
+    { href: '/resources', label: tr.resources },
     { href: '/contact', label: tr.contact },
   ];
 
