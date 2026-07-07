@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="doc-title">TOPmusic — Intervals &amp; Chords</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Source+Serif+4:opsz,wght@8..60,400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1F2A;
+    --ink-soft:#5A6070;
+    --parchment:#F3EEDC;
+    --parchment-dim:#EAE3CC;
+    --brass:#C9A227;
+    --brass-deep:#9C7B18;
+    --teal:#2F6F62;
+    --rust:#B7492B;
+    --line:#D8CBA0;
+    --line-dark:#333A4A;
+    --white-key:#FBF9F2;
+    --black-key:#20242F;
+    --radius:10px;
+    --serif-display:'Fraunces', serif;
+    --serif-body:'Source Serif 4', serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:var(--serif-body);
+    font-size:17px;
+    line-height:1.6;
+  }
+  h1,h2,h3,h4{font-family:var(--serif-display); font-weight:600; margin:0 0 .4em 0; color:var(--ink);}
+  h1{font-weight:300;}
+  a{color:var(--brass-deep);}
+  .eyebrow{
+    font-family:var(--mono); text-transform:uppercase; letter-spacing:.14em;
+    font-size:.72rem; color:var(--brass-deep); font-weight:600;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+  section{padding:88px 0;}
+  section + section{border-top:1px solid var(--line);}
+
+  /* ---------- NAV ---------- */
+  nav.top{
+    position:sticky; top:0; z-index:50;
+    background:rgba(243,238,220,.92); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.top .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:16px; flex-wrap:wrap;}
+  nav.top .brand{font-family:var(--serif-display); font-weight:700; font-size:1.1rem; letter-spacing:-.01em;}
+  nav.top .brand span{color:var(--brass-deep);}
+  nav.top ul{display:flex; gap:20px; list-style:none; margin:0; padding:0;}
+  nav.top ul a{
+    font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.08em;
+    text-decoration:none; color:var(--ink-soft); border-bottom:2px solid transparent; padding-bottom:4px;
+  }
+  nav.top ul a:hover{color:var(--ink); border-bottom-color:var(--brass);}
+  @media (max-width:900px){ nav.top ul{display:none;} }
+
+  .lang-toggle{display:flex; border:1px solid var(--line-dark); border-radius:20px; overflow:hidden; flex-shrink:0;}
+  .lang-toggle button{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; padding:6px 14px; border:none;
+    background:transparent; color:var(--ink-soft); cursor:pointer; font-weight:600;
+  }
+  .lang-toggle button.active{background:var(--brass); color:#1B1F2A;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--ink); color:var(--parchment);
+    padding:100px 0 70px 0;
+  }
+  .hero .wrap{display:grid; gap:40px;}
+  .hero h1{
+    font-size:clamp(2.4rem, 5vw, 4.1rem); color:#F6F1E1; max-width:820px; line-height:1.05;
+  }
+  .hero h1 em{font-style:italic; color:var(--brass); font-weight:500;}
+  .hero p.lede{max-width:620px; color:#C7C4B6; font-size:1.15rem;}
+  .hero .eyebrow{color:var(--brass);}
+
+  /* ---------- PIANO ---------- */
+  .piano-shell{
+    background:#0F1218; border-radius:14px; padding:22px 22px 26px 22px;
+    border:1px solid #333A4A; overflow-x:auto;
+  }
+  .piano-container{position:relative; margin:0 auto;}
+  .key{position:absolute; box-sizing:border-box; cursor:pointer; user-select:none;
+       transition:background .08s ease, transform .05s ease;}
+  .key.white{
+    background:linear-gradient(to bottom, var(--white-key), #E7E1CC);
+    border:1px solid #B7AF8E; border-radius:0 0 6px 6px; z-index:1;
+  }
+  .key.black{
+    background:linear-gradient(to bottom, #33394A, var(--black-key));
+    border:1px solid #060810; border-radius:0 0 4px 4px; z-index:2;
+  }
+  .key.white:hover{background:#F3EDD8;}
+  .key.black:hover{background:#454C63;}
+  .key .lbl{
+    position:absolute; bottom:6px; left:0; right:0; text-align:center;
+    font-family:var(--mono); font-size:.62rem; color:#8b8464; pointer-events:none;
+  }
+  .key.black .lbl{color:#9aa3c2;}
+  .key.active{background:var(--brass) !important; box-shadow:0 0 0 2px var(--brass-deep) inset;}
+  .key.root{background:var(--rust) !important; box-shadow:0 0 0 2px #7a2c17 inset;}
+  .key.active .lbl, .key.root .lbl{color:#1B1F2A; font-weight:700;}
+  .piano-caption{
+    display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+    margin-top:14px; color:#B9B5A2; font-family:var(--mono); font-size:.78rem;
+  }
+  .swatch{display:inline-flex; align-items:center; gap:6px; margin-right:16px;}
+  .swatch i{width:10px; height:10px; border-radius:2px; display:inline-block;}
+  .swatch i.root-c{background:var(--rust);}
+  .swatch i.active-c{background:var(--brass);}
+
+  /* ---------- BUTTONS / CONTROLS ---------- */
+  button.play{
+    font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.06em;
+    background:var(--brass); color:#1B1F2A; border:none; padding:10px 18px; border-radius:6px;
+    cursor:pointer; font-weight:600;
+  }
+  button.play:hover{background:#E0B72E;}
+  button.ghost{
+    font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.06em;
+    background:transparent; color:var(--parchment); border:1px solid #555C70; padding:10px 18px; border-radius:6px;
+    cursor:pointer;
+  }
+  button.ghost:hover{border-color:var(--brass); color:var(--brass);}
+  select{
+    font-family:var(--mono); font-size:.82rem; padding:9px 12px; border-radius:6px;
+    border:1px solid var(--line-dark); background:#fff; color:var(--ink); cursor:pointer;
+  }
+  .controls{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:18px 0;}
+  .controls label{font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-soft); margin-right:6px;}
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section-head{max-width:680px; margin-bottom:36px;}
+  .section-head h2{font-size:clamp(1.8rem,3vw,2.5rem); margin-top:.3em;}
+  .section-head p{color:var(--ink-soft); font-size:1.05rem;}
+
+  /* ---------- INTERVAL TABLE ---------- */
+  table.itable{width:100%; border-collapse:collapse; font-size:.95rem;}
+  table.itable th{
+    text-align:left; font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink-soft); border-bottom:2px solid var(--ink); padding:10px 12px;
+  }
+  table.itable td{padding:12px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.itable tr:hover td{background:var(--parchment-dim);}
+  .semi{font-family:var(--mono); font-weight:700; color:var(--brass-deep);}
+  .tag{
+    display:inline-block; font-family:var(--mono); font-size:.68rem; padding:3px 8px; border-radius:20px;
+    text-transform:uppercase; letter-spacing:.04em;
+  }
+  .tag.cons-p{background:#DCEBE6; color:var(--teal);}
+  .tag.cons-i{background:#E9E4D3; color:var(--brass-deep);}
+  .tag.diss{background:#F3DED4; color:var(--rust);}
+
+  /* ---------- CARDS ---------- */
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:26px;
+  }
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  .grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+  @media (max-width:760px){ .grid-2{grid-template-columns:1fr;} .grid-4{grid-template-columns:repeat(2,1fr);} }
+
+  .chord-card h4{font-family:var(--mono); font-size:.95rem; margin-bottom:2px;}
+  .chord-card .full-name{color:var(--ink-soft); font-size:.85rem; margin-bottom:10px;}
+  .chord-card .intervals{font-family:var(--mono); font-size:.8rem; color:var(--teal);}
+
+  .result-note{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); background:var(--parchment);
+    color:var(--ink); padding:6px 12px; border-radius:20px; margin:4px 6px 4px 0; font-size:.85rem;
+    border:1px solid var(--line);
+  }
+  .result-note.root{background:var(--rust); color:#fff; border-color:var(--rust);}
+
+  /* diatonic table */
+  table.diatonic{width:100%; border-collapse:collapse; font-size:.88rem; margin-top:10px;}
+  table.diatonic th{
+    font-family:var(--mono); font-size:.68rem; text-transform:uppercase; color:var(--ink-soft);
+    border-bottom:2px solid var(--ink); padding:8px; text-align:center;
+  }
+  table.diatonic td{
+    border-bottom:1px solid var(--line); padding:10px 8px; text-align:center; font-family:var(--mono);
+  }
+  table.diatonic td.roman{font-family:var(--serif-display); font-size:1.15rem; font-weight:600; color:var(--brass-deep);}
+
+  footer{background:var(--ink); color:#8b8a7e; padding:50px 0; text-align:center; font-family:var(--mono); font-size:.8rem;}
+  footer a{color:var(--brass);}
+
+  .callout{
+    border-left:3px solid var(--brass); padding:4px 20px; margin:22px 0; color:var(--ink-soft); font-size:.98rem;
+  }
+  .stack-diagram{display:flex; flex-direction:column-reverse; gap:4px; width:150px; margin:0 auto;}
+  .stack-block{
+    background:var(--parchment-dim); border:1px solid var(--line); border-radius:4px; padding:8px 10px;
+    font-family:var(--mono); font-size:.78rem; text-align:center;
+  }
+  .stack-block.root{background:var(--rust); color:#fff; border-color:var(--rust);}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <div class="brand" data-i18n="nav_brand">TOP<span>music</span></div>
+    <ul>
+      <li><a href="#intervals" data-i18n="nav_intervals">Intervals</a></li>
+      <li><a href="#explorer" data-i18n="nav_explorer">Explorer</a></li>
+      <li><a href="#scales" data-i18n="nav_scales">Scales</a></li>
+      <li><a href="#chords" data-i18n="nav_chords">Chords</a></li>
+      <li><a href="#chord-explorer" data-i18n="nav_chordbuilder">Chord Builder</a></li>
+      <li><a href="#diatonic" data-i18n="nav_diatonic">Diatonic Chords</a></li>
+      <li><a href="#relation" data-i18n="nav_relation">Relation</a></li>
+    </ul>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button id="lang-en" class="active" data-lang="en">EN</button>
+      <button id="lang-fr" data-lang="fr">FR</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n="hero_eyebrow">A field guide to musical distance</div>
+    <h1 data-i18n="hero_h1">Every chord is just <em>intervals</em>,<br>standing on each other's shoulders.</h1>
+    <p class="lede" data-i18n="hero_lede">This is a working reference for how far notes sit from one another (intervals), and what happens when you stack several of those distances at once (chords) — worked out, with numbers, across all twelve keys and nine scales. Click the keys. Everything here makes sound.</p>
+
+    <div class="piano-shell">
+      <div id="hero-piano" class="piano-container"></div>
+      <div class="piano-caption">
+        <div>
+          <span class="swatch"><i class="root-c"></i><span data-i18n="caption_root">root note</span></span>
+          <span class="swatch"><i class="active-c"></i><span data-i18n="caption_sounding">sounding note</span></span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="ghost" id="hero-play-scale" data-i18n="hero_playscale_btn">Play C major scale</button>
+          <button class="ghost" id="hero-clear" data-i18n="hero_clear_btn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="intervals">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec1_eyebrow">01 — Foundations</div>
+      <h2 data-i18n="sec1_h2">What an interval actually is</h2>
+      <p data-i18n="sec1_p">An interval is the distance between two pitches, measured in semitones (half-steps). That's the whole idea — everything else is naming convention. A piano has twelve semitones before a pitch repeats an octave higher, so there are thirteen interval sizes worth naming, from standing still (0 semitones) to a full octave (12 semitones).</p>
+    </div>
+    <div class="callout" data-i18n="callout1">
+      A <strong>semitone</strong> is the smallest distance in standard Western tuning — one key to the very next key on a piano, black or white. A <strong>whole tone</strong> is two semitones. Major scales are built from a specific pattern of whole tones and semitones, which is exactly why they all sound like "major" no matter which note they start on — the pattern of distances is identical, only the starting pitch moves.
+    </div>
+    <table class="itable" id="interval-table">
+      <thead>
+        <tr>
+          <th data-i18n="table1_th_semitones">Semitones</th>
+          <th data-i18n="table1_th_short">Short name</th>
+          <th data-i18n="table1_th_full">Full name</th>
+          <th data-i18n="table1_th_character">Character</th>
+          <th data-i18n="table1_th_role">What it's doing</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="callout" data-i18n="callout2">
+      Past the octave, the same names repeat with "compound" versions: a 9th is an octave + a 2nd, an 11th is an octave + a 4th, a 13th is an octave + a 6th. Jazz chord extensions (9, 11, 13) are just these compound intervals stacked on top of a seventh chord — the same intervals from this table, one octave up.
+    </div>
+  </div>
+</section>
+
+<section id="explorer">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec2_eyebrow">02 — Try it</div>
+      <h2 data-i18n="sec2_h2">Interval explorer — pick a root, pick a distance</h2>
+      <p data-i18n="sec2_p">Choose any starting note and any interval. The keyboard shows both notes, plays them, and the table below shows what that same interval produces starting from <em>every</em> one of the twelve notes — because an interval is a relationship, not a fixed pair of pitches.</p>
+    </div>
+    <div class="controls">
+      <span><label for="iv-root" data-i18n="label_root">Root</label><select id="iv-root"></select></span>
+      <span><label for="iv-interval" data-i18n="label_interval">Interval</label><select id="iv-interval"></select></span>
+      <button class="play" id="iv-play" data-i18n="btn_play_interval">▶ Play interval</button>
+    </div>
+    <div class="piano-shell">
+      <div id="explorer-piano" class="piano-container"></div>
+    </div>
+    <h3 style="margin-top:40px; font-size:1.1rem;" data-i18n="sec2_sub">This interval, starting on every note</h3>
+    <table class="itable" id="iv-all-keys">
+      <thead><tr>
+        <th data-i18n="table2_th_from">From</th>
+        <th data-i18n="table2_th_interval">Interval</th>
+        <th data-i18n="table2_th_to">To</th>
+        <th></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="scales">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec3_eyebrow">03 — Where intervals live</div>
+      <h2 data-i18n="sec3_h2">Scales are just a fixed sequence of intervals</h2>
+      <p data-i18n="sec3_p">Every scale is a formula of whole-tone (W) and semitone (H) steps from the tonic. Change the root and the notes change, but if the formula is the same, every interval relationship inside it — tonic to 3rd, tonic to 5th, 3rd to 5th — stays exactly the same. Pick any root and any scale below to see (and hear) the formula worked out in real notes.</p>
+    </div>
+    <div class="controls">
+      <span><label for="sc-root" data-i18n="label_root">Root</label><select id="sc-root"></select></span>
+      <span><label for="sc-type" data-i18n="label_scale">Scale</label><select id="sc-type"></select></span>
+      <button class="play" id="sc-play" data-i18n="btn_play_scale">▶ Play scale</button>
+    </div>
+    <div class="piano-shell">
+      <div id="scale-piano" class="piano-container"></div>
+    </div>
+    <table class="itable" id="sc-degrees" style="margin-top:28px;">
+      <thead><tr>
+        <th data-i18n="table3_th_degree">Degree</th>
+        <th data-i18n="table3_th_note">Note</th>
+        <th data-i18n="table3_th_step">Step from previous</th>
+        <th data-i18n="table3_th_intervaltonic">Interval from tonic</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="callout" id="sc-formula-note"></div>
+  </div>
+</section>
+
+<section id="chords">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec4_eyebrow">04 — Stacking</div>
+      <h2 data-i18n="sec4_h2">A chord is intervals stacked, not notes chosen</h2>
+      <p data-i18n="sec4_p">Take a root, add a note a third above it, add another note a third above that, and you have a triad. The only thing that changes between a major, minor, diminished, or augmented triad is <em>which size</em> of third gets stacked where. Do it once more and you have a seventh chord.</p>
+    </div>
+    <h3 style="font-size:1.05rem; margin-bottom:6px;" data-i18n="sec4_sub_triads">Triads — two stacked thirds</h3>
+    <p style="color:var(--ink-soft); margin-top:0;" data-i18n="sec4_p_triads">Root, third, fifth. Four possible qualities, defined entirely by two interval choices:</p>
+    <div class="grid-4" id="triad-cards"></div>
+    <h3 style="font-size:1.05rem; margin:44px 0 6px 0;" data-i18n="sec4_sub_sevenths">Seventh chords — three stacked thirds</h3>
+    <p style="color:var(--ink-soft); margin-top:0;" data-i18n="sec4_p_sevenths">Take any triad and stack one more third on top. Eight qualities show up in common practice and jazz harmony:</p>
+    <div class="grid-4" id="seventh-cards"></div>
+    <div class="callout" data-i18n="callout3">
+      Notice the pattern: every quality is defined by intervals <em>from the root</em>, not by memorizing note names. A major triad is always "root, major 3rd above it, perfect 5th above it" — in <span class="semi">C</span> that's C–E–G, in <span class="semi">F♯</span> it's F♯–A♯–C♯. Same shape, different address.
+    </div>
+  </div>
+</section>
+
+<section id="chord-explorer">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec5_eyebrow">05 — Try it</div>
+      <h2 data-i18n="sec5_h2">Chord builder</h2>
+      <p data-i18n="sec5_p">Pick a root and a chord quality. The keyboard highlights every note, and the breakdown shows exactly which intervals — from this table above — are stacked to build it.</p>
+    </div>
+    <div class="controls">
+      <span><label for="ch-root" data-i18n="label_root">Root</label><select id="ch-root"></select></span>
+      <span><label for="ch-quality" data-i18n="label_chord">Chord</label><select id="ch-quality"></select></span>
+      <button class="play" id="ch-play" data-i18n="btn_play_chord">▶ Play chord</button>
+      <button class="ghost" id="ch-play-arp" data-i18n="btn_play_arp">▶ Play arpeggiated</button>
+    </div>
+    <div class="piano-shell">
+      <div id="chord-piano" class="piano-container"></div>
+    </div>
+    <div class="grid-2" style="margin-top:24px;">
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:8px;" data-i18n="card_notes_title">Notes in this chord</div>
+        <div id="ch-notes"></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:8px;" data-i18n="card_intervals_title">Interval stack from the root</div>
+        <div id="ch-intervals"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="diatonic">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec6_eyebrow">06 — Chords living inside a scale</div>
+      <h2 data-i18n="sec6_h2">The chords a scale gives you for free</h2>
+      <p data-i18n="sec6_p">Pick any note in a scale as a root, and stack the notes a third and a fifth above it — using only notes already in that scale. Do this on every degree and you get that scale's <em>diatonic</em> chords: the built-in harmony of the key. Choose a root and a scale to generate its full set, triads and sevenths, for every degree.</p>
+    </div>
+    <div class="controls">
+      <span><label for="di-root" data-i18n="label_root">Root</label><select id="di-root"></select></span>
+      <span><label for="di-type" data-i18n="label_scale">Scale</label><select id="di-type"></select></span>
+    </div>
+    <table class="diatonic" id="di-table">
+      <thead>
+        <tr>
+          <th data-i18n="table6_th_degree">Degree</th>
+          <th data-i18n="table6_th_triad">Triad</th>
+          <th data-i18n="table6_th_quality">Quality</th>
+          <th data-i18n="table6_th_notes">Notes</th>
+          <th data-i18n="table6_th_7th">7th chord</th>
+          <th data-i18n="table6_th_quality">Quality</th>
+          <th data-i18n="table6_th_notes">Notes</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="callout" data-i18n="callout4">
+      This is why a major key's harmony leans so hard on <span class="semi">I</span>, <span class="semi">IV</span>, and <span class="semi">V</span> (all major), why <span class="semi">ii</span>, <span class="semi">iii</span>, and <span class="semi">vi</span> feel like the minor detours, and why <span class="semi">vii°</span> is the one chord in the key that's genuinely unstable and wants to resolve. Switch the scale to harmonic minor and watch <span class="semi">V</span> turn major (thanks to the raised 7th) — that single change is why harmonic minor exists: it gives minor keys a proper dominant.
+    </div>
+  </div>
+</section>
+
+<section id="relation">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec7_eyebrow">07 — Tying it together</div>
+      <h2 data-i18n="sec7_h2">Intervals are the DNA. Chords are the organism.</h2>
+    </div>
+    <div class="grid-2">
+      <div>
+        <h3 style="font-size:1rem;" data-i18n="sub7a">Every chord quality, decoded by ear</h3>
+        <p style="color:var(--ink-soft);" data-i18n="p7a">Once you can hear the difference between a major 3rd and a minor 3rd, you can identify almost any triad by ear — the fifth barely varies, but the third decides everything.</p>
+        <div class="stack-diagram" id="relation-stack"></div>
+      </div>
+      <div>
+        <h3 style="font-size:1rem;" data-i18n="sub7b">Inversions: an interval flipped upside down</h3>
+        <p style="color:var(--ink-soft);" data-i18n="p7b">Move the lower note of an interval up an octave (or the upper note down one) and you get its <em>inversion</em>. Every interval and its inversion add up to 12 semitones. This is also why a major 3rd below a note sounds like a minor 6th above it — same two pitches, same relationship, viewed from the other end.</p>
+        <table class="itable" style="font-size:.85rem;">
+          <thead><tr>
+            <th data-i18n="table7_th_interval">Interval</th>
+            <th data-i18n="table7_th_invertsto">Inverts to</th>
+          </tr></thead>
+          <tbody id="inversion-table"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:36px;" data-i18n="callout5">
+      So: an <strong>interval</strong> is one distance between two notes. A <strong>chord</strong> is several distances stacked from a common root. A <strong>scale</strong> is a map of which intervals are available to stack from any given degree. Learn the intervals in the first table on this page cold, and every scale and chord downstream of them stops being memorization and starts being arithmetic.
+    </div>
+  </div>
+</section>
+
+<footer data-i18n="footer_text">
+  TOPmusic — a reference built from twelve roots, nine scales, twelve chord qualities, and one octave.
+</footer>
+
+<script>
+let LANG = 'en';
+
+const UI_TEXT = {
+  nav_brand:            {en:'TOP<span>music</span>', fr:'TOP<span>music</span>'},
+  nav_intervals:        {en:'Intervals', fr:'Intervalles'},
+  nav_explorer:         {en:'Explorer', fr:'Explorateur'},
+  nav_scales:           {en:'Scales', fr:'Gammes'},
+  nav_chords:           {en:'Chords', fr:'Accords'},
+  nav_chordbuilder:     {en:'Chord Builder', fr:"Créateur d'accords"},
+  nav_diatonic:         {en:'Diatonic Chords', fr:'Accords diatoniques'},
+  nav_relation:         {en:'Relation', fr:'Lien'},
+  hero_eyebrow:         {en:'A field guide to musical distance', fr:'Un guide pratique de la distance musicale'},
+  hero_h1:              {en:"Every chord is just <em>intervals</em>,<br>standing on each other's shoulders.", fr:"Chaque accord n'est qu'une pile <em>d'intervalles</em>,<br>posés les uns sur les autres."},
+  hero_lede:            {en:"This is a working reference for how far notes sit from one another (intervals), and what happens when you stack several of those distances at once (chords) — worked out, with numbers, across all twelve keys and nine scales. Click the keys. Everything here makes sound.", fr:"Ceci est une référence pratique pour mesurer la distance entre deux notes (les intervalles), et pour comprendre ce qui se passe quand on empile plusieurs de ces distances à la fois (les accords) — calculé, avec les chiffres, sur les douze tonalités et neuf gammes. Cliquez sur les touches. Tout ici produit du son."},
+  hero_playscale_btn:   {en:'Play C major scale', fr:'Jouer la gamme de do majeur'},
+  hero_clear_btn:       {en:'Clear', fr:'Effacer'},
+  caption_root:         {en:'root note', fr:'note fondamentale'},
+  caption_sounding:     {en:'sounding note', fr:'note jouée'},
+  sec1_eyebrow:         {en:'01 — Foundations', fr:'01 — Fondations'},
+  sec1_h2:              {en:'What an interval actually is', fr:"Ce qu'est vraiment un intervalle"},
+  sec1_p:               {en:"An interval is the distance between two pitches, measured in semitones (half-steps). That's the whole idea — everything else is naming convention. A piano has twelve semitones before a pitch repeats an octave higher, so there are thirteen interval sizes worth naming, from standing still (0 semitones) to a full octave (12 semitones).", fr:"Un intervalle est la distance entre deux hauteurs, mesurée en demi-tons. C'est toute l'idée — le reste n'est que convention de nommage. Un piano compte douze demi-tons avant qu'une note ne se répète une octave plus haut ; il existe donc treize tailles d'intervalles à connaître, de l'immobilité totale (0 demi-ton) à l'octave complète (12 demi-tons)."},
+  callout1:             {en:'A <strong>semitone</strong> is the smallest distance in standard Western tuning — one key to the very next key on a piano, black or white. A <strong>whole tone</strong> is two semitones. Major scales are built from a specific pattern of whole tones and semitones, which is exactly why they all sound like "major" no matter which note they start on — the pattern of distances is identical, only the starting pitch moves.', fr:'Un <strong>demi-ton</strong> est la plus petite distance de l\'accordage occidental standard — d\'une touche de piano à la toute suivante, noire ou blanche. Un <strong>ton entier</strong> vaut deux demi-tons. Les gammes majeures sont construites sur un motif précis de tons et de demi-tons, ce qui explique pourquoi elles sonnent toutes « majeures », quelle que soit la note de départ — le motif des distances est identique, seule la hauteur de départ change.'},
+  table1_th_semitones:  {en:'Semitones', fr:'Demi-tons'},
+  table1_th_short:      {en:'Short name', fr:'Nom court'},
+  table1_th_full:       {en:'Full name', fr:'Nom complet'},
+  table1_th_character:  {en:'Character', fr:'Caractère'},
+  table1_th_role:       {en:"What it's doing", fr:'Son rôle'},
+  callout2:             {en:'Past the octave, the same names repeat with "compound" versions: a 9th is an octave + a 2nd, an 11th is an octave + a 4th, a 13th is an octave + a 6th. Jazz chord extensions (9, 11, 13) are just these compound intervals stacked on top of a seventh chord — the same intervals from this table, one octave up.', fr:'Au-delà de l\'octave, les mêmes noms reviennent sous une forme « composée » : une 9e est une octave + une 2de, une 11e est une octave + une 4te, une 13e est une octave + une 6te. Les extensions d\'accords en jazz (9, 11, 13) sont simplement ces intervalles composés empilés sur un accord de septième — les mêmes intervalles que dans ce tableau, une octave plus haut.'},
+  sec2_eyebrow:         {en:'02 — Try it', fr:'02 — À essayer'},
+  sec2_h2:              {en:'Interval explorer — pick a root, pick a distance', fr:'Explorateur d\'intervalles — choisissez une fondamentale, choisissez une distance'},
+  sec2_p:               {en:'Choose any starting note and any interval. The keyboard shows both notes, plays them, and the table below shows what that same interval produces starting from <em>every</em> one of the twelve notes — because an interval is a relationship, not a fixed pair of pitches.', fr:'Choisissez une note de départ et un intervalle. Le clavier affiche les deux notes, les joue, et le tableau ci-dessous montre ce que ce même intervalle produit à partir de <em>chacune</em> des douze notes — car un intervalle est une relation, pas une paire de hauteurs fixe.'},
+  label_root:           {en:'Root', fr:'Fondamentale'},
+  label_interval:       {en:'Interval', fr:'Intervalle'},
+  btn_play_interval:    {en:'▶ Play interval', fr:"▶ Jouer l'intervalle"},
+  sec2_sub:             {en:'This interval, starting on every note', fr:'Cet intervalle, depuis chaque note'},
+  table2_th_from:       {en:'From', fr:'Depuis'},
+  table2_th_interval:   {en:'Interval', fr:'Intervalle'},
+  table2_th_to:         {en:'To', fr:'Vers'},
+  sec3_eyebrow:         {en:'03 — Where intervals live', fr:'03 — Où vivent les intervalles'},
+  sec3_h2:              {en:'Scales are just a fixed sequence of intervals', fr:"Une gamme n'est qu'une séquence fixe d'intervalles"},
+  sec3_p:               {en:'Every scale is a formula of whole-tone (W) and semitone (H) steps from the tonic. Change the root and the notes change, but if the formula is the same, every interval relationship inside it — tonic to 3rd, tonic to 5th, 3rd to 5th — stays exactly the same. Pick any root and any scale below to see (and hear) the formula worked out in real notes.', fr:'Chaque gamme est une formule de pas en ton entier (T) et en demi-ton (S) depuis la tonique. Changez la fondamentale et les notes changent, mais si la formule reste la même, chaque relation d\'intervalle à l\'intérieur — tonique-3ce, tonique-5te, 3ce-5te — reste exactement identique. Choisissez une fondamentale et une gamme ci-dessous pour voir (et entendre) la formule appliquée à de vraies notes.'},
+  label_scale:          {en:'Scale', fr:'Gamme'},
+  btn_play_scale:       {en:'▶ Play scale', fr:'▶ Jouer la gamme'},
+  table3_th_degree:     {en:'Degree', fr:'Degré'},
+  table3_th_note:       {en:'Note', fr:'Note'},
+  table3_th_step:       {en:'Step from previous', fr:'Pas depuis la précédente'},
+  table3_th_intervaltonic: {en:'Interval from tonic', fr:'Intervalle depuis la tonique'},
+  sec4_eyebrow:         {en:'04 — Stacking', fr:'04 — Empilement'},
+  sec4_h2:              {en:'A chord is intervals stacked, not notes chosen', fr:"Un accord, ce sont des intervalles empilés — pas des notes choisies au hasard"},
+  sec4_p:               {en:'Take a root, add a note a third above it, add another note a third above that, and you have a triad. The only thing that changes between a major, minor, diminished, or augmented triad is <em>which size</em> of third gets stacked where. Do it once more and you have a seventh chord.', fr:"Prenez une fondamentale, ajoutez une note une tierce au-dessus, puis une autre note une tierce plus haut encore, et vous obtenez une triade. La seule chose qui change entre une triade majeure, mineure, diminuée ou augmentée, c'est <em>la taille</em> de la tierce empilée à chaque étage. Recommencez une fois et vous obtenez un accord de septième."},
+  sec4_sub_triads:      {en:'Triads — two stacked thirds', fr:'Triades — deux tierces empilées'},
+  sec4_p_triads:        {en:'Root, third, fifth. Four possible qualities, defined entirely by two interval choices:', fr:'Fondamentale, tierce, quinte. Quatre qualités possibles, définies entièrement par deux choix d\'intervalle :'},
+  sec4_sub_sevenths:    {en:'Seventh chords — three stacked thirds', fr:'Accords de septième — trois tierces empilées'},
+  sec4_p_sevenths:      {en:'Take any triad and stack one more third on top. Eight qualities show up in common practice and jazz harmony:', fr:'Prenez n\'importe quelle triade et empilez une tierce supplémentaire. Huit qualités apparaissent dans l\'harmonie classique et jazz :'},
+  callout3:             {en:'Notice the pattern: every quality is defined by intervals <em>from the root</em>, not by memorizing note names. A major triad is always "root, major 3rd above it, perfect 5th above it" — in <span class="semi">C</span> that\'s C–E–G, in <span class="semi">F♯</span> it\'s F♯–A♯–C♯. Same shape, different address.', fr:'Remarquez le principe : chaque qualité est définie par des intervalles <em>depuis la fondamentale</em>, pas en mémorisant des noms de notes. Une triade majeure, c\'est toujours « fondamentale, tierce majeure au-dessus, quinte juste au-dessus » — en <span class="semi">do</span>, c\'est Do–Mi–Sol ; en <span class="semi">fa♯</span>, c\'est Fa♯–La♯–Do♯. Même forme, adresse différente.'},
+  sec5_eyebrow:         {en:'05 — Try it', fr:'05 — À essayer'},
+  sec5_h2:              {en:'Chord builder', fr:"Créateur d'accords"},
+  sec5_p:               {en:'Pick a root and a chord quality. The keyboard highlights every note, and the breakdown shows exactly which intervals — from this table above — are stacked to build it.', fr:"Choisissez une fondamentale et une qualité d'accord. Le clavier met en évidence chaque note, et le détail montre exactement quels intervalles — tirés du tableau ci-dessus — sont empilés pour le construire."},
+  label_chord:          {en:'Chord', fr:'Accord'},
+  btn_play_chord:       {en:'▶ Play chord', fr:"▶ Jouer l'accord"},
+  btn_play_arp:         {en:'▶ Play arpeggiated', fr:'▶ Jouer en arpège'},
+  card_notes_title:     {en:'Notes in this chord', fr:'Notes de cet accord'},
+  card_intervals_title: {en:'Interval stack from the root', fr:"Pile d'intervalles depuis la fondamentale"},
+  sec6_eyebrow:         {en:'06 — Chords living inside a scale', fr:'06 — Les accords cachés dans une gamme'},
+  sec6_h2:              {en:'The chords a scale gives you for free', fr:"Les accords qu'une gamme vous offre gratuitement"},
+  sec6_p:               {en:"Pick any note in a scale as a root, and stack the notes a third and a fifth above it — using only notes already in that scale. Do this on every degree and you get that scale's <em>diatonic</em> chords: the built-in harmony of the key. Choose a root and a scale to generate its full set, triads and sevenths, for every degree.", fr:"Prenez n'importe quelle note d'une gamme comme fondamentale, et empilez les notes une tierce et une quinte au-dessus — en n'utilisant que des notes déjà présentes dans cette gamme. Faites cela sur chaque degré et vous obtenez les accords <em>diatoniques</em> de la gamme : l'harmonie intégrée de la tonalité. Choisissez une fondamentale et une gamme pour générer l'ensemble complet, triades et septièmes, pour chaque degré."},
+  table6_th_degree:     {en:'Degree', fr:'Degré'},
+  table6_th_triad:      {en:'Triad', fr:'Triade'},
+  table6_th_quality:    {en:'Quality', fr:'Qualité'},
+  table6_th_notes:      {en:'Notes', fr:'Notes'},
+  table6_th_7th:        {en:'7th chord', fr:'Accord de 7e'},
+  callout4:             {en:'This is why a major key\'s harmony leans so hard on <span class="semi">I</span>, <span class="semi">IV</span>, and <span class="semi">V</span> (all major), why <span class="semi">ii</span>, <span class="semi">iii</span>, and <span class="semi">vi</span> feel like the minor detours, and why <span class="semi">vii°</span> is the one chord in the key that\'s genuinely unstable and wants to resolve. Switch the scale to harmonic minor and watch <span class="semi">V</span> turn major (thanks to the raised 7th) — that single change is why harmonic minor exists: it gives minor keys a proper dominant.', fr:'C\'est pourquoi l\'harmonie d\'une tonalité majeure s\'appuie autant sur <span class="semi">I</span>, <span class="semi">IV</span> et <span class="semi">V</span> (tous majeurs), pourquoi <span class="semi">ii</span>, <span class="semi">iii</span> et <span class="semi">vi</span> ressemblent à des détours mineurs, et pourquoi <span class="semi">vii°</span> est le seul accord de la tonalité réellement instable, qui appelle une résolution. Passez à la mineure harmonique et regardez <span class="semi">V</span> devenir majeur (grâce à la 7e degré haussée) — ce seul changement explique l\'existence de la gamme mineure harmonique : elle donne aux tonalités mineures une vraie dominante.'},
+  sec7_eyebrow:         {en:'07 — Tying it together', fr:'07 — Tout relier'},
+  sec7_h2:              {en:'Intervals are the DNA. Chords are the organism.', fr:"Les intervalles sont l'ADN. Les accords sont l'organisme."},
+  sub7a:                {en:'Every chord quality, decoded by ear', fr:"Chaque qualité d'accord, décodée à l'oreille"},
+  p7a:                  {en:"Once you can hear the difference between a major 3rd and a minor 3rd, you can identify almost any triad by ear — the fifth barely varies, but the third decides everything.", fr:"Une fois que vous entendez la différence entre une tierce majeure et une tierce mineure, vous pouvez identifier presque toute triade à l'oreille — la quinte varie à peine, mais la tierce décide de tout."},
+  sub7b:                {en:'Inversions: an interval flipped upside down', fr:'Renversements : un intervalle retourné'},
+  p7b:                  {en:"Move the lower note of an interval up an octave (or the upper note down one) and you get its <em>inversion</em>. Every interval and its inversion add up to 12 semitones. This is also why a major 3rd below a note sounds like a minor 6th above it — same two pitches, same relationship, viewed from the other end.", fr:"Déplacez la note inférieure d'un intervalle une octave plus haut (ou la note supérieure une octave plus bas) et vous obtenez son <em>renversement</em>. Un intervalle et son renversement totalisent toujours 12 demi-tons. C'est aussi pourquoi une tierce majeure sous une note sonne comme une sixte mineure au-dessus — les deux mêmes hauteurs, la même relation, vue de l'autre bout."},
+  table7_th_interval:   {en:'Interval', fr:'Intervalle'},
+  table7_th_invertsto:  {en:'Inverts to', fr:'Se renverse en'},
+  callout5:             {en:"So: an <strong>interval</strong> is one distance between two notes. A <strong>chord</strong> is several distances stacked from a common root. A <strong>scale</strong> is a map of which intervals are available to stack from any given degree. Learn the intervals in the first table on this page cold, and every scale and chord downstream of them stops being memorization and starts being arithmetic.", fr:"En résumé : un <strong>intervalle</strong> est une distance entre deux notes. Un <strong>accord</strong> est plusieurs distances empilées depuis une fondamentale commune. Une <strong>gamme</strong> est une carte des intervalles disponibles à empiler depuis n'importe quel degré. Apprenez par cœur les intervalles du premier tableau de cette page, et toute gamme et tout accord qui en découlent cessent d'être de la mémorisation pour devenir de l'arithmétique."},
+  footer_text:          {en:'TOPmusic — a reference built from twelve roots, nine scales, twelve chord qualities, and one octave.', fr:'TOPmusic — une référence construite sur douze fondamentales, neuf gammes, douze qualités d\'accords et une octave.'},
+  chord_hear_it:        {en:'▶ hear it (root C)', fr:'▶ écouter (fondamentale Do)'},
+  stack_root:           {en:'Root', fr:'Fondamentale'},
+  stack_third:          {en:'3rd', fr:'Tierce'},
+  stack_fifth:          {en:'5th', fr:'Quinte'},
+  chord_type_triad:     {en:'triad', fr:'triade'},
+  chord_type_seventh:   {en:'seventh', fr:'septième'},
+};
+
+function applyStaticTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(UI_TEXT[key]) el.innerHTML = UI_TEXT[key][LANG];
+  });
+  document.getElementById('doc-title').textContent = LANG==='fr' ? 'TOPmusic — Intervalles et accords' : 'TOPmusic — Intervals & Chords';
+  document.getElementById('html-root').setAttribute('lang', LANG);
+}
+
+const NOTE_NAMES = {
+  en: ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'],
+  fr: ['Do','Do♯','Ré','Ré♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'],
+};
+function noteName(semitoneAbs){ return NOTE_NAMES[LANG][((semitoneAbs % 12) + 12) % 12]; }
+
+const INTERVALS = [
+  {s:0,  short:'P1',   name:{en:'Perfect Unison',   fr:'Unisson parfait'},   cat:'p', desc:{en:"Two instances of the same pitch. Zero distance — the reference point everything else is measured against.", fr:"Deux fois la même hauteur. Distance nulle — le point de référence à partir duquel tout le reste se mesure."}},
+  {s:1,  short:'m2',   name:{en:'Minor Second', fr:'Seconde mineure'},  cat:'d', desc:{en:"The tightest common interval — one semitone of friction. Drives leading-tone resolutions (7th degree up to tonic).", fr:"L'intervalle le plus serré en usage courant — un demi-ton de friction. Il anime la résolution de la sensible vers la tonique (7e degré vers la tonique)."}},
+  {s:2,  short:'M2',   name:{en:'Major Second', fr:'Seconde majeure'},  cat:'d', desc:{en:"A whole tone. The default step size in scale-building; mildly dissonant when held as harmony.", fr:"Un ton entier. La taille de pas par défaut dans la construction des gammes ; légèrement dissonant lorsqu'il est tenu en harmonie."}},
+  {s:3,  short:'m3',   name:{en:'Minor Third', fr:'Tierce mineure'},   cat:'ic', desc:{en:"The backbone of every minor triad. The 'darker' of the two thirds.", fr:"La colonne vertébrale de tout accord mineur. La plus « sombre » des deux tierces."}},
+  {s:4,  short:'M3',   name:{en:'Major Third', fr:'Tierce majeure'},   cat:'ic', desc:{en:"The backbone of every major triad. Considered the sweetest of the imperfect consonances.", fr:"La colonne vertébrale de tout accord majeur. Considérée comme la plus douce des consonances imparfaites."}},
+  {s:5,  short:'P4',   name:{en:'Perfect Fourth', fr:'Quarte juste'},  cat:'p', desc:{en:"Stable against a bass note, but historically treated with care when it sits above the bass — it can sound like it's leaning on a resolution.", fr:"Stable au-dessus d'une basse, mais historiquement traité avec prudence lorsqu'il se trouve au-dessus de la basse — il peut sembler appeler une résolution."}},
+  {s:6,  short:'A4/d5',name:{en:'Tritone', fr:'Triton'},          cat:'d', desc:{en:"Exactly half an octave, and perfectly symmetrical. Nicknamed diabolus in musica; it's the tension that pulls a dominant 7th chord back home.", fr:"Exactement la moitié d'une octave, et parfaitement symétrique. Surnommé diabolus in musica ; c'est la tension qui ramène un accord de septième de dominante vers la tonique."}},
+  {s:7,  short:'P5',   name:{en:'Perfect Fifth', fr:'Quinte juste'},  cat:'p', desc:{en:"After the octave, the most stable interval there is — the acoustic backbone of the overtone series and of how instruments are tuned.", fr:"Après l'octave, l'intervalle le plus stable qui existe — la colonne acoustique de la série des harmoniques et de l'accordage des instruments."}},
+  {s:8,  short:'m6',   name:{en:'Minor Sixth', fr:'Sixte mineure'},   cat:'ic', desc:{en:"The inversion of a major 3rd. Warm, slightly wistful.", fr:"Le renversement d'une tierce majeure. Chaud, légèrement mélancolique."}},
+  {s:9,  short:'M6',   name:{en:'Major Sixth', fr:'Sixte majeure'},   cat:'ic', desc:{en:"The inversion of a minor 3rd. Open and bright, common in folk and pop melody leaps.", fr:"Le renversement d'une tierce mineure. Ouvert et lumineux, fréquent dans les sauts mélodiques du folk et de la pop."}},
+  {s:10, short:'m7',   name:{en:'Minor Seventh', fr:'Septième mineure'}, cat:'d', desc:{en:"Defines the dominant 7th chord's pull against the root; wants to fall a step.", fr:"Définit la tension de l'accord de septième de dominante contre la fondamentale ; veut descendre d'un ton."}},
+  {s:11, short:'M7',   name:{en:'Major Seventh', fr:'Septième majeure'}, cat:'d', desc:{en:"One semitone shy of the octave — the interval of 'almost there.' Lush in major 7th chords, sharp when left exposed.", fr:"Un demi-ton avant l'octave — l'intervalle du « presque arrivé ». Somptueux dans les accords de septième majeure, mordant lorsqu'il est exposé."}},
+  {s:12, short:'P8',   name:{en:'Perfect Octave', fr:'Octave juste'},  cat:'p', desc:{en:"The same pitch class at double the frequency. The frame the whole system repeats inside.", fr:"La même classe de hauteur à fréquence double. Le cadre à l'intérieur duquel tout le système se répète."}},
+];
+const CAT_LABEL = {p:{en:'Consonant (perfect)',fr:'Consonante (parfaite)'},ic:{en:'Consonant (imperfect)',fr:'Consonante (imparfaite)'},d:{en:'Dissonant',fr:'Dissonante'}};
+const CAT_CLASS = {p:'cons-p', ic:'cons-i', d:'diss'};
+
+const SCALES = [
+  {id:'major',      name:{en:'Major (Ionian)', fr:'Majeure (Ionien)'},           steps:[0,2,4,5,7,9,11], formula:{en:'W W H W W W H', fr:'T T S T T T S'}},
+  {id:'natMinor',   name:{en:'Natural Minor (Aeolian)', fr:'Mineure naturelle (Éolien)'}, steps:[0,2,3,5,7,8,10], formula:{en:'W H W W H W W', fr:'T S T T S T T'}},
+  {id:'harMinor',   name:{en:'Harmonic Minor', fr:'Mineure harmonique'},          steps:[0,2,3,5,7,8,11], formula:{en:'W H W W H A H', fr:'T S T T S A S'}},
+  {id:'melMinor',   name:{en:'Melodic Minor (asc.)', fr:'Mineure mélodique (asc.)'}, steps:[0,2,3,5,7,9,11], formula:{en:'W H W W W W H', fr:'T S T T T T S'}},
+  {id:'dorian',     name:{en:'Dorian', fr:'Dorien'},                              steps:[0,2,3,5,7,9,10], formula:{en:'W H W W W H W', fr:'T S T T T S T'}},
+  {id:'phrygian',   name:{en:'Phrygian', fr:'Phrygien'},                          steps:[0,1,3,5,7,8,10], formula:{en:'H W W W H W W', fr:'S T T T S T T'}},
+  {id:'lydian',     name:{en:'Lydian', fr:'Lydien'},                              steps:[0,2,4,6,7,9,11], formula:{en:'W W W H W W H', fr:'T T T S T T S'}},
+  {id:'mixolydian', name:{en:'Mixolydian', fr:'Mixolydien'},                      steps:[0,2,4,5,7,9,10], formula:{en:'W W H W W H W', fr:'T T S T T S T'}},
+  {id:'locrian',    name:{en:'Locrian', fr:'Locrien'},                            steps:[0,1,3,5,6,8,10], formula:{en:'H W W H W W W', fr:'S T T S T T T'}},
+];
+function scaleById(id){ return SCALES.find(s=>s.id===id); }
+function intervalByS(s){ return INTERVALS.find(iv=>iv.s===s); }
+
+const CHORDS = [
+  {id:'maj',   type:'triad',   notes:[0,4,7],    name:{en:'Major', fr:'Majeur'}, subtitle:{en:'Major 3rd + Minor 3rd', fr:'Tierce majeure + Tierce mineure'}},
+  {id:'min',   type:'triad',   notes:[0,3,7],    name:{en:'Minor', fr:'Mineur'}, subtitle:{en:'Minor 3rd + Major 3rd', fr:'Tierce mineure + Tierce majeure'}},
+  {id:'dim',   type:'triad',   notes:[0,3,6],    name:{en:'Diminished', fr:'Diminué'}, subtitle:{en:'Minor 3rd + Minor 3rd', fr:'Tierce mineure + Tierce mineure'}},
+  {id:'aug',   type:'triad',   notes:[0,4,8],    name:{en:'Augmented', fr:'Augmenté'}, subtitle:{en:'Major 3rd + Major 3rd', fr:'Tierce majeure + Tierce majeure'}},
+  {id:'maj7',  type:'seventh', notes:[0,4,7,11], name:{en:'Major 7th', fr:'Septième majeure'}, subtitle:{en:'Major triad + Major 3rd', fr:'Triade majeure + Tierce majeure'}},
+  {id:'dom7',  type:'seventh', notes:[0,4,7,10], name:{en:'Dominant 7th', fr:'Septième de dominante'}, subtitle:{en:'Major triad + Minor 3rd', fr:'Triade majeure + Tierce mineure'}},
+  {id:'min7',  type:'seventh', notes:[0,3,7,10], name:{en:'Minor 7th', fr:'Septième mineure'}, subtitle:{en:'Minor triad + Minor 3rd', fr:'Triade mineure + Tierce mineure'}},
+  {id:'minMaj7',type:'seventh',notes:[0,3,7,11], name:{en:'Minor-Major 7th', fr:'Septième mineure-majeure'}, subtitle:{en:'Minor triad + Major 3rd', fr:'Triade mineure + Tierce majeure'}},
+  {id:'halfDim7',type:'seventh',notes:[0,3,6,10],name:{en:'Half-Diminished 7th', fr:'Demi-diminué (7e)'}, subtitle:{en:'Diminished triad + Major 3rd', fr:'Triade diminuée + Tierce majeure'}},
+  {id:'dim7',  type:'seventh', notes:[0,3,6,9],  name:{en:'Diminished 7th', fr:'Septième diminuée'}, subtitle:{en:'Diminished triad + Minor 3rd', fr:'Triade diminuée + Tierce mineure'}},
+  {id:'aug7',  type:'seventh', notes:[0,4,8,10], name:{en:'Augmented 7th', fr:'Septième augmentée'}, subtitle:{en:'Augmented triad + Minor 3rd', fr:'Triade augmentée + Tierce mineure'}},
+  {id:'augMaj7',type:'seventh',notes:[0,4,8,11], name:{en:'Augmented Major 7th', fr:'Septième majeure augmentée'}, subtitle:{en:'Augmented triad + Major 3rd', fr:'Triade augmentée + Tierce majeure'}},
+];
+function chordById(id){ return CHORDS.find(c=>c.id===id); }
+
+const TRIAD_QUALITIES = {
+  '4,7':{id:'major', mark:'',suffix:'',   name:{en:'Major',fr:'Majeur'}},
+  '3,7':{id:'minor', mark:'',suffix:'m',  name:{en:'Minor',fr:'Mineur'}},
+  '3,6':{id:'dim',   mark:'°',suffix:'dim',name:{en:'Diminished',fr:'Diminué'}},
+  '4,8':{id:'aug',   mark:'+',suffix:'aug',name:{en:'Augmented',fr:'Augmenté'}},
+};
+const SEVENTH_QUALITIES = {
+  '4,7,11':{id:'maj7',    sup:'maj7',   mark:'', name:{en:'Major 7th',fr:'Septième majeure'}},
+  '4,7,10':{id:'dom7',    sup:'7',      mark:'', name:{en:'Dominant 7th',fr:'Septième de dominante'}},
+  '3,7,10':{id:'min7',    sup:'7',      mark:'', name:{en:'Minor 7th',fr:'Septième mineure'}},
+  '3,7,11':{id:'minMaj7', sup:'(maj7)', mark:'', name:{en:'Minor-Major 7th',fr:'Septième mineure-majeure'}},
+  '3,6,10':{id:'halfDim7',sup:'ø7',    mark:'ø',name:{en:'Half-Diminished 7th',fr:'Demi-diminué (7e)'}},
+  '3,6,9': {id:'dim7',    sup:'°7',    mark:'°',name:{en:'Diminished 7th',fr:'Septième diminuée'}},
+  '4,8,10':{id:'aug7',    sup:'+7',    mark:'+',name:{en:'Augmented 7th',fr:'Septième augmentée'}},
+  '4,8,11':{id:'augMaj7', sup:'+maj7', mark:'+',name:{en:'Augmented Major 7th',fr:'Septième majeure augmentée'}},
+};
+const ROMAN_BASE = ['I','II','III','IV','V','VI','VII'];
+const LOWER_QUALITY_IDS = {minor:1,dim:1,min7:1,minMaj7:1,halfDim7:1,dim7:1};
+
+function buildDiatonic(rootAbs, scaleSteps){
+  const rows = [];
+  for(let i=0;i<7;i++){
+    const rootOff=scaleSteps[i];
+    const idx3=(i+2)%7, idx5=(i+4)%7, idx7=(i+6)%7;
+    const third=scaleSteps[idx3]+(i+2>=7?12:0);
+    const fifth=scaleSteps[idx5]+(i+4>=7?12:0);
+    const seventh=scaleSteps[idx7]+(i+6>=7?12:0);
+    const i1=third-rootOff, i2=fifth-rootOff, i3=seventh-rootOff;
+    const triadQ=TRIAD_QUALITIES[i1+','+i2]||{id:'other',mark:'?',suffix:'?',name:{en:'Other',fr:'Autre'}};
+    const sevQ=SEVENTH_QUALITIES[i1+','+i2+','+i3]||{id:'other',sup:'?',mark:'?',name:{en:'Other',fr:'Autre'}};
+    const rAbs=rootAbs+rootOff;
+    const triadNotes=[rAbs,rAbs+i1,rAbs+i2].map(noteName);
+    const sevNotes=[rAbs,rAbs+i1,rAbs+i2,rAbs+i3].map(noteName);
+    const base=ROMAN_BASE[i];
+    const lower=LOWER_QUALITY_IDS[triadQ.id];
+    rows.push({degree:i+1,rootNote:noteName(rAbs),triadName:noteName(rAbs)+triadQ.suffix,triadQ:triadQ.name[LANG],triadNotes,romanTriad:(lower?base.toLowerCase():base)+triadQ.mark,sevName:noteName(rAbs)+sevQ.sup,sevQ:sevQ.name[LANG],sevNotes,romanSev:(lower?base.toLowerCase():base)+sevQ.mark+'7',rootAbs:rAbs,i1,i2,i3});
+  }
+  return rows;
+}
+
+let audioCtx;
+function getCtx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function freqFor(s){ return 261.6256*Math.pow(2,s/12); }
+function playNote(s,startTime,duration,gainVal){
+  const ctx=getCtx(); const osc=ctx.createOscillator(); const gain=ctx.createGain();
+  osc.type='triangle'; osc.frequency.value=freqFor(s);
+  gain.gain.setValueAtTime(0.0001,startTime); gain.gain.linearRampToValueAtTime(gainVal||0.22,startTime+0.02); gain.gain.exponentialRampToValueAtTime(0.0008,startTime+duration);
+  osc.connect(gain); gain.connect(ctx.destination); osc.start(startTime); osc.stop(startTime+duration+0.05);
+}
+function playTogether(semitones){ const ctx=getCtx(); const now=ctx.currentTime+0.02; semitones.forEach(s=>playNote(s,now,1.3,0.16)); }
+function playSequence(semitones,gap,onEach){
+  const ctx=getCtx(); let t=ctx.currentTime+0.02;
+  semitones.forEach((s,idx)=>{ const tt=t; playNote(s,tt,gap*0.95,0.22); if(onEach) setTimeout(()=>onEach(idx),Math.max(0,(tt-ctx.currentTime)*1000)); t+=gap; });
+}
+
+function renderPiano(container,octaves){
+  octaves=octaves||2;
+  const whiteW=38,whiteH=140,blackW=22,blackH=88;
+  const WHITE_IN_OCT=[0,2,4,5,7,9,11];
+  const totalWhite=octaves*7+1;
+  container.innerHTML='';
+  container.style.width=(totalWhite*whiteW)+'px';
+  container.style.height=whiteH+'px';
+  const keys={};
+  for(let o=0;o<octaves;o++){
+    WHITE_IN_OCT.forEach((semInOct,idx)=>{
+      const abs=o*12+semInOct; const el=document.createElement('div');
+      el.className='key white'; el.style.left=(o*7*whiteW+idx*whiteW)+'px'; el.style.top='0px'; el.style.width=whiteW+'px'; el.style.height=whiteH+'px'; el.dataset.semitone=abs;
+      if(semInOct===0){ const lbl=document.createElement('div'); lbl.className='lbl'; lbl.textContent='C'+(4+o); el.appendChild(lbl); }
+      container.appendChild(el); keys[abs]=el;
+    });
+  }
+  { const abs=octaves*12; const el=document.createElement('div'); el.className='key white'; el.style.left=(octaves*7*whiteW)+'px'; el.style.top='0px'; el.style.width=whiteW+'px'; el.style.height=whiteH+'px'; el.dataset.semitone=abs; const lbl=document.createElement('div'); lbl.className='lbl'; lbl.textContent='C'+(4+octaves); el.appendChild(lbl); container.appendChild(el); keys[abs]=el; }
+  const BLACK_NEXT={1:1,3:2,6:4,8:5,10:6};
+  for(let o=0;o<octaves;o++){
+    Object.keys(BLACK_NEXT).forEach(k=>{ const semInOct=parseInt(k); const nextWhiteIdx=BLACK_NEXT[semInOct]; const abs=o*12+semInOct; const el=document.createElement('div'); el.className='key black'; el.style.left=(o*7*whiteW+nextWhiteIdx*whiteW-blackW/2)+'px'; el.style.top='0px'; el.style.width=blackW+'px'; el.style.height=blackH+'px'; el.dataset.semitone=abs; container.appendChild(el); keys[abs]=el; });
+  }
+  return {
+    el:container, keys,
+    clear(){ Object.values(keys).forEach(k=>k.classList.remove('active','root')); },
+    highlight(rootAbs,offsets){ this.clear(); offsets.forEach((off,i)=>{ const k=keys[rootAbs+off]; if(k) k.classList.add(i===0?'root':'active'); }); },
+    flash(abs){ const k=keys[abs]; if(!k) return; k.classList.add('active'); setTimeout(()=>k.classList.remove('active'),260); },
+    onClick(fn){ container.addEventListener('click',e=>{ const t=e.target.closest('.key'); if(!t) return; fn(parseInt(t.dataset.semitone)); }); }
+  };
+}
+
+function fillNoteSelect(sel){ const prev=sel.value; sel.innerHTML=''; for(let i=0;i<12;i++){ const o=document.createElement('option'); o.value=i; o.textContent=NOTE_NAMES[LANG][i]; sel.appendChild(o); } if(prev!=='') sel.value=prev; }
+function fillIntervalSelect(sel){ const prev=sel.value; sel.innerHTML=''; INTERVALS.forEach(iv=>{ const o=document.createElement('option'); o.value=iv.s; o.textContent=iv.short+' — '+iv.name[LANG]; sel.appendChild(o); }); sel.value=prev!==''?prev:4; }
+function fillScaleSelect(sel){ const prev=sel.value; sel.innerHTML=''; SCALES.forEach(sc=>{ const o=document.createElement('option'); o.value=sc.id; o.textContent=sc.name[LANG]; sel.appendChild(o); }); if(prev!=='') sel.value=prev; }
+function fillChordSelect(sel){ const prev=sel.value; sel.innerHTML=''; CHORDS.forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=c.name[LANG]+' ('+(c.type==='triad'?UI_TEXT.chord_type_triad[LANG]:UI_TEXT.chord_type_seventh[LANG])+')'; sel.appendChild(o); }); if(prev!=='') sel.value=prev; }
+
+function buildIntervalTable(){
+  const tbody=document.querySelector('#interval-table tbody'); tbody.innerHTML='';
+  INTERVALS.forEach(iv=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td class="semi">${iv.s}</td><td><strong>${iv.short}</strong></td><td>${iv.name[LANG]}</td><td><span class="tag ${CAT_CLASS[iv.cat]}">${CAT_LABEL[iv.cat][LANG]}</span></td><td>${iv.desc[LANG]}</td>`; tbody.appendChild(tr); });
+}
+
+const heroPiano=renderPiano(document.getElementById('hero-piano'),2);
+heroPiano.onClick(abs=>{ playTogether([abs]); heroPiano.flash(abs); });
+document.getElementById('hero-play-scale').addEventListener('click',()=>{ const steps=scaleById('major').steps.map(s=>s); steps.push(12); playSequence(steps,0.32,i=>heroPiano.flash(steps[i])); });
+document.getElementById('hero-clear').addEventListener('click',()=>heroPiano.clear());
+
+const ivRootSel=document.getElementById('iv-root');
+const ivIntervalSel=document.getElementById('iv-interval');
+const explorerPiano=renderPiano(document.getElementById('explorer-piano'),2);
+explorerPiano.onClick(abs=>playTogether([abs]));
+function renderIntervalExplorer(){
+  const root=parseInt(ivRootSel.value), semi=parseInt(ivIntervalSel.value);
+  explorerPiano.highlight(root,[0,semi]);
+  const tbody=document.querySelector('#iv-all-keys tbody'); tbody.innerHTML='';
+  const iv=intervalByS(semi);
+  for(let r=0;r<12;r++){ const to=r+semi; const tr=document.createElement('tr'); tr.innerHTML=`<td><strong>${noteName(r)}</strong></td><td>${iv.short} (${semi} ${LANG==='fr'?'demi-tons':'semitones'})</td><td><strong>${noteName(to)}</strong></td><td><button class="ghost" style="padding:4px 10px; font-size:.68rem;" data-r="${r}" data-to="${to}">▶</button></td>`; tbody.appendChild(tr); }
+  tbody.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>playTogether([parseInt(b.dataset.r),parseInt(b.dataset.to)])));
+}
+ivRootSel.addEventListener('change',renderIntervalExplorer);
+ivIntervalSel.addEventListener('change',renderIntervalExplorer);
+document.getElementById('iv-play').addEventListener('click',()=>{ const root=parseInt(ivRootSel.value),semi=parseInt(ivIntervalSel.value); playTogether([root,root+semi]); });
+
+const scRootSel=document.getElementById('sc-root');
+const scTypeSel=document.getElementById('sc-type');
+const scalePiano=renderPiano(document.getElementById('scale-piano'),2);
+scalePiano.onClick(abs=>playTogether([abs]));
+function renderScale(){
+  const root=parseInt(scRootSel.value), scale=scaleById(scTypeSel.value);
+  const offsets=scale.steps.concat([12]);
+  scalePiano.highlight(root,offsets);
+  const tbody=document.querySelector('#sc-degrees tbody'); tbody.innerHTML='';
+  offsets.forEach((off,i)=>{ const abs=root+off; const prevOff=i===0?null:offsets[i-1]; let stepLabel='—'; if(i>0){ const diff=off-prevOff; const kind=diff===1?(LANG==='fr'?'S':'H'):diff===2?(LANG==='fr'?'T':'W'):(LANG==='fr'?'A (2de augmentée)':'A (augmented 2nd)'); stepLabel=diff+(LANG==='fr'?' demi-tons (':' semitones (')+kind+')'; } const iv=intervalByS(off>12?off-12:off); const tr=document.createElement('tr'); tr.innerHTML=`<td>${i===7?(LANG==='fr'?'8 (octave)':'8 (octave)'):i+1}</td><td><strong>${noteName(abs)}</strong></td><td>${stepLabel}</td><td>${iv?iv.short+' — '+iv.name[LANG]:off+' st'}</td>`; tbody.appendChild(tr); });
+  const lbl=LANG==='fr'?'Formule de pas depuis la tonique':'Step formula from the tonic';
+  const inLbl=LANG==='fr'?'en':'in';
+  document.getElementById('sc-formula-note').innerHTML=`<strong>${scale.name[LANG]}</strong> ${lbl}: <span class="semi">${scale.formula[LANG]}</span> &nbsp;·&nbsp; ${inLbl} ${noteName(root)}: ${scale.steps.map(s=>noteName(root+s)).join(' – ')}`;
+}
+scRootSel.addEventListener('change',renderScale);
+scTypeSel.addEventListener('change',renderScale);
+document.getElementById('sc-play').addEventListener('click',()=>{ const root=parseInt(scRootSel.value); const scale=scaleById(scTypeSel.value); const offsets=scale.steps.concat([12]).map(o=>root+o); playSequence(offsets,0.32,i=>scalePiano.flash(offsets[i])); });
+
+function buildChordCards(containerId,type){
+  const container=document.getElementById(containerId); container.innerHTML='';
+  CHORDS.filter(c=>c.type===type).forEach(c=>{ const div=document.createElement('div'); div.className='card chord-card'; const notes=c.notes.map(n=>noteName(n)); div.innerHTML=`<h4>${notes[0]} ${c.name[LANG]}</h4><div class="full-name">${c.subtitle[LANG]}</div><div class="intervals">${notes.join(' – ')}</div><div style="margin-top:10px;"><button class="ghost" style="font-size:.68rem; padding:5px 10px;">${UI_TEXT.chord_hear_it[LANG]}</button></div>`; div.querySelector('button').addEventListener('click',()=>playTogether(c.notes)); container.appendChild(div); });
+}
+
+const chRootSel=document.getElementById('ch-root');
+const chQualitySel=document.getElementById('ch-quality');
+const chordPiano=renderPiano(document.getElementById('chord-piano'),2);
+chordPiano.onClick(abs=>playTogether([abs]));
+function renderChordExplorer(){
+  const root=parseInt(chRootSel.value), chord=chordById(chQualitySel.value);
+  chordPiano.highlight(root,chord.notes);
+  document.getElementById('ch-notes').innerHTML=chord.notes.map((n,i)=>`<span class="result-note ${i===0?'root':''}">${noteName(root+n)}${i===0?(LANG==='fr'?' (fondamentale)':' (root)'):''}</span>`).join('');
+  const stackParts=[]; for(let i=0;i<chord.notes.length;i++){ const from=chord.notes[i],to=chord.notes[i+1]; if(to===undefined) break; const iv=intervalByS(to-from); stackParts.push(`${noteName(root+from)}→${noteName(root+to)}: ${iv?iv.short:(to-from)+'st'}`); }
+  const rootLbl=LANG==='fr'?'fondamentale':'root';
+  const fromRoot=chord.notes.slice(1).map(n=>{ const iv=intervalByS(n); return `${rootLbl}→${noteName(root+n)}: ${iv?iv.short:n+'st'}`; });
+  const stackedLbl=LANG==='fr'?'tierces empilées':'stacked thirds';
+  document.getElementById('ch-intervals').innerHTML=`<div style="font-family:var(--mono); font-size:.85rem; color:var(--teal); margin-bottom:8px;">${fromRoot.join('<br>')}</div><div style="font-family:var(--mono); font-size:.78rem; color:var(--ink-soft);">${stackedLbl}: ${stackParts.join(' &nbsp;·&nbsp; ')}</div>`;
+}
+chRootSel.addEventListener('change',renderChordExplorer);
+chQualitySel.addEventListener('change',renderChordExplorer);
+document.getElementById('ch-play').addEventListener('click',()=>{ const root=parseInt(chRootSel.value),chord=chordById(chQualitySel.value); playTogether(chord.notes.map(n=>root+n)); });
+document.getElementById('ch-play-arp').addEventListener('click',()=>{ const root=parseInt(chRootSel.value),chord=chordById(chQualitySel.value); const offsets=chord.notes.map(n=>root+n); playSequence(offsets,0.28,i=>chordPiano.flash(offsets[i])); });
+
+const diRootSel=document.getElementById('di-root');
+const diTypeSel=document.getElementById('di-type');
+function renderDiatonic(){
+  const root=parseInt(diRootSel.value), scale=scaleById(diTypeSel.value);
+  const rows=buildDiatonic(root,scale.steps);
+  const tbody=document.querySelector('#di-table tbody'); tbody.innerHTML='';
+  rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td class="roman">${r.romanTriad}</td><td><strong>${r.triadName}</strong></td><td>${r.triadQ}</td><td>${r.triadNotes.join('–')}</td><td><strong>${r.sevName}</strong></td><td>${r.sevQ}</td><td>${r.sevNotes.join('–')}</td><td><button class="ghost" style="padding:4px 8px; font-size:.65rem;" data-notes="${r.sevNotes.map((n,i)=>r.rootAbs+(i===0?0:i===1?r.i1:i===2?r.i2:r.i3)).join(',')}">▶</button></td>`; tbody.appendChild(tr); });
+  tbody.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>playTogether(b.dataset.notes.split(',').map(Number))));
+}
+diRootSel.addEventListener('change',renderDiatonic);
+diTypeSel.addEventListener('change',renderDiatonic);
+
+function buildRelationStack(){
+  const el=document.getElementById('relation-stack'); el.innerHTML='';
+  [{t:UI_TEXT.stack_fifth[LANG],root:false},{t:UI_TEXT.stack_third[LANG],root:false},{t:UI_TEXT.stack_root[LANG],root:true}].forEach(b=>{ const d=document.createElement('div'); d.className='stack-block'+(b.root?' root':''); d.textContent=b.t; el.appendChild(d); });
+}
+function buildInversionTable(){
+  const pairs=[[0,12],[1,11],[2,10],[3,9],[4,8],[5,7],[6,6]];
+  const tbody=document.getElementById('inversion-table'); tbody.innerHTML='';
+  pairs.forEach(([a,b])=>{ const iva=intervalByS(a),ivb=intervalByS(b); const tr=document.createElement('tr'); tr.innerHTML=`<td>${iva.short} — ${iva.name[LANG]}</td><td>${ivb.short} — ${ivb.name[LANG]}</td>`; tbody.appendChild(tr); });
+}
+
+function renderAll(){
+  applyStaticTranslations();
+  fillNoteSelect(ivRootSel); fillIntervalSelect(ivIntervalSel);
+  fillNoteSelect(scRootSel); fillScaleSelect(scTypeSel);
+  fillNoteSelect(chRootSel); fillChordSelect(chQualitySel);
+  fillNoteSelect(diRootSel); fillScaleSelect(diTypeSel);
+  buildIntervalTable(); renderIntervalExplorer(); renderScale();
+  buildChordCards('triad-cards','triad'); buildChordCards('seventh-cards','seventh');
+  renderChordExplorer(); renderDiatonic(); buildRelationStack(); buildInversionTable();
+}
+
+function setLanguage(lang){
+  LANG=lang;
+  document.getElementById('lang-en').classList.toggle('active',lang==='en');
+  document.getElementById('lang-fr').classList.toggle('active',lang==='fr');
+  renderAll();
+}
+document.getElementById('lang-en').addEventListener('click',()=>setLanguage('en'));
+document.getElementById('lang-fr').addEventListener('click',()=>setLanguage('fr'));
+
+document.getElementById('sc-root').value='';
+document.getElementById('di-root').value='';
+renderAll();
+scTypeSel.value='major'; renderScale();
+diTypeSel.value='major'; renderDiatonic();
+ivIntervalSel.value='4'; renderIntervalExplorer();
+</script>
+</body>
+</html>

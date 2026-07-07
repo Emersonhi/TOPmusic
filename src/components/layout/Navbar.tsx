@@ -17,6 +17,7 @@ export default function Navbar() {
     { href: '/#about', label: tr.about },
     { href: '/shop', label: tr.shop },
     { href: '/sight-reading', label: tr.sightReading },
+    { href: '/intervals-chords', label: tr.intervalsChords },
     { href: '/contact', label: tr.contact },
   ];
 

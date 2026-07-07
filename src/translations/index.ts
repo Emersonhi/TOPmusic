@@ -315,7 +315,7 @@ export const shopPageT = {
 export const t = {
   en: {
     nav: {
-      programs: 'Programs', faculty: 'Faculty', about: 'About', contact: 'Contact', shop: 'Shop', sightReading: 'Sight Reading',
+      programs: 'Programs', faculty: 'Faculty', about: 'About', contact: 'Contact', shop: 'Shop', sightReading: 'Sight Reading', intervalsChords: 'Intervals & Chords',
       login: 'Login', enroll: 'Enroll',
     },
     hero: {
@@ -404,7 +404,7 @@ export const t = {
 
   fr: {
     nav: {
-      programs: 'Programmes', faculty: 'Enseignants', about: 'À propos', contact: 'Contact', shop: 'Boutique', sightReading: 'Lecture de Notes',
+      programs: 'Programmes', faculty: 'Enseignants', about: 'À propos', contact: 'Contact', shop: 'Boutique', sightReading: 'Lecture de Notes', intervalsChords: 'Intervalles & Accords',
       login: 'Connexion', enroll: "S'inscrire",
     },
     hero: {
