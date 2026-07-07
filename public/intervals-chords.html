@@ -203,6 +203,28 @@
     font-family:var(--mono); font-size:.78rem; text-align:center;
   }
   .stack-block.root{background:var(--rust); color:#fff; border-color:var(--rust);}
+
+  /* ---------- NINE SCALES ---------- */
+  .scale-ref-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media(max-width:760px){.scale-ref-grid{grid-template-columns:1fr;}}
+  .scale-ref-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px;}
+  .scale-ref-card h4{font-family:var(--mono); font-size:.88rem; font-weight:700; margin:0 0 3px 0; color:var(--ink);}
+  .scale-ref-card .sc-formula{font-family:var(--mono); font-size:.7rem; color:var(--teal); margin-bottom:10px; letter-spacing:.02em;}
+  .scale-ref-card .sc-notes{font-family:var(--mono); font-size:.72rem; color:var(--ink-soft); margin-top:6px;}
+  .mini-kb{display:flex; gap:2px; margin:10px 0 4px 0; height:26px;}
+  .mk{flex:1; border-radius:3px;}
+  .mk.mk-white{background:#ddd6c0;}
+  .mk.mk-black{background:#555;}
+  .mk.mk-active{background:var(--brass);}
+  .mk.mk-root{background:var(--rust);}
+
+  /* ---------- CIRCLES ---------- */
+  .circles-wrap{display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start;}
+  @media(max-width:700px){.circles-wrap{grid-template-columns:1fr;}}
+  .circle-block{text-align:center;}
+  .circle-block h3{font-family:var(--serif-display); font-size:1.05rem; margin:0 0 6px 0;}
+  .circle-block p{color:var(--ink-soft); font-size:.9rem; margin:0 0 16px 0;}
+  .circle-svg-wrap{display:inline-block; max-width:100%; overflow:hidden;}
 </style>
 </head>
 <body>
@@ -218,6 +240,8 @@
       <li><a href="#chord-explorer" data-i18n="nav_chordbuilder">Chord Builder</a></li>
       <li><a href="#diatonic" data-i18n="nav_diatonic">Diatonic Chords</a></li>
       <li><a href="#relation" data-i18n="nav_relation">Relation</a></li>
+      <li><a href="#nine-scales" data-i18n="nav_ninescales">Nine Scales</a></li>
+      <li><a href="#circles" data-i18n="nav_circles">Circles</a></li>
     </ul>
     <div class="lang-toggle" role="group" aria-label="Language">
       <button id="lang-en" class="active" data-lang="en">EN</button>
@@ -442,6 +466,44 @@
   </div>
 </section>
 
+<!-- ============================================================ -->
+<section id="nine-scales">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec8_eyebrow">08 — Scale Reference</div>
+      <h2 data-i18n="sec8_h2">The nine scales</h2>
+      <p data-i18n="sec8_p">Each scale is a distinct formula of intervals from the tonic. The coloured bar shows which of the twelve chromatic pitches belong to that scale, starting from C — root in red, scale tones in gold.</p>
+    </div>
+    <div class="scale-ref-grid" id="nine-scales-grid"></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="circles">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="sec9_eyebrow">09 — Navigation</div>
+      <h2 data-i18n="sec9_h2">Circle of Fifths &amp; Circle of Fourths</h2>
+      <p data-i18n="sec9_p">Both circles arrange the twelve major keys around a clock face. The circle of fifths moves clockwise by a perfect fifth (7 semitones) at each step; the circle of fourths moves clockwise by a perfect fourth (5 semitones) — the same circle, read in reverse. Relative minor keys appear in the inner ring; key signatures in the centre.</p>
+    </div>
+    <div class="circles-wrap">
+      <div class="circle-block">
+        <h3 data-i18n="circle_fifths_title">Circle of Fifths</h3>
+        <p data-i18n="circle_fifths_desc">Each step clockwise raises the key by a perfect fifth (+7 semitones) and adds one sharp — or removes one flat.</p>
+        <div class="circle-svg-wrap" id="circle-fifths"></div>
+      </div>
+      <div class="circle-block">
+        <h3 data-i18n="circle_fourths_title">Circle of Fourths</h3>
+        <p data-i18n="circle_fourths_desc">Each step clockwise raises the key by a perfect fourth (+5 semitones) and adds one flat — or removes one sharp.</p>
+        <div class="circle-svg-wrap" id="circle-fourths"></div>
+      </div>
+    </div>
+    <div class="callout" data-i18n="callout_circles">
+      The two circles are the same wheel — just read in opposite directions. This is because a fifth up (C→G) and a fourth down (C→G) land on the same pitch class: the circle of fourths is the circle of fifths read counterclockwise, and vice versa.
+    </div>
+  </div>
+</section>
+
 <footer data-i18n="footer_text">
   TOPmusic — a reference built from twelve roots, nine scales, twelve chord qualities, and one octave.
 </footer>
@@ -535,6 +597,19 @@ const UI_TEXT = {
   stack_fifth:          {en:'5th', fr:'Quinte'},
   chord_type_triad:     {en:'triad', fr:'triade'},
   chord_type_seventh:   {en:'seventh', fr:'septième'},
+  nav_ninescales:       {en:'Nine Scales', fr:'Neuf gammes'},
+  nav_circles:          {en:'Circles', fr:'Cercles'},
+  sec8_eyebrow:         {en:'08 — Scale Reference', fr:'08 — Référence des gammes'},
+  sec8_h2:              {en:'Nine essential scales', fr:'Neuf gammes essentielles'},
+  sec8_p:               {en:'Every scale here is shown from C for clarity. The coloured bar under each name is a simplified keyboard map — root in red, scale tones in gold. Use the Scale Explorer in section 03 to hear any of these in any key.', fr:'Chaque gamme est présentée depuis Do pour la clarté. La barre colorée sous chaque nom est une carte clavier simplifiée — fondamentale en rouge, notes de la gamme en or. Utilisez l\'Explorateur de gammes de la section 03 pour entendre chacune dans n\'importe quelle tonalité.'},
+  sec9_eyebrow:         {en:'09 — Tonal Geography', fr:'09 — Géographie tonale'},
+  sec9_h2:              {en:'Circle of Fifths & Circle of Fourths', fr:'Cercle des quintes & Cercle des quartes'},
+  sec9_p:               {en:'The Circle of Fifths arranges all twelve keys by moving up a perfect fifth (7 semitones) each step. The Circle of Fourths moves up a perfect fourth (5 semitones) — the same circle traversed in the opposite direction. Major keys are shown on the outer ring; their relative minor keys on the inner ring.', fr:'Le cercle des quintes dispose les douze tonalités en montant d\'une quinte juste (7 demi-tons) à chaque étape. Le cercle des quartes monte d\'une quarte juste (5 demi-tons) — le même cercle parcouru en sens inverse. Les tonalités majeures sont sur l\'anneau extérieur ; leurs relatives mineures sur l\'anneau intérieur.'},
+  circle_fifths_title:  {en:'Circle of Fifths', fr:'Cercle des quintes'},
+  circle_fifths_desc:   {en:'Each step clockwise adds one sharp (or removes one flat).', fr:'Chaque pas dans le sens horaire ajoute un dièse (ou enlève un bémol).'},
+  circle_fourths_title: {en:'Circle of Fourths', fr:'Cercle des quartes'},
+  circle_fourths_desc:  {en:'Each step clockwise adds one flat (or removes one sharp).', fr:'Chaque pas dans le sens horaire ajoute un bémol (ou enlève un dièse).'},
+  callout_circles:      {en:'The Circle of Fifths is also a map of key signatures: C major has none, G has one sharp, D has two, and so on. Going the other way: F has one flat, B♭ has two. Closely related keys (neighbours on the circle) share almost all their notes — that\'s why modulating between them sounds natural.', fr:'Le cercle des quintes est aussi une carte des armures : Do majeur n\'en a aucune, Sol a un dièse, Ré en a deux, etc. Dans l\'autre sens : Fa a un bémol, Si♭ en a deux. Les tonalités voisines sur le cercle partagent presque toutes leurs notes — c\'est pourquoi moduler entre elles semble naturel.'},
 };
 
 function applyStaticTranslations(){
@@ -580,6 +655,11 @@ const SCALES = [
   {id:'lydian',     name:{en:'Lydian', fr:'Lydien'},                              steps:[0,2,4,6,7,9,11], formula:{en:'W W W H W W H', fr:'T T T S T T S'}},
   {id:'mixolydian', name:{en:'Mixolydian', fr:'Mixolydien'},                      steps:[0,2,4,5,7,9,10], formula:{en:'W W H W W H W', fr:'T T S T T S T'}},
   {id:'locrian',    name:{en:'Locrian', fr:'Locrien'},                            steps:[0,1,3,5,6,8,10], formula:{en:'H W W H W W W', fr:'S T T S T T T'}},
+  {id:'chromatic',  name:{en:'Chromatic', fr:'Chromatique'},                      steps:[0,1,2,3,4,5,6,7,8,9,10,11], formula:{en:'H H H H H H H H H H H H', fr:'S S S S S S S S S S S S'}},
+  {id:'majPent',    name:{en:'Major Pentatonic', fr:'Pentatonique majeure'},       steps:[0,2,4,7,9],   formula:{en:'W W m3 W m3', fr:'T T m3 T m3'}},
+  {id:'minPent',    name:{en:'Minor Pentatonic', fr:'Pentatonique mineure'},       steps:[0,3,5,7,10],  formula:{en:'m3 W W m3 W', fr:'m3 T T m3 T'}},
+  {id:'wholeTone',  name:{en:'Whole Tone', fr:'Ton entier'},                       steps:[0,2,4,6,8,10], formula:{en:'W W W W W W', fr:'T T T T T T'}},
+  {id:'octatonic',  name:{en:'Octatonic (Diminished)', fr:'Octatonique (Diminué)'}, steps:[0,1,3,4,6,7,9,10], formula:{en:'H W H W H W H W', fr:'S T S T S T S T'}},
 ];
 function scaleById(id){ return SCALES.find(s=>s.id===id); }
 function intervalByS(s){ return INTERVALS.find(iv=>iv.s===s); }
@@ -781,6 +861,66 @@ function buildInversionTable(){
   pairs.forEach(([a,b])=>{ const iva=intervalByS(a),ivb=intervalByS(b); const tr=document.createElement('tr'); tr.innerHTML=`<td>${iva.short} — ${iva.name[LANG]}</td><td>${ivb.short} — ${ivb.name[LANG]}</td>`; tbody.appendChild(tr); });
 }
 
+const NINE_SCALE_IDS = ['major','natMinor','harMinor','melMinor','chromatic','majPent','minPent','wholeTone','octatonic'];
+const WHITE_MIDI = [0,2,4,5,7,9,11]; // semitones of white keys in one octave
+function buildNineScales(){
+  const grid = document.getElementById('nine-scales-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  NINE_SCALE_IDS.forEach(id => {
+    const sc = scaleById(id);
+    if(!sc) return;
+    const stepsSet = new Set(sc.steps);
+    const card = document.createElement('div');
+    card.className = 'scale-ref-card';
+    // mini keyboard bar: show 12 cells, one per semitone
+    const cells = Array.from({length:12},(_,i)=>{
+      const isWhite = WHITE_MIDI.includes(i);
+      let cls = 'mk ' + (isWhite ? 'mk-white' : 'mk-black');
+      if(i===0) cls += ' mk-root';
+      else if(stepsSet.has(i)) cls += ' mk-active';
+      return `<div class="${cls}" title="${NOTE_NAMES[LANG][i]}"></div>`;
+    }).join('');
+    // notes in C
+    const noteStr = sc.steps.map(s=>NOTE_NAMES[LANG][s%12]).join(' – ');
+    const octNote = LANG==='fr'?'(octave)':'(octave)';
+    card.innerHTML = `<h4>${sc.name[LANG]}</h4><div class="sc-formula">${sc.formula[LANG]}</div><div class="mini-kb">${cells}</div><div class="sc-notes">${noteStr} – ${NOTE_NAMES[LANG][0]} ${octNote}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function drawCircle(containerId, stepOrder){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const size = 340, cx = size/2, cy = size/2, R = 130, Ri = 92;
+  const n = 12;
+  let svg = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="max-width:100%;">`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="${R+26}" fill="none" stroke="var(--line)" stroke-width="1"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="${Ri+16}" fill="none" stroke="var(--line)" stroke-width="1"/>`;
+  const majMinor = [
+    ['C','Am'],['G','Em'],['D','Bm'],['A','F♯m'],['E','C♯m'],['B','G♯m'],
+    ['F♯/G♭','D♯m/E♭m'],['D♭','B♭m'],['A♭','Fm'],['E♭','Cm'],['B♭','Gm'],['F','Dm']
+  ];
+  stepOrder.forEach((idx,pos)=>{
+    const angle = (pos / n) * 2 * Math.PI - Math.PI/2;
+    // outer major
+    const xo = cx + R * Math.cos(angle);
+    const yo = cy + R * Math.sin(angle);
+    svg += `<circle cx="${xo.toFixed(1)}" cy="${yo.toFixed(1)}" r="22" fill="${pos===0?'var(--rust)':'var(--parchment-dim)'}" stroke="var(--line)" stroke-width="1.2"/>`;
+    svg += `<text x="${xo.toFixed(1)}" y="${(yo+1).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="11" font-weight="700" fill="${pos===0?'#fff':'var(--ink)'}">${majMinor[idx][0]}</text>`;
+    // inner minor
+    const xi = cx + Ri * Math.cos(angle);
+    const yi = cy + Ri * Math.sin(angle);
+    svg += `<circle cx="${xi.toFixed(1)}" cy="${yi.toFixed(1)}" r="16" fill="${pos===0?'rgba(183,73,43,0.15)':'#fff'}" stroke="var(--line)" stroke-width="1"/>`;
+    svg += `<text x="${xi.toFixed(1)}" y="${(yi+1).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="var(--ink-soft)">${majMinor[idx][1]}</text>`;
+  });
+  svg += '</svg>';
+  el.innerHTML = svg;
+}
+
+const FIFTHS_ORDER  = [0,7,2,9,4,11,6,1,8,3,10,5]; // C G D A E B F#/Gb Db Ab Eb Bb F
+const FOURTHS_ORDER = [0,5,10,3,8,1,6,11,4,9,2,7]; // C F Bb Eb Ab Db Gb B E A D G
+
 function renderAll(){
   applyStaticTranslations();
   fillNoteSelect(ivRootSel); fillIntervalSelect(ivIntervalSel);
@@ -790,6 +930,9 @@ function renderAll(){
   buildIntervalTable(); renderIntervalExplorer(); renderScale();
   buildChordCards('triad-cards','triad'); buildChordCards('seventh-cards','seventh');
   renderChordExplorer(); renderDiatonic(); buildRelationStack(); buildInversionTable();
+  buildNineScales();
+  drawCircle('circle-fifths', FIFTHS_ORDER);
+  drawCircle('circle-fourths', FOURTHS_ORDER);
 }
 
 function setLanguage(lang){
