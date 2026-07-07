@@ -498,8 +498,15 @@
         <div class="circle-svg-wrap" id="circle-fourths"></div>
       </div>
     </div>
+    <!-- Legend -->
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin:24px 0 12px 0; font-family:var(--mono); font-size:.78rem; color:var(--ink-soft);">
+      <span style="display:flex;align-items:center;gap:7px;"><span style="width:14px;height:14px;border-radius:50%;background:var(--rust);display:inline-block;"></span> C major (start)</span>
+      <span style="display:flex;align-items:center;gap:7px;"><span style="width:14px;height:14px;border-radius:50%;background:#B8860B;display:inline-block;"></span> Sharps ♯</span>
+      <span style="display:flex;align-items:center;gap:7px;"><span style="width:14px;height:14px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Flats ♭</span>
+      <span style="display:flex;align-items:center;gap:7px;"><span style="width:14px;height:14px;border-radius:50%;background:#6B5B9A;display:inline-block;"></span> Enharmonic (6♯/6♭)</span>
+    </div>
     <div class="callout" data-i18n="callout_circles">
-      The two circles are the same wheel — just read in opposite directions. This is because a fifth up (C→G) and a fourth down (C→G) land on the same pitch class: the circle of fourths is the circle of fifths read counterclockwise, and vice versa.
+      <strong>Key signature mnemonic — sharps:</strong> <em>Father Charles Goes Down And Ends Battle</em> (F C G D A E B). Each word gives the next sharp added as you move clockwise. <strong>Flats:</strong> <em>Battle Ends And Down Goes Charles Father</em> — the same sentence reversed (B E A D G C F). Neighbouring keys on either circle share all but one note, which is why moving between them sounds smooth.
     </div>
   </div>
 </section>
@@ -609,7 +616,7 @@ const UI_TEXT = {
   circle_fifths_desc:   {en:'Each step clockwise adds one sharp (or removes one flat).', fr:'Chaque pas dans le sens horaire ajoute un dièse (ou enlève un bémol).'},
   circle_fourths_title: {en:'Circle of Fourths', fr:'Cercle des quartes'},
   circle_fourths_desc:  {en:'Each step clockwise adds one flat (or removes one sharp).', fr:'Chaque pas dans le sens horaire ajoute un bémol (ou enlève un dièse).'},
-  callout_circles:      {en:'The Circle of Fifths is also a map of key signatures: C major has none, G has one sharp, D has two, and so on. Going the other way: F has one flat, B♭ has two. Closely related keys (neighbours on the circle) share almost all their notes — that\'s why modulating between them sounds natural.', fr:'Le cercle des quintes est aussi une carte des armures : Do majeur n\'en a aucune, Sol a un dièse, Ré en a deux, etc. Dans l\'autre sens : Fa a un bémol, Si♭ en a deux. Les tonalités voisines sur le cercle partagent presque toutes leurs notes — c\'est pourquoi moduler entre elles semble naturel.'},
+  callout_circles:      {en:'<strong>Key signature mnemonic — sharps:</strong> <em>Father Charles Goes Down And Ends Battle</em> (F C G D A E B). Each word gives the next sharp added as you move clockwise. <strong>Flats:</strong> <em>Battle Ends And Down Goes Charles Father</em> — the same sentence reversed (B E A D G C F). Neighbouring keys on either circle share all but one note, which is why moving between them sounds smooth.', fr:'<strong>Moyen mnémotechnique — dièses :</strong> <em>Father Charles Goes Down And Ends Battle</em> (Fa Do Sol Ré La Mi Si). Chaque mot donne le dièse suivant ajouté en avançant dans le sens horaire. <strong>Bémols :</strong> <em>Battle Ends And Down Goes Charles Father</em> — la même phrase à l\'envers (Si Mi La Ré Sol Do Fa). Les tonalités voisines partagent toutes leurs notes sauf une, ce qui rend les modulations entre elles naturelles.'},
 };
 
 function applyStaticTranslations(){
@@ -918,8 +925,98 @@ function drawCircle(containerId, stepOrder){
   el.innerHTML = svg;
 }
 
-const FIFTHS_ORDER  = [0,7,2,9,4,11,6,1,8,3,10,5]; // C G D A E B F#/Gb Db Ab Eb Bb F
-const FOURTHS_ORDER = [0,5,10,3,8,1,6,11,4,9,2,7]; // C F Bb Eb Ab Db Gb B E A D G
+const FIFTHS_DATA = [
+  {major:'C',   minor:'Am',   sig:'0',   kind:'n'},
+  {major:'G',   minor:'Em',   sig:'1 ♯', kind:'s'},
+  {major:'D',   minor:'Bm',   sig:'2 ♯', kind:'s'},
+  {major:'A',   minor:'F♯m',  sig:'3 ♯', kind:'s'},
+  {major:'E',   minor:'C♯m',  sig:'4 ♯', kind:'s'},
+  {major:'B',   minor:'G♯m',  sig:'5 ♯', kind:'s'},
+  {major:'F♯',  minor:'D♯m',  sig:'6♯/♭',kind:'e'},
+  {major:'D♭',  minor:'B♭m',  sig:'5 ♭', kind:'f'},
+  {major:'A♭',  minor:'Fm',   sig:'4 ♭', kind:'f'},
+  {major:'E♭',  minor:'Cm',   sig:'3 ♭', kind:'f'},
+  {major:'B♭',  minor:'Gm',   sig:'2 ♭', kind:'f'},
+  {major:'F',   minor:'Dm',   sig:'1 ♭', kind:'f'},
+];
+const FOURTHS_DATA = [
+  {major:'C',   minor:'Am',   sig:'0',   kind:'n'},
+  {major:'F',   minor:'Dm',   sig:'1 ♭', kind:'f'},
+  {major:'B♭',  minor:'Gm',   sig:'2 ♭', kind:'f'},
+  {major:'E♭',  minor:'Cm',   sig:'3 ♭', kind:'f'},
+  {major:'A♭',  minor:'Fm',   sig:'4 ♭', kind:'f'},
+  {major:'D♭',  minor:'B♭m',  sig:'5 ♭', kind:'f'},
+  {major:'G♭',  minor:'E♭m',  sig:'6♭/♯',kind:'e'},
+  {major:'B',   minor:'G♯m',  sig:'5 ♯', kind:'s'},
+  {major:'E',   minor:'C♯m',  sig:'4 ♯', kind:'s'},
+  {major:'A',   minor:'F♯m',  sig:'3 ♯', kind:'s'},
+  {major:'D',   minor:'Bm',   sig:'2 ♯', kind:'s'},
+  {major:'G',   minor:'Em',   sig:'1 ♯', kind:'s'},
+];
+
+function drawCircle(containerId, data, arrowLabel){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const S=440, cx=220, cy=220;
+  const Ro=168, Rm=116, DOT_O=27, DOT_M=18;
+  const n=12;
+  // kind → fill colour for outer dot
+  const KIND_FILL = {n:'var(--rust)', s:'#B8860B', f:'var(--teal)', e:'#6B5B9A'};
+  const KIND_TEXT = {n:'#fff', s:'#fff', f:'#fff', e:'#fff'};
+
+  let svg = `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" style="max-width:100%;">`;
+
+  // Background rings
+  svg += `<circle cx="${cx}" cy="${cy}" r="${Ro+DOT_O+4}" fill="#EDE8D4" stroke="#D8CBA0" stroke-width="1.5"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="${Rm+DOT_M+3}" fill="#F3EEDC" stroke="#D8CBA0" stroke-width="1"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="${Rm-DOT_M-6}" fill="#fff" stroke="#D8CBA0" stroke-width="1"/>`;
+
+  // Spoke lines
+  data.forEach((_,pos)=>{
+    const a=(pos/n)*2*Math.PI - Math.PI/2;
+    const x1=(cx+(Rm-DOT_M-6)*Math.cos(a)).toFixed(1);
+    const y1=(cy+(Rm-DOT_M-6)*Math.sin(a)).toFixed(1);
+    const x2=(cx+(Ro-DOT_O-2)*Math.cos(a)).toFixed(1);
+    const y2=(cy+(Ro-DOT_O-2)*Math.sin(a)).toFixed(1);
+    svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#D8CBA0" stroke-width="1"/>`;
+  });
+
+  // Dots + labels
+  data.forEach((d,pos)=>{
+    const a=(pos/n)*2*Math.PI - Math.PI/2;
+    const xo=(cx+Ro*Math.cos(a)).toFixed(1);
+    const yo=(cy+Ro*Math.sin(a)).toFixed(1);
+    const xm=(cx+Rm*Math.cos(a)).toFixed(1);
+    const ym=(cy+Rm*Math.sin(a)).toFixed(1);
+    const fc=KIND_FILL[d.kind], tc=KIND_TEXT[d.kind];
+
+    // outer: major key
+    svg += `<circle cx="${xo}" cy="${yo}" r="${DOT_O}" fill="${fc}" stroke="none"/>`;
+    svg += `<text x="${xo}" y="${(parseFloat(yo)-6).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="12" font-weight="700" fill="${tc}">${d.major}</text>`;
+    svg += `<text x="${xo}" y="${(parseFloat(yo)+8).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="8.5" fill="${d.kind==='n'?'rgba(255,255,255,0.85)':'rgba(255,255,255,0.8)'}">${d.sig}</text>`;
+
+    // middle: relative minor
+    svg += `<circle cx="${xm}" cy="${ym}" r="${DOT_M}" fill="${d.kind==='n'?'rgba(183,73,43,0.12)':'#fff'}" stroke="#D8CBA0" stroke-width="1"/>`;
+    svg += `<text x="${xm}" y="${(parseFloat(ym)+0.5).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="#5A6070">${d.minor}</text>`;
+  });
+
+  // Arrow arc (clockwise indicator)
+  const ar=Ro+DOT_O+12;
+  const startA=-Math.PI/2 + 0.22, endA=-Math.PI/2 + 2*Math.PI - 0.22;
+  const sx=(cx+ar*Math.cos(startA)).toFixed(1), sy=(cy+ar*Math.sin(startA)).toFixed(1);
+  const ex=(cx+ar*Math.cos(endA)).toFixed(1),   ey=(cy+ar*Math.sin(endA)).toFixed(1);
+  svg += `<path d="M ${sx} ${sy} A ${ar} ${ar} 0 1 1 ${ex} ${ey}" fill="none" stroke="#C9A227" stroke-width="1.8" stroke-dasharray="4 3" stroke-linecap="round" marker-end="url(#arr${containerId})"/>`;
+  svg += `<defs><marker id="arr${containerId}" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><polygon points="0 0, 7 3.5, 0 7" fill="#C9A227"/></marker></defs>`;
+
+  // Center text
+  svg += `<text x="${cx}" y="${cy-16}" text-anchor="middle" dominant-baseline="middle" font-family="var(--serif-display,serif)" font-size="13" font-weight="700" fill="#1B1F2A">${arrowLabel}</text>`;
+  svg += `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="#5A6070">outer = major</text>`;
+  svg += `<text x="${cx}" y="${cy+13}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="#5A6070">inner = relative</text>`;
+  svg += `<text x="${cx}" y="${cy+25}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="#5A6070">minor key</text>`;
+
+  svg += '</svg>';
+  el.innerHTML = svg;
+}
 
 function renderAll(){
   applyStaticTranslations();
@@ -931,8 +1028,8 @@ function renderAll(){
   buildChordCards('triad-cards','triad'); buildChordCards('seventh-cards','seventh');
   renderChordExplorer(); renderDiatonic(); buildRelationStack(); buildInversionTable();
   buildNineScales();
-  drawCircle('circle-fifths', FIFTHS_ORDER);
-  drawCircle('circle-fourths', FOURTHS_ORDER);
+  drawCircle('circle-fifths',  FIFTHS_DATA,  LANG==='fr'?'↻ Quintes':'↻ Fifths');
+  drawCircle('circle-fourths', FOURTHS_DATA, LANG==='fr'?'↻ Quartes':'↻ Fourths');
 }
 
 function setLanguage(lang){
