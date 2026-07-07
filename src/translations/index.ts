@@ -312,10 +312,41 @@ export const shopPageT = {
   },
 };
 
+export const resourcesPageT = {
+  en: {
+    eyebrow: 'Free Practice Tools',
+    title: 'Resources',
+    sub: 'Interactive tools and materials to support your practice between lessons — free for everyone, no login required.',
+    items: [
+      {
+        id: 'sight-reading',
+        href: '/resources/sight-reading',
+        label: 'Note Explorer',
+        desc: 'Train your note-reading skills on the treble and bass clef. Choose your difficulty, set a timer, and challenge yourself.',
+        color: '#5BD4A8',
+      },
+    ],
+  },
+  fr: {
+    eyebrow: 'Outils de pratique gratuits',
+    title: 'Ressources',
+    sub: 'Des outils interactifs et du matériel pour soutenir ta pratique entre les cours — gratuit pour tous, sans connexion requise.',
+    items: [
+      {
+        id: 'sight-reading',
+        href: '/resources/sight-reading',
+        label: 'Explorateur de Notes',
+        desc: 'Entraîne ta lecture de notes en clé de sol et de fa. Choisis ton niveau, règle le minuteur et relève le défi.',
+        color: '#5BD4A8',
+      },
+    ],
+  },
+};
+
 export const t = {
   en: {
     nav: {
-      programs: 'Programs', faculty: 'Faculty', about: 'About', contact: 'Contact', shop: 'Shop', sightReading: 'Sight Reading',
+      programs: 'Programs', faculty: 'Faculty', about: 'About', contact: 'Contact', shop: 'Shop', sightReading: 'Sight Reading', resources: 'Resources',
       login: 'Login', enroll: 'Enroll',
     },
     hero: {
@@ -404,7 +435,7 @@ export const t = {
 
   fr: {
     nav: {
-      programs: 'Programmes', faculty: 'Enseignants', about: 'À propos', contact: 'Contact', shop: 'Boutique', sightReading: 'Lecture de Notes',
+      programs: 'Programmes', faculty: 'Enseignants', about: 'À propos', contact: 'Contact', shop: 'Boutique', sightReading: 'Lecture de Notes', resources: 'Ressources',
       login: 'Connexion', enroll: "S'inscrire",
     },
     hero: {
