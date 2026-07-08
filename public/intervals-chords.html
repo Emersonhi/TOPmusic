@@ -922,32 +922,32 @@ function drawCircle(containerId, stepOrder){
 }
 
 const FIFTHS_DATA = [
-  {major:'C',   minor:'Am',   sig:'0',   kind:'n'},
-  {major:'G',   minor:'Em',   sig:'1 ♯', kind:'s'},
-  {major:'D',   minor:'Bm',   sig:'2 ♯', kind:'s'},
-  {major:'A',   minor:'F♯m',  sig:'3 ♯', kind:'s'},
-  {major:'E',   minor:'C♯m',  sig:'4 ♯', kind:'s'},
-  {major:'B',   minor:'G♯m',  sig:'5 ♯', kind:'s'},
-  {major:'F♯',  minor:'D♯m',  sig:'6♯/♭',kind:'e'},
-  {major:'D♭',  minor:'B♭m',  sig:'5 ♭', kind:'f'},
-  {major:'A♭',  minor:'Fm',   sig:'4 ♭', kind:'f'},
-  {major:'E♭',  minor:'Cm',   sig:'3 ♭', kind:'f'},
-  {major:'B♭',  minor:'Gm',   sig:'2 ♭', kind:'f'},
-  {major:'F',   minor:'Dm',   sig:'1 ♭', kind:'f'},
+  {major:{en:'C',   fr:'Do'},   minor:{en:'Am',   fr:'Lam'},    sig:'0',    kind:'n'},
+  {major:{en:'G',   fr:'Sol'},  minor:{en:'Em',   fr:'Mim'},    sig:'1 ♯',  kind:'s'},
+  {major:{en:'D',   fr:'Ré'},   minor:{en:'Bm',   fr:'Sim'},    sig:'2 ♯',  kind:'s'},
+  {major:{en:'A',   fr:'La'},   minor:{en:'F♯m',  fr:'Fa♯m'},   sig:'3 ♯',  kind:'s'},
+  {major:{en:'E',   fr:'Mi'},   minor:{en:'C♯m',  fr:'Do♯m'},   sig:'4 ♯',  kind:'s'},
+  {major:{en:'B',   fr:'Si'},   minor:{en:'G♯m',  fr:'Sol♯m'},  sig:'5 ♯',  kind:'s'},
+  {major:{en:'F♯',  fr:'Fa♯'},  minor:{en:'D♯m',  fr:'Ré♯m'},   sig:'6♯/♭', kind:'e'},
+  {major:{en:'D♭',  fr:'Ré♭'},  minor:{en:'B♭m',  fr:'Si♭m'},   sig:'5 ♭',  kind:'f'},
+  {major:{en:'A♭',  fr:'La♭'},  minor:{en:'Fm',   fr:'Fam'},    sig:'4 ♭',  kind:'f'},
+  {major:{en:'E♭',  fr:'Mi♭'},  minor:{en:'Cm',   fr:'Dom'},    sig:'3 ♭',  kind:'f'},
+  {major:{en:'B♭',  fr:'Si♭'},  minor:{en:'Gm',   fr:'Solm'},   sig:'2 ♭',  kind:'f'},
+  {major:{en:'F',   fr:'Fa'},   minor:{en:'Dm',   fr:'Rém'},    sig:'1 ♭',  kind:'f'},
 ];
 const FOURTHS_DATA = [
-  {major:'C',   minor:'Am',   sig:'0',   kind:'n'},
-  {major:'F',   minor:'Dm',   sig:'1 ♭', kind:'f'},
-  {major:'B♭',  minor:'Gm',   sig:'2 ♭', kind:'f'},
-  {major:'E♭',  minor:'Cm',   sig:'3 ♭', kind:'f'},
-  {major:'A♭',  minor:'Fm',   sig:'4 ♭', kind:'f'},
-  {major:'D♭',  minor:'B♭m',  sig:'5 ♭', kind:'f'},
-  {major:'G♭',  minor:'E♭m',  sig:'6♭/♯',kind:'e'},
-  {major:'B',   minor:'G♯m',  sig:'5 ♯', kind:'s'},
-  {major:'E',   minor:'C♯m',  sig:'4 ♯', kind:'s'},
-  {major:'A',   minor:'F♯m',  sig:'3 ♯', kind:'s'},
-  {major:'D',   minor:'Bm',   sig:'2 ♯', kind:'s'},
-  {major:'G',   minor:'Em',   sig:'1 ♯', kind:'s'},
+  {major:{en:'C',   fr:'Do'},   minor:{en:'Am',   fr:'Lam'},    sig:'0',    kind:'n'},
+  {major:{en:'F',   fr:'Fa'},   minor:{en:'Dm',   fr:'Rém'},    sig:'1 ♭',  kind:'f'},
+  {major:{en:'B♭',  fr:'Si♭'},  minor:{en:'Gm',   fr:'Solm'},   sig:'2 ♭',  kind:'f'},
+  {major:{en:'E♭',  fr:'Mi♭'},  minor:{en:'Cm',   fr:'Dom'},    sig:'3 ♭',  kind:'f'},
+  {major:{en:'A♭',  fr:'La♭'},  minor:{en:'Fm',   fr:'Fam'},    sig:'4 ♭',  kind:'f'},
+  {major:{en:'D♭',  fr:'Ré♭'},  minor:{en:'B♭m',  fr:'Si♭m'},   sig:'5 ♭',  kind:'f'},
+  {major:{en:'G♭',  fr:'Sol♭'}, minor:{en:'E♭m',  fr:'Mi♭m'},   sig:'6♭/♯', kind:'e'},
+  {major:{en:'B',   fr:'Si'},   minor:{en:'G♯m',  fr:'Sol♯m'},  sig:'5 ♯',  kind:'s'},
+  {major:{en:'E',   fr:'Mi'},   minor:{en:'C♯m',  fr:'Do♯m'},   sig:'4 ♯',  kind:'s'},
+  {major:{en:'A',   fr:'La'},   minor:{en:'F♯m',  fr:'Fa♯m'},   sig:'3 ♯',  kind:'s'},
+  {major:{en:'D',   fr:'Ré'},   minor:{en:'Bm',   fr:'Sim'},    sig:'2 ♯',  kind:'s'},
+  {major:{en:'G',   fr:'Sol'},  minor:{en:'Em',   fr:'Mim'},    sig:'1 ♯',  kind:'s'},
 ];
 
 function drawCircle(containerId, data, arrowLabel){
@@ -988,12 +988,12 @@ function drawCircle(containerId, data, arrowLabel){
 
     // outer: major key
     svg += `<circle cx="${xo}" cy="${yo}" r="${DOT_O}" fill="${fc}" stroke="none"/>`;
-    svg += `<text x="${xo}" y="${(parseFloat(yo)-6).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="12" font-weight="700" fill="${tc}">${d.major}</text>`;
+    svg += `<text x="${xo}" y="${(parseFloat(yo)-6).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="12" font-weight="700" fill="${tc}">${d.major[LANG]}</text>`;
     svg += `<text x="${xo}" y="${(parseFloat(yo)+8).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="8.5" fill="${d.kind==='n'?'rgba(255,255,255,0.85)':'rgba(255,255,255,0.8)'}">${d.sig}</text>`;
 
     // middle: relative minor
     svg += `<circle cx="${xm}" cy="${ym}" r="${DOT_M}" fill="${d.kind==='n'?'rgba(183,73,43,0.12)':'#fff'}" stroke="#D8CBA0" stroke-width="1"/>`;
-    svg += `<text x="${xm}" y="${(parseFloat(ym)+0.5).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="#5A6070">${d.minor}</text>`;
+    svg += `<text x="${xm}" y="${(parseFloat(ym)+0.5).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="#5A6070">${d.minor[LANG]}</text>`;
   });
 
   // Arrow arc (clockwise indicator)
