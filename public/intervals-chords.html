@@ -243,10 +243,6 @@
       <li><a href="#nine-scales" data-i18n="nav_ninescales">Nine Scales</a></li>
       <li><a href="#circles" data-i18n="nav_circles">Circles</a></li>
     </ul>
-    <div class="lang-toggle" role="group" aria-label="Language">
-      <button id="lang-en" class="active" data-lang="en">EN</button>
-      <button id="lang-fr" data-lang="fr">FR</button>
-    </div>
   </div>
 </nav>
 
@@ -1034,12 +1030,11 @@ function renderAll(){
 
 function setLanguage(lang){
   LANG=lang;
-  document.getElementById('lang-en').classList.toggle('active',lang==='en');
-  document.getElementById('lang-fr').classList.toggle('active',lang==='fr');
   renderAll();
 }
-document.getElementById('lang-en').addEventListener('click',()=>setLanguage('en'));
-document.getElementById('lang-fr').addEventListener('click',()=>setLanguage('fr'));
+window.addEventListener('message', e => {
+  if(e.data && (e.data.lang === 'en' || e.data.lang === 'fr')) setLanguage(e.data.lang);
+});
 
 document.getElementById('sc-root').value='';
 document.getElementById('di-root').value='';
