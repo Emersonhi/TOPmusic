@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { ArrowRight, BookOpen, Music2 } from 'lucide-react';
+import { ArrowRight, BookOpen, BookMarked, Music2 } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 
 const tools = [
@@ -24,6 +24,16 @@ const tools = [
     desc: {
       en: 'A complete interactive reference for intervals, scales, triads, seventh chords, diatonic harmony, and inversions — across all twelve keys. Everything makes sound.',
       fr: "Une référence interactive complète sur les intervalles, les gammes, les triades, les accords de septième, l'harmonie diatonique et les renversements — dans les douze tonalités. Tout produit du son.",
+    },
+  },
+  {
+    href: '/glossary',
+    icon: BookMarked,
+    color: '#4a9d8f',
+    title: { en: 'Glossary of Musical Terms', fr: 'Glossaire des termes musicaux' },
+    desc: {
+      en: 'A comprehensive A–Z reference of over 300 musical terms — from articulation to time signatures — plus a dedicated section on marching band vocabulary.',
+      fr: "Une référence complète de plus de 300 termes musicaux de A à Z — de l'articulation aux chiffrages de mesure — avec une section dédiée au vocabulaire de fanfare.",
     },
   },
 ];
@@ -61,7 +71,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* Tool cards */}
-        <div className="max-w-4xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="max-w-5xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {tools.map(tool => {
             const Icon = tool.icon;
             return (
