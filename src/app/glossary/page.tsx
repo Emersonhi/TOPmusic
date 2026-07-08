@@ -1169,12 +1169,6 @@ export default function GlossaryPage() {
             </div>
           )}
 
-          {/* Sources */}
-          {!search && (
-            <p className="font-ui text-xs mt-8 pb-4" style={{ color: 'rgba(255,255,255,0.25)' }}>
-              {UI.sources[lang]}: Western Michigan University (wmich.edu), classicalworks.com, classicfm.com
-            </p>
-          )}
         </div>
       </main>
       <Footer />
