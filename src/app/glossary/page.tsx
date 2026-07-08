@@ -274,7 +274,7 @@ const GLOSSARY: Section[] = [
     { term: 'monotone', def: 'Repetition of a single tone.' },
     { term: 'motet', def: 'A polyphonic vocal piece set to a sacred Latin text that is not from the Roman Catholic Mass.' },
     { term: 'motif', def: 'Primary theme or subject that is developed.' },
-    { term: 'motive', def: "A small musical fragment ("Lego" block) used to build a larger musical idea; can be reworked in the course of a composition (as in the 4-note motive in Beethoven's Symphony No. 5 in C minor)." },
+    { term: 'motive', def: "A small musical fragment (“Lego” block) used to build a larger musical idea; can be reworked in the course of a composition (as in the 4-note motive in Beethoven’s Symphony No. 5 in C minor)." },
     { term: 'movement', def: 'A complete, independent division of a larger work.' },
     { term: 'mp3', def: 'A modern technology that allows digital CD-quality sound to be compressed into files that are approximately 8 times smaller than the original, with relatively little loss of quality.' },
     { term: 'musette', def: 'A Baroque dance with a drone-bass.' },
