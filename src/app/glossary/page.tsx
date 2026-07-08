@@ -1142,32 +1142,6 @@ export default function GlossaryPage() {
             ))
           )}
 
-          {/* Marching Band section — only show when not filtering or search matches */}
-          {(!search || MARCHING_TERMS.some(t => t.term.toLowerCase().includes(search.toLowerCase()) || t.def.toLowerCase().includes(search.toLowerCase()))) && (
-            <div className="mt-4 mb-12">
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-4xl font-display font-bold leading-none" style={{ color: 'rgba(221,118,52,0.5)' }}>★</span>
-                <h2 className="text-xl font-display" style={{ color: 'var(--ivory)' }}>{UI.marchTitle[lang]}</h2>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(221,118,52,0.2)' }} />
-              </div>
-              <div className="flex flex-col gap-px">
-                {MARCHING_TERMS
-                  .filter(t => !search || t.term.toLowerCase().includes(search.toLowerCase()) || t.def.toLowerCase().includes(search.toLowerCase()))
-                  .map((t, i) => (
-                    <div
-                      key={i}
-                      className="flex gap-4 px-5 py-4 rounded-xl transition-colors duration-150"
-                      style={{ background: 'var(--surface-2)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(221,118,52,0.05)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                    >
-                      <span className="font-ui font-bold text-sm shrink-0 pt-0.5" style={{ color: 'var(--gold)', minWidth: '180px' }}>{t.term}</span>
-                      <span className="font-ui text-sm leading-relaxed" style={{ color: 'var(--mist)' }}>{lang === 'fr' && FR_DEFS[t.term] ? FR_DEFS[t.term] : t.def}</span>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          )}
 
         </div>
       </main>
