@@ -649,20 +649,20 @@ const CAT_LABEL = {p:{en:'Consonant (perfect)',fr:'Consonante (parfaite)'},ic:{e
 const CAT_CLASS = {p:'cons-p', ic:'cons-i', d:'diss'};
 
 const SCALES = [
-  {id:'major',      name:{en:'Major (Ionian)', fr:'Majeure (Ionien)'},           steps:[0,2,4,5,7,9,11], formula:{en:'W W H W W W H', fr:'T T S T T T S'}},
-  {id:'natMinor',   name:{en:'Natural Minor (Aeolian)', fr:'Mineure naturelle (Éolien)'}, steps:[0,2,3,5,7,8,10], formula:{en:'W H W W H W W', fr:'T S T T S T T'}},
-  {id:'harMinor',   name:{en:'Harmonic Minor', fr:'Mineure harmonique'},          steps:[0,2,3,5,7,8,11], formula:{en:'W H W W H A H', fr:'T S T T S A S'}},
-  {id:'melMinor',   name:{en:'Melodic Minor (asc.)', fr:'Mineure mélodique (asc.)'}, steps:[0,2,3,5,7,9,11], formula:{en:'W H W W W W H', fr:'T S T T T T S'}},
-  {id:'dorian',     name:{en:'Dorian', fr:'Dorien'},                              steps:[0,2,3,5,7,9,10], formula:{en:'W H W W W H W', fr:'T S T T T S T'}},
-  {id:'phrygian',   name:{en:'Phrygian', fr:'Phrygien'},                          steps:[0,1,3,5,7,8,10], formula:{en:'H W W W H W W', fr:'S T T T S T T'}},
-  {id:'lydian',     name:{en:'Lydian', fr:'Lydien'},                              steps:[0,2,4,6,7,9,11], formula:{en:'W W W H W W H', fr:'T T T S T T S'}},
-  {id:'mixolydian', name:{en:'Mixolydian', fr:'Mixolydien'},                      steps:[0,2,4,5,7,9,10], formula:{en:'W W H W W H W', fr:'T T S T T S T'}},
-  {id:'locrian',    name:{en:'Locrian', fr:'Locrien'},                            steps:[0,1,3,5,6,8,10], formula:{en:'H W W H W W W', fr:'S T T S T T T'}},
-  {id:'chromatic',  name:{en:'Chromatic', fr:'Chromatique'},                      steps:[0,1,2,3,4,5,6,7,8,9,10,11], formula:{en:'H H H H H H H H H H H H', fr:'S S S S S S S S S S S S'}},
+  {id:'major',      name:{en:'Major (Ionian)', fr:'Majeure (Ionien)'},           steps:[0,2,4,5,7,9,11], formula:{en:'W W H W W W H', fr:'T T ½T T T T ½T'}},
+  {id:'natMinor',   name:{en:'Natural Minor (Aeolian)', fr:'Mineure naturelle (Éolien)'}, steps:[0,2,3,5,7,8,10], formula:{en:'W H W W H W W', fr:'T ½T T T ½T T T'}},
+  {id:'harMinor',   name:{en:'Harmonic Minor', fr:'Mineure harmonique'},          steps:[0,2,3,5,7,8,11], formula:{en:'W H W W H A H', fr:'T ½T T T ½T A ½T'}},
+  {id:'melMinor',   name:{en:'Melodic Minor (asc.)', fr:'Mineure mélodique (asc.)'}, steps:[0,2,3,5,7,9,11], formula:{en:'W H W W W W H', fr:'T ½T T T T T ½T'}},
+  {id:'dorian',     name:{en:'Dorian', fr:'Dorien'},                              steps:[0,2,3,5,7,9,10], formula:{en:'W H W W W H W', fr:'T ½T T T T ½T T'}},
+  {id:'phrygian',   name:{en:'Phrygian', fr:'Phrygien'},                          steps:[0,1,3,5,7,8,10], formula:{en:'H W W W H W W', fr:'½T T T T ½T T T'}},
+  {id:'lydian',     name:{en:'Lydian', fr:'Lydien'},                              steps:[0,2,4,6,7,9,11], formula:{en:'W W W H W W H', fr:'T T T ½T T T ½T'}},
+  {id:'mixolydian', name:{en:'Mixolydian', fr:'Mixolydien'},                      steps:[0,2,4,5,7,9,10], formula:{en:'W W H W W H W', fr:'T T ½T T T ½T T'}},
+  {id:'locrian',    name:{en:'Locrian', fr:'Locrien'},                            steps:[0,1,3,5,6,8,10], formula:{en:'H W W H W W W', fr:'½T T T ½T T T T'}},
+  {id:'chromatic',  name:{en:'Chromatic', fr:'Chromatique'},                      steps:[0,1,2,3,4,5,6,7,8,9,10,11], formula:{en:'H H H H H H H H H H H H', fr:'½T ½T ½T ½T ½T ½T ½T ½T ½T ½T ½T ½T'}},
   {id:'majPent',    name:{en:'Major Pentatonic', fr:'Pentatonique majeure'},       steps:[0,2,4,7,9],   formula:{en:'W W m3 W m3', fr:'T T m3 T m3'}},
   {id:'minPent',    name:{en:'Minor Pentatonic', fr:'Pentatonique mineure'},       steps:[0,3,5,7,10],  formula:{en:'m3 W W m3 W', fr:'m3 T T m3 T'}},
   {id:'wholeTone',  name:{en:'Whole Tone', fr:'Ton entier'},                       steps:[0,2,4,6,8,10], formula:{en:'W W W W W W', fr:'T T T T T T'}},
-  {id:'octatonic',  name:{en:'Octatonic (Diminished)', fr:'Octatonique (Diminué)'}, steps:[0,1,3,4,6,7,9,10], formula:{en:'H W H W H W H W', fr:'S T S T S T S T'}},
+  {id:'octatonic',  name:{en:'Octatonic (Diminished)', fr:'Octatonique (Diminué)'}, steps:[0,1,3,4,6,7,9,10], formula:{en:'H W H W H W H W', fr:'½T T ½T T ½T T ½T T'}},
 ];
 function scaleById(id){ return SCALES.find(s=>s.id===id); }
 function intervalByS(s){ return INTERVALS.find(iv=>iv.s===s); }
@@ -809,7 +809,7 @@ function renderScale(){
   const offsets=scale.steps.concat([12]);
   scalePiano.highlight(root,offsets);
   const tbody=document.querySelector('#sc-degrees tbody'); tbody.innerHTML='';
-  offsets.forEach((off,i)=>{ const abs=root+off; const prevOff=i===0?null:offsets[i-1]; let stepLabel='—'; if(i>0){ const diff=off-prevOff; const kind=diff===1?(LANG==='fr'?'S':'H'):diff===2?(LANG==='fr'?'T':'W'):(LANG==='fr'?'A (2de augmentée)':'A (augmented 2nd)'); stepLabel=diff+(LANG==='fr'?' demi-tons (':' semitones (')+kind+')'; } const iv=intervalByS(off>12?off-12:off); const tr=document.createElement('tr'); tr.innerHTML=`<td>${i===7?(LANG==='fr'?'8 (octave)':'8 (octave)'):i+1}</td><td><strong>${noteName(abs)}</strong></td><td>${stepLabel}</td><td>${iv?iv.short+' — '+iv.name[LANG]:off+' st'}</td>`; tbody.appendChild(tr); });
+  offsets.forEach((off,i)=>{ const abs=root+off; const prevOff=i===0?null:offsets[i-1]; let stepLabel='—'; if(i>0){ const diff=off-prevOff; const kind=diff===1?(LANG==='fr'?'½T':'H'):diff===2?(LANG==='fr'?'T':'W'):(LANG==='fr'?'A (2de augmentée)':'A (augmented 2nd)'); stepLabel=diff+(LANG==='fr'?' demi-tons (':' semitones (')+kind+')'; } const iv=intervalByS(off>12?off-12:off); const tr=document.createElement('tr'); tr.innerHTML=`<td>${i===7?(LANG==='fr'?'8 (octave)':'8 (octave)'):i+1}</td><td><strong>${noteName(abs)}</strong></td><td>${stepLabel}</td><td>${iv?iv.short+' — '+iv.name[LANG]:off+' st'}</td>`; tbody.appendChild(tr); });
   const lbl=LANG==='fr'?'Formule de pas depuis la tonique':'Step formula from the tonic';
   const inLbl=LANG==='fr'?'en':'in';
   document.getElementById('sc-formula-note').innerHTML=`<strong>${scale.name[LANG]}</strong> ${lbl}: <span class="semi">${scale.formula[LANG]}</span> &nbsp;·&nbsp; ${inLbl} ${noteName(root)}: ${scale.steps.map(s=>noteName(root+s)).join(' – ')}`;
