@@ -580,6 +580,11 @@ export default function GlossaryPage() {
             <h1 className="text-5xl font-display mb-4" style={{ color: 'var(--ivory)' }}>{UI.title[lang]}</h1>
             <div className="gold-line w-24 mx-auto mb-5" />
             <p className="font-ui leading-relaxed" style={{ color: 'var(--mist)' }}>{UI.subtitle[lang]}</p>
+            {lang === 'fr' && (
+              <p className="mt-4 text-sm font-ui italic" style={{ color: 'var(--gold)', opacity: 0.8 }}>
+                Les définitions sont en anglais.
+              </p>
+            )}
           </div>
         </div>
 
