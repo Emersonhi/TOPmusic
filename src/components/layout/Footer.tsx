@@ -82,10 +82,10 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={16} style={{ color: 'var(--gold)', flexShrink: 0 }} />
-                <a href="mailto:hello@topmusic.com" className="text-sm font-ui transition-colors" style={{ color: 'var(--mist)' }}
+                <a href="mailto:hello@topmusic.school" className="text-sm font-ui transition-colors" style={{ color: 'var(--mist)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--ivory)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--mist)')}
-                >hello@topmusic.com</a>
+                >hello@topmusic.school</a>
               </li>
             </ul>
           </div>
