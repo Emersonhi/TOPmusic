@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
   const { error } = await resend.emails.send({
     from: 'TOP Music Website <onboarding@resend.dev>',
-    to: 'thetopmusicschool@gmail.com',
+    to: 'info@topmusic.pro',
     replyTo: email,
     subject: `New Contact: ${subjectLabels[subject] ?? subject ?? 'General Inquiry'}`,
     html: `
