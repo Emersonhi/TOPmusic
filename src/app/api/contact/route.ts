@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -8,6 +9,12 @@ export async function POST(req: Request) {
   if (!name || !email || !message) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
   }
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  await supabase.from('contacts').insert({ name, email, phone: phone || null, subject: subject || null, message });
 
   const subjectLabels: Record<string, string> = {
     enrollment: 'Enrollment Inquiry',
