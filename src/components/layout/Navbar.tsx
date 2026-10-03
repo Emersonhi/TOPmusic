@@ -38,8 +38,11 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center transition-opacity duration-200 hover:opacity-85">
-          <Image src="/logo.webp" alt="TOP Music School" width={140} height={140} className="h-14 w-auto" priority />
+        <Link href="/" className="flex items-center gap-3 group transition-opacity duration-200 hover:opacity-85">
+          <Image src="/logo.webp" alt="TOP Music School" width={48} height={48} className="h-12 w-12 object-contain" priority />
+          <span className="text-xl tracking-[0.15em] uppercase font-display font-bold" style={{ color: 'var(--ivory)' }}>
+            TOP<span style={{ color: 'var(--gold)' }}>music</span>
+          </span>
         </Link>
 
         {/* Desktop nav */}
