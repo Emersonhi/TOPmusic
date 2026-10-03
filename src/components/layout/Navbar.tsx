@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Music2 } from 'lucide-react';
+import Image from 'next/image';
+import { Menu, X } from 'lucide-react';
 import { useLang } from '@/context/LanguageContext';
 import { t } from '@/translations';
 
@@ -37,19 +38,8 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-            style={{ background: 'linear-gradient(135deg, var(--gold), var(--gold-muted))' }}
-          >
-            <Music2 size={18} color="#0D0B0F" strokeWidth={2.5} />
-          </div>
-          <span
-            className="text-xl tracking-[0.15em] uppercase font-display font-bold"
-            style={{ color: 'var(--ivory)' }}
-          >
-            TOP<span style={{ color: 'var(--gold)' }}>music</span>
-          </span>
+        <Link href="/" className="flex items-center transition-opacity duration-200 hover:opacity-85">
+          <Image src="/logo.webp" alt="TOP Music School" width={140} height={140} className="h-14 w-auto" priority />
         </Link>
 
         {/* Desktop nav */}
