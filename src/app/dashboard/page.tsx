@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { LogOut, Calendar, Music2, Clock, BookOpen, CheckCircle, ChevronRight } from 'lucide-react';
+import { LogOut, Calendar, Music2, CheckCircle, X, RefreshCw } from 'lucide-react';
 
 type Enrollment = {
   id: string;
@@ -50,6 +50,7 @@ export default function DashboardPage() {
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
+  const [reschedulingId, setReschedulingId] = useState<string | null>(null);
 
   const days = nextDays(14);
 
@@ -83,23 +84,48 @@ export default function DashboardPage() {
     router.push('/');
   };
 
+  const refreshBookings = async (email: string) => {
+    const { data: bk } = await supabase.from('bookings').select('*').eq('user_email', email).order('date', { ascending: true });
+    setBookings(bk ?? []);
+  };
+
   const handleBook = async () => {
     if (!selectedDay || !selectedTime || !selectedProgram) return;
     setBooking(true);
     const { data: { session } } = await supabase.auth.getSession();
-    await supabase.from('bookings').insert({
-      user_email: session?.user.email,
-      date: selectedDay,
-      time: selectedTime,
-      program: selectedProgram,
-      status: 'pending',
-    });
-    const { data: bk } = await supabase.from('bookings').select('*').eq('user_email', session?.user.email).order('date', { ascending: true });
-    setBookings(bk ?? []);
+
+    if (reschedulingId) {
+      await supabase.from('bookings').update({ date: selectedDay, time: selectedTime, status: 'pending' }).eq('id', reschedulingId);
+      setReschedulingId(null);
+    } else {
+      await supabase.from('bookings').insert({
+        user_email: session?.user.email,
+        date: selectedDay,
+        time: selectedTime,
+        program: selectedProgram,
+        status: 'pending',
+      });
+    }
+
+    await refreshBookings(session?.user.email ?? '');
     setBookingSuccess(true);
     setSelectedDay(''); setSelectedTime(''); setSelectedProgram('');
     setBooking(false);
     setTimeout(() => { setBookingSuccess(false); setTab('overview'); }, 2500);
+  };
+
+  const handleCancel = async (id: string) => {
+    if (!confirm('Cancel this booking?')) return;
+    await supabase.from('bookings').update({ status: 'cancelled' }).eq('id', id);
+    setBookings(b => b.map(x => x.id === id ? { ...x, status: 'cancelled' } : x));
+  };
+
+  const handleReschedule = (b: Booking) => {
+    setReschedulingId(b.id);
+    setSelectedProgram(b.program);
+    setSelectedDay('');
+    setSelectedTime('');
+    setTab('book');
   };
 
   if (loading) return (
@@ -185,23 +211,44 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {bookings.map(b => (
-                    <div key={b.id} className="p-5 rounded-xl flex items-center justify-between" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.12)' }}>
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(201,168,76,0.1)' }}>
-                          <Calendar size={16} style={{ color: 'var(--gold)' }} />
-                        </div>
-                        <div>
-                          <p className="font-display font-bold" style={{ color: 'var(--ivory)' }}>{b.program}</p>
-                          <p className="text-sm font-ui" style={{ color: 'var(--mist)' }}>{new Date(b.date).toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' })} at {b.time}</p>
+                  {bookings.map(b => {
+                    const isCancelled = b.status === 'cancelled';
+                    return (
+                      <div key={b.id} className="p-5 rounded-xl" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.12)', opacity: isCancelled ? 0.6 : 1 }}>
+                        <div className="flex items-center justify-between gap-4 flex-wrap">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(201,168,76,0.1)' }}>
+                              <Calendar size={16} style={{ color: 'var(--gold)' }} />
+                            </div>
+                            <div>
+                              <p className="font-display font-bold" style={{ color: 'var(--ivory)' }}>{b.program}</p>
+                              <p className="text-sm font-ui" style={{ color: 'var(--mist)' }}>{new Date(b.date).toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' })} at {b.time}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="px-3 py-1 rounded-full text-xs font-ui tracking-widest uppercase"
+                              style={{ background: isCancelled ? 'rgba(220,53,69,0.1)' : 'rgba(201,168,76,0.1)', color: isCancelled ? '#dc3545' : 'var(--gold)', border: `1px solid ${isCancelled ? 'rgba(220,53,69,0.3)' : 'rgba(201,168,76,0.3)'}` }}>
+                              {b.status}
+                            </span>
+                            {!isCancelled && (
+                              <>
+                                <button onClick={() => handleReschedule(b)}
+                                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-ui text-xs tracking-widest uppercase transition-all duration-200"
+                                  style={{ background: 'rgba(201,168,76,0.08)', color: 'var(--gold)', border: '1px solid rgba(201,168,76,0.2)' }}>
+                                  <RefreshCw size={11} /> Reschedule
+                                </button>
+                                <button onClick={() => handleCancel(b.id)}
+                                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-ui text-xs tracking-widest uppercase transition-all duration-200"
+                                  style={{ background: 'rgba(220,53,69,0.08)', color: '#dc3545', border: '1px solid rgba(220,53,69,0.2)' }}>
+                                  <X size={11} /> Cancel
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <span className="px-3 py-1 rounded-full text-xs font-ui tracking-widest uppercase"
-                        style={{ background: 'rgba(201,168,76,0.1)', color: 'var(--gold)', border: '1px solid rgba(201,168,76,0.3)' }}>
-                        {b.status}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </section>
@@ -219,13 +266,26 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-7">
-                <div>
-                  <h2 className="text-2xl font-display mb-1" style={{ color: 'var(--ivory)' }}>Book a Lesson Slot</h2>
-                  <p className="font-ui text-sm" style={{ color: 'var(--mist)' }}>Pick a day, time, and program. We will confirm within 24 hours.</p>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-2xl font-display mb-1" style={{ color: 'var(--ivory)' }}>
+                      {reschedulingId ? 'Reschedule Lesson' : 'Book a Lesson Slot'}
+                    </h2>
+                    <p className="font-ui text-sm" style={{ color: 'var(--mist)' }}>
+                      {reschedulingId ? 'Pick a new day and time. We will re-confirm within 24 hours.' : 'Pick a day, time, and program. We will confirm within 24 hours.'}
+                    </p>
+                  </div>
+                  {reschedulingId && (
+                    <button onClick={() => { setReschedulingId(null); setTab('overview'); }}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-ui text-xs tracking-widest uppercase"
+                      style={{ border: '1px solid rgba(201,168,76,0.2)', color: 'var(--mist)' }}>
+                      <X size={12} /> Cancel
+                    </button>
+                  )}
                 </div>
 
                 {/* Program */}
-                <div>
+                {!reschedulingId && <div>
                   <label className="block text-xs font-ui tracking-widest uppercase mb-3" style={{ color: 'var(--mist)' }}>Program</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {['Piano', 'Guitar & Bass', 'Drums & Percussion', 'Voice', 'Music Production', 'Ensembles'].map(p => (
@@ -236,7 +296,7 @@ export default function DashboardPage() {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div>}
 
                 {/* Day */}
                 <div>
@@ -272,7 +332,7 @@ export default function DashboardPage() {
                 <button onClick={handleBook} disabled={!selectedDay || !selectedTime || !selectedProgram || booking}
                   className="w-full py-4 rounded-lg font-ui text-sm tracking-widest uppercase font-bold flex items-center justify-center gap-2 transition-all duration-200"
                   style={{ background: (!selectedDay || !selectedTime || !selectedProgram) ? 'var(--surface-3)' : 'var(--gold)', color: (!selectedDay || !selectedTime || !selectedProgram) ? 'var(--mist)' : 'var(--ink)', cursor: (!selectedDay || !selectedTime || !selectedProgram) ? 'not-allowed' : 'pointer' }}>
-                  <Calendar size={16} /> {booking ? 'Booking…' : 'Confirm Booking'}
+                  <Calendar size={16} /> {booking ? 'Saving…' : reschedulingId ? 'Confirm Reschedule' : 'Confirm Booking'}
                 </button>
               </div>
             )}
