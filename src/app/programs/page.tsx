@@ -29,7 +29,9 @@ export default function ProgramsPage() {
           {tr.programs.map((prog, i) => {
             const color = colors[i];
             return (
-              <div key={prog.id} id={prog.id} className="p-8 rounded-2xl" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }} >
+              <Link key={prog.id} href={`/enroll?program=${programIds[i]}`} id={prog.id} className="block p-8 rounded-2xl transition-all duration-200 cursor-pointer" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.1)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.border = `1px solid ${color}50`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.border = '1px solid rgba(201,168,76,0.1)'; }}>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2">
                     <div className="flex items-center gap-3 mb-4">
@@ -71,16 +73,13 @@ export default function ProgramsPage() {
                       <div className="gold-line my-4" />
                       <p className="text-xs font-ui" style={{ color: 'var(--mist)' }}>{tr.firstLesson}</p>
                     </div>
-                    <Link href={`/enroll?program=${programIds[i]}`}
-                      className="mt-4 py-4 rounded-xl font-ui text-sm tracking-widest uppercase flex items-center justify-center gap-2 transition-all duration-200"
-                      style={{ background: `${color}20`, color, border: `1px solid ${color}40` }}
-                      onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = `${color}35`; }}
-                      onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = `${color}20`; }}>
+                    <div className="mt-4 py-4 rounded-xl font-ui text-sm tracking-widest uppercase flex items-center justify-center gap-2"
+                      style={{ background: `${color}20`, color, border: `1px solid ${color}40` }}>
                       {tr.startBtn(prog.title)} <ArrowRight size={14} />
-                    </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
