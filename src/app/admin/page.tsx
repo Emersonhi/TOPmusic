@@ -79,6 +79,22 @@ export default function AdminPage() {
   const updateBookingStatus = async (id: string, status: string) => {
     await supabase.from('bookings').update({ status }).eq('id', id);
     setBookings(b => b.map(x => x.id === id ? { ...x, status } : x));
+
+    if (status === 'confirmed') {
+      const booking = bookings.find(b => b.id === id);
+      if (booking) {
+        await fetch('/api/booking-confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: booking.user_email,
+            program: booking.program,
+            date: booking.date,
+            time: booking.time,
+          }),
+        });
+      }
+    }
   };
 
   const updateEnrollmentStatus = async (id: string, status: string) => {
