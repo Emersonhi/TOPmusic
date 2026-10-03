@@ -17,6 +17,7 @@ function EnrollForm() {
   const initialProgram = searchParams.get('program') || '';
   const [step, setStep] = useState(initialProgram ? 1 : 0);
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [data, setData] = useState({
     studentName: '', age: '', parentName: '', email: '', phone: '',
     program: initialProgram, length: '45 min', frequency: tr.step2.frequencies[0],
@@ -241,11 +242,26 @@ function EnrollForm() {
                   {tr.continue} <ChevronRight size={14} />
                 </button>
               ) : (
-                <button onClick={() => setDone(true)} className="flex items-center gap-2 px-8 py-3 rounded-lg font-ui text-sm tracking-widest uppercase transition-all duration-200"
+                <button onClick={async () => {
+                    setSubmitting(true);
+                    try {
+                      const res = await fetch('/api/enroll', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ...data, program: selectedProgram?.label ?? data.program }),
+                      });
+                      if (!res.ok) throw new Error('Failed');
+                      setDone(true);
+                    } catch {
+                      alert('Something went wrong. Please try again.');
+                    } finally {
+                      setSubmitting(false);
+                    }
+                  }} disabled={submitting} className="flex items-center gap-2 px-8 py-3 rounded-lg font-ui text-sm tracking-widest uppercase transition-all duration-200"
                   style={{ background: 'var(--gold)', color: 'var(--ink)', fontWeight: 700 }}
                   onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--gold-light)'; el.style.boxShadow = '0 8px 30px rgba(201,168,76,0.4)'; }}
                   onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--gold)'; el.style.boxShadow = 'none'; }}>
-                  <CheckCircle size={14} /> {tr.step3.confirm}
+                  <CheckCircle size={14} /> {submitting ? 'Sending…' : tr.step3.confirm}
                 </button>
               )}
             </div>
