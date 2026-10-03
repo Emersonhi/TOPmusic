@@ -112,8 +112,8 @@ function EnrollForm() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-ui tracking-widest uppercase mb-2" style={{ color: 'var(--mist)' }}>{tr.step0.email}</label>
-                    <input value={data.email} onChange={e => setData(f => ({ ...f, email: e.target.value }))} type="email" placeholder={tr.step0.emailPlaceholder} className={inputClass} style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
+                    <label className="block text-xs font-ui tracking-widest uppercase mb-2" style={{ color: 'var(--mist)' }}>{tr.step0.email} <span style={{ color: 'var(--gold)' }}>*</span></label>
+                    <input value={data.email} onChange={e => setData(f => ({ ...f, email: e.target.value }))} type="email" placeholder={tr.step0.emailPlaceholder} required className={inputClass} style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
                   </div>
                   <div>
                     <label className="block text-xs font-ui tracking-widest uppercase mb-2" style={{ color: 'var(--mist)' }}>{tr.step0.phone}</label>
@@ -235,7 +235,13 @@ function EnrollForm() {
                 </button>
               ) : <div />}
               {step < tr.steps.length - 1 ? (
-                <button onClick={() => setStep(s => s + 1)} className="flex items-center gap-2 px-8 py-3 rounded-lg font-ui text-sm tracking-widest uppercase transition-all duration-200"
+                <button onClick={() => {
+                    if (step === 0 && (!data.studentName.trim() || !data.email.trim())) {
+                      alert('Please enter the student name and email before continuing.');
+                      return;
+                    }
+                    setStep(s => s + 1);
+                  }} className="flex items-center gap-2 px-8 py-3 rounded-lg font-ui text-sm tracking-widest uppercase transition-all duration-200"
                   style={{ background: 'var(--gold)', color: 'var(--ink)', fontWeight: 700 }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--gold-light)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--gold)'; }}>
