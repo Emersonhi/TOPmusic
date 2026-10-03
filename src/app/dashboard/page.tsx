@@ -40,6 +40,7 @@ function nextDays(n: number) {
 export default function DashboardPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<'overview' | 'book'>('overview');
@@ -57,6 +58,7 @@ export default function DashboardPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { router.push('/login'); return; }
       setUserEmail(session.user.email ?? '');
+      setUserName(session.user.user_metadata?.full_name ?? '');
 
       const { data: enr } = await supabase
         .from('enrollments')
@@ -124,7 +126,9 @@ export default function DashboardPage() {
       </header>
 
       <div className="max-w-4xl mx-auto px-6 py-10">
-        <h1 className="text-3xl font-display mb-2" style={{ color: 'var(--ivory)' }}>My Dashboard</h1>
+        <h1 className="text-3xl font-display mb-2" style={{ color: 'var(--ivory)' }}>
+          Welcome{userName ? `, ${userName.split(' ')[0]}` : ''}
+        </h1>
         <p className="font-ui text-sm mb-8" style={{ color: 'var(--mist)' }}>Manage your enrollments and lessons.</p>
 
         {/* Tabs */}

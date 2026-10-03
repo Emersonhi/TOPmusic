@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
@@ -32,7 +33,10 @@ export default function LoginPage() {
         router.push('/dashboard');
       }
     } else {
-      const { error } = await supabase.auth.signUp({ email, password });
+      const { error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: name } },
+      });
       if (error) {
         setMessage({ type: 'error', text: error.message });
       } else {
@@ -67,6 +71,15 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {mode === 'signup' && (
+              <div>
+                <label className="block text-xs font-ui tracking-widest uppercase mb-2" style={{ color: 'var(--mist)' }}>Full Name</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} required={mode === 'signup'}
+                  placeholder="Your full name"
+                  className="w-full px-4 py-3 rounded-lg font-ui text-sm outline-none transition-all duration-200"
+                  style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
+              </div>
+            )}
             <div>
               <label className="block text-xs font-ui tracking-widest uppercase mb-2" style={{ color: 'var(--mist)' }}>Email</label>
               <div className="relative">
