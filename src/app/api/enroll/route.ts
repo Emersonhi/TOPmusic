@@ -1,9 +1,29 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const data = await req.json();
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  await supabase.from('enrollments').insert({
+    student_name: data.studentName,
+    age: data.age || null,
+    parent_name: data.parentName || null,
+    email: data.email,
+    phone: data.phone || null,
+    program: data.program,
+    lesson_length: data.length,
+    frequency: data.frequency,
+    format: data.format,
+    experience: data.experience,
+    preferred_days: data.days || [],
+    notes: data.notes || null,
+  });
 
   const { error } = await resend.emails.send({
     from: 'TOP Music <noreply@topmusic.pro>',
