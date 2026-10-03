@@ -249,6 +249,11 @@ function EnrollForm() {
                 </button>
               ) : (
                 <button onClick={async () => {
+                    if (!data.studentName.trim() || !data.email.trim()) {
+                      alert('Please complete the student information (name and email) before confirming.');
+                      setStep(0);
+                      return;
+                    }
                     setSubmitting(true);
                     try {
                       const res = await fetch('/api/enroll', {
