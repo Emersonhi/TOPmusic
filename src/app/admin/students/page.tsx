@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 import { Search, ChevronDown, ChevronUp, Mail, Phone, User, Plus, X } from 'lucide-react';
 
 type Enrollment = {
@@ -135,23 +136,30 @@ export default function StudentsPage() {
           const open = expanded === s.email;
           return (
             <div key={s.email} className="rounded-2xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.12)' }}>
-              <button
-                className="w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-white/[0.02] transition-colors"
-                onClick={() => setExpanded(open ? null : s.email)}>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(201,168,76,0.15)' }}>
-                  <User size={18} style={{ color: 'var(--gold)' }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-ui font-semibold text-sm" style={{ color: 'var(--ivory)' }}>{s.name}</p>
-                  <p className="text-xs font-ui" style={{ color: 'var(--mist)' }}>{s.email}</p>
-                </div>
-                <div className="flex items-center gap-4 flex-shrink-0">
-                  <span className="text-xs font-ui px-2 py-1 rounded-full" style={{ background: 'rgba(201,168,76,0.1)', color: 'var(--gold)' }}>
-                    {s.enrollments.length} enrollment{s.enrollments.length !== 1 ? 's' : ''}
-                  </span>
-                  {open ? <ChevronUp size={16} style={{ color: 'var(--mist)' }} /> : <ChevronDown size={16} style={{ color: 'var(--mist)' }} />}
-                </div>
-              </button>
+              <div className="flex items-center">
+                <button
+                  className="flex-1 flex items-center gap-4 px-6 py-4 text-left hover:bg-white/[0.02] transition-colors"
+                  onClick={() => setExpanded(open ? null : s.email)}>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(201,168,76,0.15)' }}>
+                    <User size={18} style={{ color: 'var(--gold)' }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-ui font-semibold text-sm" style={{ color: 'var(--ivory)' }}>{s.name}</p>
+                    <p className="text-xs font-ui" style={{ color: 'var(--mist)' }}>{s.email}</p>
+                  </div>
+                  <div className="flex items-center gap-4 flex-shrink-0">
+                    <span className="text-xs font-ui px-2 py-1 rounded-full" style={{ background: 'rgba(201,168,76,0.1)', color: 'var(--gold)' }}>
+                      {s.enrollments.length} enrollment{s.enrollments.length !== 1 ? 's' : ''}
+                    </span>
+                    {open ? <ChevronUp size={16} style={{ color: 'var(--mist)' }} /> : <ChevronDown size={16} style={{ color: 'var(--mist)' }} />}
+                  </div>
+                </button>
+                <Link href={`/admin/students/${encodeURIComponent(s.email)}`}
+                  className="px-4 py-2 mr-4 rounded-lg font-ui text-xs transition-all duration-150 flex-shrink-0"
+                  style={{ color: 'var(--gold)', border: '1px solid rgba(201,168,76,0.3)' }}>
+                  View Profile
+                </Link>
+              </div>
 
               {open && (
                 <div style={{ borderTop: '1px solid rgba(201,168,76,0.08)' }}>

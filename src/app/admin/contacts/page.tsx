@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 import { Search, Mail, Phone, Plus, X } from 'lucide-react';
 
 type Contact = {
@@ -98,11 +99,18 @@ export default function ContactsPage() {
                   {new Date(c.created_at).toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
-              <a href={`mailto:${c.email}?subject=Re: ${encodeURIComponent(c.subject)}`}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg font-ui text-xs transition-all duration-150"
-                style={{ color: 'var(--gold)', border: '1px solid rgba(201,168,76,0.3)' }}>
-                <Mail size={12} /> Reply
-              </a>
+              <div className="flex items-center gap-2">
+                <Link href={`/admin/contacts/${c.id}`}
+                  className="px-4 py-2 rounded-lg font-ui text-xs transition-all duration-150"
+                  style={{ color: 'var(--mist)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  View Profile
+                </Link>
+                <a href={`mailto:${c.email}?subject=Re: ${encodeURIComponent(c.subject)}`}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg font-ui text-xs transition-all duration-150"
+                  style={{ color: 'var(--gold)', border: '1px solid rgba(201,168,76,0.3)' }}>
+                  <Mail size={12} /> Reply
+                </a>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-4">
