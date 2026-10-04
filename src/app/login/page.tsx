@@ -8,7 +8,7 @@ import { Mail, Lock, Eye, EyeOff, Music2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -31,6 +31,15 @@ export default function LoginPage() {
         setMessage({ type: 'error', text: error.message });
       } else {
         router.push('/dashboard');
+      }
+    } else if (mode === 'reset') {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/login`,
+      });
+      if (error) {
+        setMessage({ type: 'error', text: error.message });
+      } else {
+        setMessage({ type: 'success', text: 'Password reset email sent. Check your inbox.' });
       }
     } else {
       const { error } = await supabase.auth.signUp({
@@ -60,15 +69,24 @@ export default function LoginPage() {
 
         <div className="p-8 rounded-2xl" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.12)' }}>
           {/* Tab toggle */}
-          <div className="flex mb-8 rounded-lg overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-            {(['login', 'signup'] as const).map(m => (
-              <button key={m} onClick={() => { setMode(m); setMessage(null); }}
-                className="flex-1 py-3 font-ui text-sm tracking-widest uppercase transition-all duration-200"
-                style={{ background: mode === m ? 'var(--gold)' : 'transparent', color: mode === m ? 'var(--ink)' : 'var(--mist)', fontWeight: mode === m ? 700 : 400 }}>
-                {m === 'login' ? 'Log In' : 'Sign Up'}
-              </button>
-            ))}
-          </div>
+          {mode !== 'reset' && (
+            <div className="flex mb-8 rounded-lg overflow-hidden" style={{ background: 'var(--surface-3)' }}>
+              {(['login', 'signup'] as const).map(m => (
+                <button key={m} onClick={() => { setMode(m); setMessage(null); }}
+                  className="flex-1 py-3 font-ui text-sm tracking-widest uppercase transition-all duration-200"
+                  style={{ background: mode === m ? 'var(--gold)' : 'transparent', color: mode === m ? 'var(--ink)' : 'var(--mist)', fontWeight: mode === m ? 700 : 400 }}>
+                  {m === 'login' ? 'Log In' : 'Sign Up'}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {mode === 'reset' && (
+            <div className="mb-6">
+              <h2 className="text-lg font-display font-bold mb-1" style={{ color: 'var(--ivory)' }}>Reset Password</h2>
+              <p className="text-sm font-ui" style={{ color: 'var(--mist)' }}>Enter your email and we'll send you a reset link.</p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === 'signup' && (
@@ -91,19 +109,30 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-ui tracking-widest uppercase mb-2" style={{ color: 'var(--mist)' }}>Password</label>
-              <div className="relative">
-                <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--mist)' }} />
-                <input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required
-                  placeholder="••••••••" minLength={6}
-                  className="w-full pl-10 pr-10 py-3 rounded-lg font-ui text-sm outline-none transition-all duration-200"
-                  style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
-                <button type="button" onClick={() => setShowPw(s => !s)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--mist)' }}>
-                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
+            {mode !== 'reset' && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-ui tracking-widest uppercase" style={{ color: 'var(--mist)' }}>Password</label>
+                  {mode === 'login' && (
+                    <button type="button" onClick={() => { setMode('reset'); setMessage(null); }}
+                      className="text-xs font-ui transition-all duration-150"
+                      style={{ color: 'var(--gold)' }}>
+                      Forgot password?
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--mist)' }} />
+                  <input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required
+                    placeholder="••••••••" minLength={6}
+                    className="w-full pl-10 pr-10 py-3 rounded-lg font-ui text-sm outline-none transition-all duration-200"
+                    style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
+                  <button type="button" onClick={() => setShowPw(s => !s)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--mist)' }}>
+                    {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             {message && (
               <p className="text-sm font-ui px-4 py-3 rounded-lg"
@@ -115,14 +144,20 @@ export default function LoginPage() {
             <button type="submit" disabled={loading}
               className="w-full py-4 rounded-lg font-ui text-sm tracking-widest uppercase font-bold transition-all duration-200"
               style={{ background: loading ? 'var(--gold-muted)' : 'var(--gold)', color: 'var(--ink)' }}>
-              {loading ? 'Please wait…' : mode === 'login' ? 'Log In' : 'Create Account'}
+              {loading ? 'Please wait…' : mode === 'login' ? 'Log In' : mode === 'reset' ? 'Send Reset Link' : 'Create Account'}
             </button>
           </form>
 
           {mode === 'login' && (
             <p className="text-center mt-5 text-sm font-ui" style={{ color: 'var(--mist)' }}>
               No account?{' '}
-              <button onClick={() => setMode('signup')} style={{ color: 'var(--gold)' }}>Sign up</button>
+              <button onClick={() => { setMode('signup'); setMessage(null); }} style={{ color: 'var(--gold)' }}>Sign up</button>
+            </p>
+          )}
+
+          {mode === 'reset' && (
+            <p className="text-center mt-5 text-sm font-ui" style={{ color: 'var(--mist)' }}>
+              <button onClick={() => { setMode('login'); setMessage(null); }} style={{ color: 'var(--gold)' }}>← Back to log in</button>
             </p>
           )}
         </div>
