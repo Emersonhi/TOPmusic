@@ -15,6 +15,7 @@ type Note = { text: string; created_at: string };
 const ROLES = [
   { value: 'contact',  label: 'Contact',  color: '#6366f1', bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.3)',  desc: 'Reached out via the contact form' },
   { value: 'student',  label: 'Student',  color: 'var(--gold)', bg: 'rgba(201,168,76,0.1)', border: 'rgba(201,168,76,0.3)', desc: 'Enrolled or actively taking lessons' },
+  { value: 'teacher',  label: 'Teacher',  color: '#f97316', bg: 'rgba(249,115,22,0.1)',  border: 'rgba(249,115,22,0.3)', desc: 'Instructor at TOP Music School' },
   { value: 'user',     label: 'User',     color: '#10b981', bg: 'rgba(16,185,129,0.1)',  border: 'rgba(16,185,129,0.3)', desc: 'Has a login account' },
   { value: 'admin',    label: 'Admin',    color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.3)',  desc: 'Full admin access' },
 ];
