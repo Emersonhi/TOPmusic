@@ -4,8 +4,8 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import {
-  ArrowLeft, Save, Plus, Trash2, GripVertical, Video, FileText,
-  ChevronUp, ChevronDown, Users, X, Check, Eye, EyeOff
+  ArrowLeft, Save, Plus, Trash2, Video, FileText,
+  ChevronUp, ChevronDown, Users, X, Check, Eye, EyeOff, ExternalLink
 } from 'lucide-react';
 
 type Course = {
@@ -159,6 +159,13 @@ export default function CourseEditor() {
           <ArrowLeft size={14} /> Back to Courses
         </Link>
         <div className="flex items-center gap-2">
+          {!isNew && (
+            <Link href={`/dashboard/courses/${courseId}`} target="_blank"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg font-ui text-xs transition-all duration-150"
+              style={{ color: 'var(--mist)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <ExternalLink size={13} /> Preview
+            </Link>
+          )}
           <button onClick={() => setCourse(c => ({ ...c, published: !c.published }))}
             className="flex items-center gap-2 px-3 py-2 rounded-lg font-ui text-xs transition-all duration-150"
             style={course.published

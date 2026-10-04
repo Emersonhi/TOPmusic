@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, CheckCircle, Circle, Video, FileText, ChevronRight } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Circle, Video, FileText, ChevronRight, Pencil } from 'lucide-react';
 
 type Course = {
   id: string; title: string; description: string; program: string;
@@ -39,6 +39,7 @@ export default function CourseViewerPage() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [activeLesson, setActiveLesson] = useState<string | null>(null);
   const [studentEmail, setStudentEmail] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [marking, setMarking] = useState(false);
 
@@ -48,6 +49,7 @@ export default function CourseViewerPage() {
       if (!session) return;
       const email = session.user.email!;
       setStudentEmail(email);
+      if (email === 'info@topmusic.pro') setIsAdmin(true);
 
       const [cRes, lRes, pRes] = await Promise.all([
         supabase.from('courses').select('*').eq('id', courseId).maybeSingle(),
@@ -105,9 +107,18 @@ export default function CourseViewerPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <Link href="/dashboard/courses" className="flex items-center gap-2 text-sm font-ui" style={{ color: 'var(--mist)' }}>
-        <ArrowLeft size={14} /> My Courses
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/dashboard/courses" className="flex items-center gap-2 text-sm font-ui" style={{ color: 'var(--mist)' }}>
+          <ArrowLeft size={14} /> My Courses
+        </Link>
+        {isAdmin && (
+          <Link href={`/admin/courses/${courseId}`}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg font-ui text-xs transition-all duration-150"
+            style={{ background: 'var(--gold)', color: 'var(--ink)', fontWeight: 700 }}>
+            <Pencil size={12} /> Edit in Admin
+          </Link>
+        )}
+      </div>
 
       <div>
         <h1 className="text-2xl font-display font-bold tracking-wide" style={{ color: 'var(--ivory)' }}>{course.title}</h1>

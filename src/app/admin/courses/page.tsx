@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { BookOpen, Plus, Search, Users, Eye, EyeOff, Pencil } from 'lucide-react';
+import { BookOpen, Plus, Search, Users, Eye, EyeOff, Pencil, ExternalLink } from 'lucide-react';
 
 type Course = {
   id: string; title: string; description: string; program: string;
@@ -139,6 +139,12 @@ export default function CoursesPage() {
                   {c.published ? <EyeOff size={13} /> : <Eye size={13} />}
                   {c.published ? 'Unpublish' : 'Publish'}
                 </button>
+                <Link href={`/dashboard/courses/${c.id}`} target="_blank"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-ui text-xs transition-all duration-150"
+                  style={{ color: 'var(--mist)', border: '1px solid rgba(255,255,255,0.1)' }}
+                  title="Preview student view">
+                  <ExternalLink size={13} /> Preview
+                </Link>
                 <Link href={`/admin/courses/${c.id}`}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-ui text-xs transition-all duration-150"
                   style={{ background: 'var(--gold)', color: 'var(--ink)', fontWeight: 700 }}>
