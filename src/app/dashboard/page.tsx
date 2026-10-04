@@ -259,21 +259,30 @@ export default function DashboardPage() {
                         </div>
                       ))}
                       {past.map(m => (
-                        <div key={m.id} className="p-5 rounded-xl flex items-center justify-between gap-4 flex-wrap"
-                          style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.08)', opacity: 0.6 }}>
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                              <Video size={16} style={{ color: 'var(--mist)' }} />
+                        <div key={m.id} className="p-5 rounded-xl" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.08)' }}>
+                          <div className="flex items-center justify-between gap-4 flex-wrap">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                                <Video size={16} style={{ color: 'var(--mist)' }} />
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <p className="font-display font-bold" style={{ color: 'var(--ivory)' }}>{m.title}</p>
+                                  <span className="text-xs font-ui px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--mist)' }}>Past</span>
+                                </div>
+                                <p className="text-sm font-ui mt-0.5" style={{ color: 'var(--mist)' }}>
+                                  {m.date ? new Date(m.date + 'T00:00:00').toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' }) : ''}
+                                  {m.time ? ` at ${m.time}` : ''}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-display font-bold" style={{ color: 'var(--ivory)' }}>{m.title}</p>
-                              <p className="text-sm font-ui mt-0.5" style={{ color: 'var(--mist)' }}>
-                                {m.date ? new Date(m.date + 'T00:00:00').toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' }) : ''}
-                                {m.time ? ` at ${m.time}` : ''}
-                              </p>
-                            </div>
+                            <button
+                              onClick={() => window.open(m.link || 'https://meet.google.com/new', '_blank', 'noopener,noreferrer')}
+                              className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-ui text-sm font-bold transition-all duration-200"
+                              style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--ivory)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                              <ExternalLink size={14} /> {m.link ? 'Rejoin' : 'Start'}
+                            </button>
                           </div>
-                          <span className="text-xs font-ui px-3 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--mist)' }}>Past</span>
                         </div>
                       ))}
                     </div>
