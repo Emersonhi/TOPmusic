@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { LayoutDashboard, Users, ClipboardList, Calendar, MessageSquare, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, ClipboardList, Calendar, MessageSquare, BookOpen, LogOut, Menu, X } from 'lucide-react';
 
 export const ADMIN_EMAIL = 'info@topmusic.pro';
 
@@ -14,6 +14,7 @@ const NAV = [
   { href: '/admin/enrollments', label: 'Enrollments', icon: ClipboardList },
   { href: '/admin/bookings',    label: 'Bookings',    icon: Calendar },
   { href: '/admin/contacts',    label: 'Contacts',    icon: MessageSquare },
+  { href: '/admin/courses',     label: 'Courses',     icon: BookOpen },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

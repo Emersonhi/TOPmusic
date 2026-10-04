@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { LogOut, Calendar, Music2, CheckCircle, X, RefreshCw, Video, ExternalLink } from 'lucide-react';
+import { LogOut, Calendar, Music2, CheckCircle, X, RefreshCw, Video, ExternalLink, BookOpen } from 'lucide-react';
 
 type Enrollment = {
   id: string;
@@ -59,6 +59,7 @@ export default function DashboardPage() {
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedProgram, setSelectedProgram] = useState('');
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [courseCount, setCourseCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
   const [reschedulingId, setReschedulingId] = useState<string | null>(null);
@@ -92,6 +93,12 @@ export default function DashboardPage() {
         .ilike('email', session.user.email ?? '')
         .maybeSingle();
       try { setMeetings(prof?.meetings ? JSON.parse(prof.meetings) : []); } catch { setMeetings([]); }
+
+      const { data: courseEnr } = await supabase
+        .from('course_enrollments')
+        .select('course_id')
+        .ilike('student_email', session.user.email ?? '');
+      setCourseCount(courseEnr?.length ?? 0);
 
       setLoading(false);
     }
@@ -215,6 +222,39 @@ export default function DashboardPage() {
                     </div>
                   ))}
                 </div>
+              )}
+            </section>
+
+            {/* Courses */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-display" style={{ color: 'var(--ivory)' }}>My Courses</h2>
+                <Link href="/dashboard/courses" className="text-xs font-ui" style={{ color: 'var(--gold)' }}>View all →</Link>
+              </div>
+              {courseCount === 0 ? (
+                <div className="p-6 rounded-2xl flex items-center gap-4"
+                  style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.08)' }}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(201,168,76,0.1)' }}>
+                    <BookOpen size={18} style={{ color: 'var(--gold)' }} />
+                  </div>
+                  <p className="text-sm font-ui" style={{ color: 'var(--mist)' }}>No courses enrolled yet. Your teacher will add you soon.</p>
+                </div>
+              ) : (
+                <Link href="/dashboard/courses"
+                  className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-150 hover:scale-[1.01]"
+                  style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.12)' }}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(201,168,76,0.12)' }}>
+                    <BookOpen size={20} style={{ color: 'var(--gold)' }} />
+                  </div>
+                  <div>
+                    <p className="font-display font-bold" style={{ color: 'var(--ivory)' }}>
+                      {courseCount} course{courseCount !== 1 ? 's' : ''} enrolled
+                    </p>
+                    <p className="text-sm font-ui mt-0.5" style={{ color: 'var(--gold)' }}>Continue learning →</p>
+                  </div>
+                </Link>
               )}
             </section>
 
