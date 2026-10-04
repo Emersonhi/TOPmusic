@@ -162,14 +162,14 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--ink)' }}>
-      {/* Header */}
-      <header className="px-6 py-4 flex items-center justify-between" style={{ background: 'var(--surface)', borderBottom: '1px solid rgba(201,168,76,0.15)' }}>
+      {/* Header — desktop only; mobile uses MobileHeader from layout */}
+      <header className="hidden lg:flex px-6 py-4 items-center justify-between" style={{ background: 'var(--surface)', borderBottom: '1px solid rgba(201,168,76,0.15)' }}>
         <Link href="/" className="flex items-center gap-3">
           <Image src="/logo.webp" alt="TOP Music School" width={40} height={40} className="h-10 w-10 object-contain" />
           <span className="text-lg font-display font-bold tracking-widest uppercase" style={{ color: 'var(--ivory)' }}>TOP<span style={{ color: 'var(--gold)' }}>music</span></span>
         </Link>
         <div className="flex items-center gap-4">
-          <span className="hidden sm:block text-sm font-ui" style={{ color: 'var(--mist)' }}>{userEmail}</span>
+          <span className="text-sm font-ui" style={{ color: 'var(--mist)' }}>{userEmail}</span>
           <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 rounded-lg font-ui text-sm transition-all duration-200"
             style={{ border: '1px solid rgba(201,168,76,0.3)', color: 'var(--mist)' }}>
             <LogOut size={14} /> Log out
@@ -177,14 +177,22 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-6 py-10">
-        <h1 className="text-3xl font-display mb-2" style={{ color: 'var(--ivory)' }}>
+      <div className="max-w-4xl mx-auto lg:px-6 lg:py-10">
+        <h1 className="hidden lg:block text-3xl font-display mb-2" style={{ color: 'var(--ivory)' }}>
           Welcome{userName ? `, ${userName.split(' ')[0]}` : ''}
         </h1>
-        <p className="font-ui text-sm mb-8" style={{ color: 'var(--mist)' }}>Manage your enrollments and lessons.</p>
+        <p className="hidden lg:block font-ui text-sm mb-8" style={{ color: 'var(--mist)' }}>Manage your enrollments and lessons.</p>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-8">
+        {/* Mobile greeting */}
+        <div className="lg:hidden mb-5">
+          <p className="text-xs font-ui tracking-widest uppercase" style={{ color: 'var(--gold)' }}>Welcome back</p>
+          <h1 className="text-2xl font-display font-bold mt-0.5" style={{ color: 'var(--ivory)' }}>
+            {userName ? userName.split(' ')[0] : 'Student'}
+          </h1>
+        </div>
+
+        {/* Tabs — desktop only; mobile uses Book tab in bottom nav */}
+        <div className="hidden lg:flex gap-2 mb-8">
           {[{ id: 'overview', label: 'Overview' }, { id: 'book', label: 'Book a Lesson' }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id as typeof tab)}
               className="px-5 py-2.5 rounded-lg font-ui text-sm tracking-widest uppercase transition-all duration-200"
