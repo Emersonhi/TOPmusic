@@ -4,10 +4,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Mail, Phone, Save, Plus, Trash2, Shield } from 'lucide-react';
+import MeetingsSection, { type Meeting } from '@/app/admin/_components/MeetingsSection';
 
 type Contact = {
   id: string; name: string; email: string; phone: string;
-  subject: string; message: string; admin_notes: string; role: string; created_at: string;
+  subject: string; message: string; admin_notes: string; role: string; meetings: string; created_at: string;
 };
 
 type Note = { text: string; created_at: string };
@@ -27,6 +28,7 @@ export default function ContactProfile() {
   const [contact, setContact] = useState<Contact | null>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '', role: 'contact' });
   const [notes, setNotes] = useState<Note[]>([]);
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(true);
   const [savingInfo, setSavingInfo] = useState(false);
@@ -42,6 +44,7 @@ export default function ContactProfile() {
       setContact(c);
       setForm({ name: c.name, email: c.email, phone: c.phone ?? '', subject: c.subject ?? '', message: c.message ?? '', role: c.role ?? 'contact' });
       try { setNotes(c.admin_notes ? JSON.parse(c.admin_notes) : []); } catch { setNotes([]); }
+      try { setMeetings(c.meetings ? JSON.parse(c.meetings) : []); } catch { setMeetings([]); }
     }
     setLoading(false);
   }
@@ -67,6 +70,11 @@ export default function ContactProfile() {
     setNotes(updated);
     setNewNote('');
     setSavingNote(false);
+  }
+
+  async function saveMeetings(updated: Meeting[]) {
+    setMeetings(updated);
+    await supabase.from('contacts').update({ meetings: JSON.stringify(updated) }).eq('id', id);
   }
 
   async function deleteNote(idx: number) {
@@ -198,6 +206,9 @@ export default function ContactProfile() {
           </a>
         </div>
       </div>
+
+      {/* Meetings */}
+      <MeetingsSection meetings={meetings} onChange={saveMeetings} />
 
       {/* Notes */}
       <div className="rounded-2xl p-6 space-y-4" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.12)' }}>

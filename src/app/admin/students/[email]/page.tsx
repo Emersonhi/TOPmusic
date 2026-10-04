@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Mail, Phone, Save, Plus, Trash2 } from 'lucide-react';
+import MeetingsSection, { type Meeting } from '@/app/admin/_components/MeetingsSection';
 
 type Enrollment = {
   id: string; student_name: string; age: string; parent_name: string;
@@ -12,7 +13,7 @@ type Enrollment = {
   preferred_days: string[]; notes: string; status: string; created_at: string;
 };
 
-type Profile = { email: string; admin_notes: string; updated_at: string };
+type Profile = { email: string; admin_notes: string; meetings: string; updated_at: string };
 type Note = { text: string; created_at: string };
 
 const PROGRAMS = ['Piano', 'Guitar', 'Voice / Singing', 'Drums / Percussion', 'Music Production', 'Group Ensembles'];
@@ -29,6 +30,7 @@ export default function StudentProfile() {
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [info, setInfo] = useState({ student_name: '', age: '', parent_name: '', phone: '' });
   const [notes, setNotes] = useState<Note[]>([]);
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(true);
   const [savingInfo, setSavingInfo] = useState(false);
@@ -53,8 +55,9 @@ export default function StudentProfile() {
     }
 
     const prof = profRes.data as Profile | null;
-    if (prof?.admin_notes) {
-      try { setNotes(JSON.parse(prof.admin_notes)); } catch { setNotes([]); }
+    if (prof) {
+      try { setNotes(prof.admin_notes ? JSON.parse(prof.admin_notes) : []); } catch { setNotes([]); }
+      try { setMeetings(prof.meetings ? JSON.parse(prof.meetings) : []); } catch { setMeetings([]); }
     }
 
     setLoading(false);
@@ -75,6 +78,11 @@ export default function StudentProfile() {
     setSavingInfo(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  async function saveMeetings(updated: Meeting[]) {
+    setMeetings(updated);
+    await supabase.from('student_profiles').upsert({ email, meetings: JSON.stringify(updated), updated_at: new Date().toISOString() });
   }
 
   async function addNote() {
@@ -184,6 +192,9 @@ export default function StudentProfile() {
           </button>
         </div>
       </div>
+
+      {/* Meetings */}
+      <MeetingsSection meetings={meetings} onChange={saveMeetings} />
 
       {/* Notes */}
       <div className="rounded-2xl p-6 space-y-4" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.12)' }}>
