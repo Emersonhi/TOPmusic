@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Video, Plus, Trash2, ExternalLink, Calendar, Clock, X } from 'lucide-react';
+import { Video, Plus, Trash2, ExternalLink, Calendar, Clock, X, Pencil, Check } from 'lucide-react';
 
 export type Meeting = {
   id: string;
@@ -19,39 +19,36 @@ interface Props {
 
 const blank = { title: '', link: '', date: '', time: '', notes: '' };
 
+const inputCls = 'w-full px-3 py-2.5 rounded-lg font-ui text-sm outline-none transition-all duration-150';
+const inputStyle = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: 'var(--ivory)' };
+const labelCls = 'block text-xs font-ui tracking-widest uppercase mb-1.5';
+
 export default function MeetingsSection({ meetings, onChange }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(blank);
-  const [saving, setSaving] = useState(false);
 
   function handleAdd() {
     if (!form.title.trim()) return;
-    setSaving(true);
     const updated = [
-      {
-        id: crypto.randomUUID(),
-        ...form,
-        link: form.link.trim() || '',
-        created_at: new Date().toISOString(),
-      },
+      { id: crypto.randomUUID(), ...form, link: form.link.trim() || '', created_at: new Date().toISOString() },
       ...meetings,
     ];
     onChange(updated);
     setForm(blank);
     setShowForm(false);
-    setSaving(false);
   }
 
   function handleDelete(id: string) {
     onChange(meetings.filter(m => m.id !== id));
   }
 
-  const inputCls = 'w-full px-3 py-2.5 rounded-lg font-ui text-sm outline-none transition-all duration-150';
-  const inputStyle = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: 'var(--ivory)' };
-  const labelCls = 'block text-xs font-ui tracking-widest uppercase mb-1.5';
+  function handleEdit(updated: Meeting) {
+    onChange(meetings.map(m => m.id === updated.id ? updated : m));
+  }
 
-  const upcoming = meetings.filter(m => !m.date || m.date >= new Date().toISOString().split('T')[0]);
-  const past = meetings.filter(m => m.date && m.date < new Date().toISOString().split('T')[0]);
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = meetings.filter(m => !m.date || m.date >= today);
+  const past = meetings.filter(m => m.date && m.date < today);
 
   return (
     <div className="rounded-2xl p-6 space-y-4" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.12)' }}>
@@ -76,41 +73,13 @@ export default function MeetingsSection({ meetings, onChange }: Props) {
       </div>
 
       {showForm && (
-        <div className="p-4 rounded-xl space-y-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(201,168,76,0.1)' }}>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
-              <label className={labelCls} style={{ color: 'var(--mist)' }}>Meeting Title *</label>
-              <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                className={inputCls} style={inputStyle} placeholder="e.g. Intro lesson, Progress check…" />
-            </div>
-            <div className="col-span-2">
-              <label className={labelCls} style={{ color: 'var(--mist)' }}>Google Meet Link</label>
-              <input value={form.link} onChange={e => setForm(f => ({ ...f, link: e.target.value }))}
-                className={inputCls} style={inputStyle} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
-            </div>
-            <div>
-              <label className={labelCls} style={{ color: 'var(--mist)' }}>Date</label>
-              <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                className={inputCls} style={inputStyle} />
-            </div>
-            <div>
-              <label className={labelCls} style={{ color: 'var(--mist)' }}>Time</label>
-              <input type="time" value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))}
-                className={inputCls} style={inputStyle} />
-            </div>
-            <div className="col-span-2">
-              <label className={labelCls} style={{ color: 'var(--mist)' }}>Notes</label>
-              <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                rows={2} className={inputCls} style={{ ...inputStyle, resize: 'none' }}
-                placeholder="Agenda, outcomes, follow-ups…" />
-            </div>
-          </div>
-          <button onClick={handleAdd} disabled={!form.title.trim() || saving}
-            className="px-4 py-2 rounded-lg font-ui text-sm font-bold transition-all duration-150"
-            style={{ background: 'var(--gold)', color: 'var(--ink)', opacity: !form.title.trim() ? 0.5 : 1 }}>
-            Save Meeting
-          </button>
-        </div>
+        <MeetingForm
+          value={form}
+          onChange={setForm}
+          onSave={handleAdd}
+          onCancel={() => { setShowForm(false); setForm(blank); }}
+          saveLabel="Save Meeting"
+        />
       )}
 
       {meetings.length === 0 && !showForm && (
@@ -119,24 +88,100 @@ export default function MeetingsSection({ meetings, onChange }: Props) {
 
       {upcoming.length > 0 && (
         <div className="space-y-2">
-          {upcoming.length > 0 && past.length > 0 && (
-            <p className="text-xs font-ui tracking-widest uppercase" style={{ color: 'var(--mist)' }}>Upcoming</p>
-          )}
-          {upcoming.map(m => <MeetingCard key={m.id} meeting={m} onDelete={handleDelete} />)}
+          {past.length > 0 && <p className="text-xs font-ui tracking-widest uppercase" style={{ color: 'var(--mist)' }}>Upcoming</p>}
+          {upcoming.map(m => (
+            <MeetingCard key={m.id} meeting={m} onDelete={handleDelete} onEdit={handleEdit} />
+          ))}
         </div>
       )}
 
       {past.length > 0 && (
         <div className="space-y-2">
           <p className="text-xs font-ui tracking-widest uppercase" style={{ color: 'var(--mist)' }}>Past</p>
-          {past.map(m => <MeetingCard key={m.id} meeting={m} onDelete={handleDelete} isPast />)}
+          {past.map(m => (
+            <MeetingCard key={m.id} meeting={m} onDelete={handleDelete} onEdit={handleEdit} isPast />
+          ))}
         </div>
       )}
     </div>
   );
 }
 
-function MeetingCard({ meeting: m, onDelete, isPast = false }: { meeting: Meeting; onDelete: (id: string) => void; isPast?: boolean }) {
+function MeetingForm({ value, onChange, onSave, onCancel, saveLabel }: {
+  value: typeof blank; onChange: (v: typeof blank) => void;
+  onSave: () => void; onCancel: () => void; saveLabel: string;
+}) {
+  return (
+    <div className="p-4 rounded-xl space-y-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(201,168,76,0.1)' }}>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="col-span-2">
+          <label className={labelCls} style={{ color: 'var(--mist)' }}>Meeting Title *</label>
+          <input value={value.title} onChange={e => onChange({ ...value, title: e.target.value })}
+            className={inputCls} style={inputStyle} placeholder="e.g. Intro lesson, Progress check…" />
+        </div>
+        <div className="col-span-2">
+          <label className={labelCls} style={{ color: 'var(--mist)' }}>Google Meet Link</label>
+          <input value={value.link} onChange={e => onChange({ ...value, link: e.target.value })}
+            className={inputCls} style={inputStyle} placeholder="https://meet.google.com/xxx-xxxx-xxx" />
+        </div>
+        <div>
+          <label className={labelCls} style={{ color: 'var(--mist)' }}>Date</label>
+          <input type="date" value={value.date} onChange={e => onChange({ ...value, date: e.target.value })}
+            className={inputCls} style={inputStyle} />
+        </div>
+        <div>
+          <label className={labelCls} style={{ color: 'var(--mist)' }}>Time</label>
+          <input type="time" value={value.time} onChange={e => onChange({ ...value, time: e.target.value })}
+            className={inputCls} style={inputStyle} />
+        </div>
+        <div className="col-span-2">
+          <label className={labelCls} style={{ color: 'var(--mist)' }}>Notes</label>
+          <textarea value={value.notes} onChange={e => onChange({ ...value, notes: e.target.value })}
+            rows={2} className={inputCls} style={{ ...inputStyle, resize: 'none' }}
+            placeholder="Agenda, outcomes, follow-ups…" />
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <button onClick={onSave} disabled={!value.title.trim()}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-ui text-sm font-bold transition-all duration-150"
+          style={{ background: 'var(--gold)', color: 'var(--ink)', opacity: !value.title.trim() ? 0.5 : 1 }}>
+          <Check size={13} /> {saveLabel}
+        </button>
+        <button onClick={onCancel}
+          className="px-4 py-2 rounded-lg font-ui text-sm transition-all duration-150"
+          style={{ color: 'var(--mist)', border: '1px solid rgba(255,255,255,0.1)' }}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MeetingCard({ meeting: m, onDelete, onEdit, isPast = false }: {
+  meeting: Meeting; onDelete: (id: string) => void; onEdit: (m: Meeting) => void; isPast?: boolean;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({ title: m.title, link: m.link, date: m.date, time: m.time, notes: m.notes });
+
+  function handleSave() {
+    onEdit({ ...m, ...draft });
+    setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <div className="rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(201,168,76,0.15)' }}>
+        <MeetingForm
+          value={draft}
+          onChange={setDraft}
+          onSave={handleSave}
+          onCancel={() => { setEditing(false); setDraft({ title: m.title, link: m.link, date: m.date, time: m.time, notes: m.notes }); }}
+          saveLabel="Update"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-start gap-3 px-4 py-3 rounded-xl"
       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(201,168,76,0.08)', opacity: isPast ? 0.7 : 1 }}>
@@ -169,6 +214,13 @@ function MeetingCard({ meeting: m, onDelete, isPast = false }: { meeting: Meetin
             <ExternalLink size={11} /> Join
           </a>
         )}
+        <button onClick={() => setEditing(true)}
+          className="p-1.5 rounded-lg transition-all duration-150"
+          style={{ color: 'var(--mist)', border: '1px solid rgba(255,255,255,0.08)' }}
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--gold)'}
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--mist)'}>
+          <Pencil size={13} />
+        </button>
         <button onClick={() => onDelete(m.id)} style={{ color: 'rgba(239,68,68,0.5)' }}
           onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#ef4444'}
           onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(239,68,68,0.5)'}>
