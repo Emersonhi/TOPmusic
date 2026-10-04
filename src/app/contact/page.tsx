@@ -70,7 +70,7 @@ export default function ContactPage() {
                 {[
                   { icon: MapPin, label: 'Studio Location', value: '255 Gamelin\nGatineau, J8Y 1W8' },
                   { icon: Phone, label: 'Phone', value: '(819) 598 0808' },
-                  { icon: Mail, label: 'Email', value: 'hello@topmusic.com' },
+                  { icon: Mail, label: 'Email', value: 'info@topmusic.pro' },
                   { icon: Clock, label: 'Hours', value: 'Mon–Fri: 9am – 9pm\nSat–Sun: 10am – 6pm' },
                 ].map((item, i) => {
                   const Icon = item.icon;
