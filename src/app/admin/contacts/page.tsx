@@ -6,7 +6,14 @@ import { Search, Mail, Phone, Plus, X } from 'lucide-react';
 
 type Contact = {
   id: string; name: string; email: string; phone: string;
-  subject: string; message: string; created_at: string;
+  subject: string; message: string; role: string; created_at: string;
+};
+
+const ROLE_STYLES: Record<string, { color: string; bg: string; border: string }> = {
+  contact: { color: '#6366f1', bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.3)' },
+  student: { color: 'var(--gold)', bg: 'rgba(201,168,76,0.1)', border: 'rgba(201,168,76,0.3)' },
+  user:    { color: '#10b981', bg: 'rgba(16,185,129,0.1)',  border: 'rgba(16,185,129,0.3)' },
+  admin:   { color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.3)' },
 };
 
 const blank = { name: '', email: '', phone: '', subject: '', message: '' };
@@ -94,7 +101,15 @@ export default function ContactsPage() {
           <div key={c.id} className="rounded-2xl p-6 space-y-4" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.12)' }}>
             <div className="flex items-start justify-between flex-wrap gap-3">
               <div>
-                <h3 className="font-ui font-semibold" style={{ color: 'var(--ivory)' }}>{c.name}</h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-ui font-semibold" style={{ color: 'var(--ivory)' }}>{c.name}</h3>
+                  {(() => { const rs = ROLE_STYLES[c.role ?? 'contact'] ?? ROLE_STYLES.contact; return (
+                    <span className="text-xs font-ui px-2 py-0.5 rounded-full capitalize font-semibold"
+                      style={{ background: rs.bg, color: rs.color, border: `1px solid ${rs.border}` }}>
+                      {c.role ?? 'contact'}
+                    </span>
+                  ); })()}
+                </div>
                 <p className="text-xs font-ui mt-0.5" style={{ color: 'var(--mist)' }}>
                   {new Date(c.created_at).toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </p>
