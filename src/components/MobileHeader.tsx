@@ -20,7 +20,7 @@ export default function MobileHeader() {
   const title = titleFor(pathname);
 
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14"
+    <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between px-4 h-14"
       style={{
         background: 'var(--surface)',
         borderBottom: '1px solid rgba(201,168,76,0.12)',

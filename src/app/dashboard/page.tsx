@@ -161,7 +161,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--ink)' }}>
+    <div>
       {/* Header — desktop only; mobile uses MobileHeader from layout */}
       <header className="hidden lg:flex px-6 py-4 items-center justify-between" style={{ background: 'var(--surface)', borderBottom: '1px solid rgba(201,168,76,0.15)' }}>
         <Link href="/" className="flex items-center gap-3">
@@ -177,7 +177,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto lg:px-6 lg:py-10">
+      <div className="max-w-4xl mx-auto px-4 py-4 lg:px-6 lg:py-10">
         <h1 className="hidden lg:block text-3xl font-display mb-2" style={{ color: 'var(--ivory)' }}>
           Welcome{userName ? `, ${userName.split(' ')[0]}` : ''}
         </h1>
@@ -479,6 +479,6 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
