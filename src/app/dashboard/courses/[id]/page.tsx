@@ -215,24 +215,48 @@ export default function CourseViewerPage() {
                 let docs: Doc[] = [];
                 try { docs = activeL.documents ? JSON.parse(activeL.documents) : []; } catch {}
                 if (!docs.length) return null;
+                const pdfs = docs.filter(d => d.type === 'application/pdf' || d.name.toLowerCase().endsWith('.pdf'));
+                const others = docs.filter(d => !pdfs.includes(d));
                 return (
-                  <div className="rounded-2xl p-5" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.08)' }}>
-                    <p className="text-xs font-ui tracking-widest uppercase mb-3" style={{ color: 'var(--mist)' }}>Downloads</p>
-                    <div className="space-y-2">
-                      {docs.map(doc => (
-                        <a key={doc.url} href={doc.url} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-150"
-                          style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)' }}>
-                          <Paperclip size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
-                          <span className="flex-1 text-sm font-ui truncate" style={{ color: 'var(--ivory)' }}>{doc.name}</span>
-                          <span className="text-xs font-ui flex-shrink-0" style={{ color: 'var(--mist)' }}>
-                            {doc.size < 1024 * 1024 ? `${Math.round(doc.size / 1024)} KB` : `${(doc.size / 1024 / 1024).toFixed(1)} MB`}
-                          </span>
-                          <Download size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
+                  <>
+                    {pdfs.map(doc => (
+                      <div key={doc.url} className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,168,76,0.12)' }}>
+                        <div className="flex items-center justify-between px-4 py-3" style={{ background: 'var(--surface-2)' }}>
+                          <div className="flex items-center gap-2">
+                            <Paperclip size={13} style={{ color: 'var(--gold)' }} />
+                            <span className="text-sm font-ui font-semibold" style={{ color: 'var(--ivory)' }}>{doc.name.replace(/\.pdf$/i, '').replace(/_/g, ' ')}</span>
+                          </div>
+                          <a href={doc.url} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-ui text-xs font-bold"
+                            style={{ background: 'rgba(201,168,76,0.12)', color: 'var(--gold)', border: '1px solid rgba(201,168,76,0.2)' }}>
+                            <Download size={12} /> Download
+                          </a>
+                        </div>
+                        <iframe src={`${doc.url}#toolbar=0&navpanes=0&scrollbar=1`}
+                          className="w-full" style={{ height: '80vh', border: 'none', background: '#fff' }}
+                          title={doc.name} />
+                      </div>
+                    ))}
+                    {others.length > 0 && (
+                      <div className="rounded-2xl p-5" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.08)' }}>
+                        <p className="text-xs font-ui tracking-widest uppercase mb-3" style={{ color: 'var(--mist)' }}>Attachments</p>
+                        <div className="space-y-2">
+                          {others.map(doc => (
+                            <a key={doc.url} href={doc.url} target="_blank" rel="noopener noreferrer"
+                              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-150"
+                              style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)' }}>
+                              <Paperclip size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+                              <span className="flex-1 text-sm font-ui truncate" style={{ color: 'var(--ivory)' }}>{doc.name}</span>
+                              <span className="text-xs font-ui flex-shrink-0" style={{ color: 'var(--mist)' }}>
+                                {doc.size < 1024 * 1024 ? `${Math.round(doc.size / 1024)} KB` : `${(doc.size / 1024 / 1024).toFixed(1)} MB`}
+                              </span>
+                              <Download size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 );
               })()}
             </>
