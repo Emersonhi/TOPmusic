@@ -3,15 +3,17 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, CheckCircle, Circle, Video, FileText, ChevronRight, Pencil } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Circle, Video, FileText, ChevronRight, Pencil, Download, Paperclip } from 'lucide-react';
 
 type Course = {
   id: string; title: string; description: string; program: string;
   level: string; instructor_name: string;
 };
 
+type Doc = { name: string; url: string; size: number; type: string };
+
 type Lesson = {
-  id: string; title: string; content: string; video_url: string; position: number;
+  id: string; title: string; content: string; video_url: string; position: number; documents?: string;
 };
 
 function getEmbedUrl(url: string): string {
@@ -208,6 +210,31 @@ export default function CourseViewerPage() {
                   <p className="text-sm font-ui whitespace-pre-wrap" style={{ color: 'var(--ivory)', lineHeight: '1.8' }}>{activeL.content}</p>
                 </div>
               )}
+
+              {(() => {
+                let docs: Doc[] = [];
+                try { docs = activeL.documents ? JSON.parse(activeL.documents) : []; } catch {}
+                if (!docs.length) return null;
+                return (
+                  <div className="rounded-2xl p-5" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.08)' }}>
+                    <p className="text-xs font-ui tracking-widest uppercase mb-3" style={{ color: 'var(--mist)' }}>Downloads</p>
+                    <div className="space-y-2">
+                      {docs.map(doc => (
+                        <a key={doc.url} href={doc.url} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-150"
+                          style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)' }}>
+                          <Paperclip size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+                          <span className="flex-1 text-sm font-ui truncate" style={{ color: 'var(--ivory)' }}>{doc.name}</span>
+                          <span className="text-xs font-ui flex-shrink-0" style={{ color: 'var(--mist)' }}>
+                            {doc.size < 1024 * 1024 ? `${Math.round(doc.size / 1024)} KB` : `${(doc.size / 1024 / 1024).toFixed(1)} MB`}
+                          </span>
+                          <Download size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </>
           ) : (
             <div className="flex items-center justify-center rounded-2xl py-20"

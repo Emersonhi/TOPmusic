@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import {
   ArrowLeft, Save, Plus, Trash2, Video, FileText,
-  ChevronUp, ChevronDown, Users, X, Check, Eye, EyeOff, ExternalLink
+  ChevronUp, ChevronDown, Users, X, Check, Eye, EyeOff, ExternalLink,
+  Upload, Download, Paperclip
 } from 'lucide-react';
 
 type Course = {
@@ -14,9 +15,11 @@ type Course = {
   published: boolean; thumbnail_url: string;
 };
 
+type Doc = { name: string; url: string; size: number; type: string };
+
 type Lesson = {
   id: string; course_id: string; title: string; content: string;
-  video_url: string; position: number;
+  video_url: string; position: number; documents?: string;
 };
 
 type Enrollment = { id: string; student_email: string; enrolled_at: string };
@@ -102,6 +105,7 @@ export default function CourseEditor() {
     setLessons(prev => prev.map(l => l.id === lesson.id ? lesson : l));
     await supabase.from('course_lessons').update({
       title: lesson.title, content: lesson.content, video_url: lesson.video_url,
+      documents: lesson.documents ?? null,
     }).eq('id', lesson.id);
   }
 
@@ -367,8 +371,17 @@ function LessonEditor({ lesson, onUpdate }: { lesson: Lesson; onUpdate: (l: Less
   const [draft, setDraft] = useState(lesson);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [docs, setDocs] = useState<Doc[]>(() => {
+    try { return lesson.documents ? JSON.parse(lesson.documents) : []; } catch { return []; }
+  });
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
-  useEffect(() => { setDraft(lesson); setDirty(false); }, [lesson.id]);
+  useEffect(() => {
+    setDraft(lesson);
+    setDirty(false);
+    try { setDocs(lesson.documents ? JSON.parse(lesson.documents) : []); } catch { setDocs([]); }
+  }, [lesson.id]);
 
   function update(patch: Partial<Lesson>) {
     setDraft(d => ({ ...d, ...patch }));
@@ -377,9 +390,36 @@ function LessonEditor({ lesson, onUpdate }: { lesson: Lesson; onUpdate: (l: Less
 
   async function save() {
     setSaving(true);
-    await onUpdate(draft);
+    await onUpdate({ ...draft, documents: docs.length ? JSON.stringify(docs) : undefined });
     setSaving(false);
     setDirty(false);
+  }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError('');
+    const path = `${lesson.course_id}/${lesson.id}/${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage.from('course-documents').upload(path, file, { upsert: true });
+    if (error) {
+      setUploadError(error.message);
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from('course-documents').getPublicUrl(path);
+    const newDoc: Doc = { name: file.name, url: urlData.publicUrl, size: file.size, type: file.type };
+    const updated = [...docs, newDoc];
+    setDocs(updated);
+    await onUpdate({ ...draft, documents: JSON.stringify(updated) });
+    setUploading(false);
+    e.target.value = '';
+  }
+
+  async function removeDoc(url: string) {
+    const updated = docs.filter(d => d.url !== url);
+    setDocs(updated);
+    await onUpdate({ ...draft, documents: updated.length ? JSON.stringify(updated) : undefined });
   }
 
   const embedUrl = getEmbedUrl(draft.video_url);
@@ -419,8 +459,46 @@ function LessonEditor({ lesson, onUpdate }: { lesson: Lesson; onUpdate: (l: Less
       <div>
         <label className={labelCls} style={{ color: 'var(--mist)' }}>Notes / Content</label>
         <textarea value={draft.content} onChange={e => update({ content: e.target.value })}
-          rows={8} className={inputCls} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'var(--font-ui)' }}
+          rows={6} className={inputCls} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'var(--font-ui)' }}
           placeholder="Lesson notes, instructions, sheet music links, practice tips…" />
+      </div>
+
+      {/* Documents section */}
+      <div>
+        <label className={labelCls} style={{ color: 'var(--mist)' }}>Documents / Attachments</label>
+        <div className="space-y-2">
+          {docs.map(doc => (
+            <div key={doc.url} className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.15)' }}>
+              <Paperclip size={13} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+              <span className="flex-1 text-xs font-ui truncate" style={{ color: 'var(--ivory)' }}>{doc.name}</span>
+              <span className="text-xs font-ui flex-shrink-0" style={{ color: 'var(--mist)' }}>
+                {doc.size < 1024 * 1024 ? `${Math.round(doc.size / 1024)} KB` : `${(doc.size / 1024 / 1024).toFixed(1)} MB`}
+              </span>
+              <a href={doc.url} target="_blank" rel="noopener noreferrer"
+                className="flex-shrink-0" style={{ color: 'var(--mist)' }}>
+                <Download size={13} />
+              </a>
+              <button onClick={() => removeDoc(doc.url)} className="flex-shrink-0" style={{ color: 'rgba(239,68,68,0.5)' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#ef4444'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(239,68,68,0.5)'}>
+                <X size={13} />
+              </button>
+            </div>
+          ))}
+          <label className="flex items-center justify-center gap-2 py-3 rounded-xl cursor-pointer font-ui text-sm transition-all duration-150"
+            style={{ color: uploading ? 'var(--mist)' : 'var(--gold)', border: '1px dashed rgba(201,168,76,0.3)', background: 'rgba(201,168,76,0.04)', opacity: uploading ? 0.6 : 1 }}>
+            <Upload size={14} />
+            {uploading ? 'Uploading…' : 'Upload File'}
+            <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading}
+              accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.mp3,.mp4,.png,.jpg,.jpeg,.gif,.zip" />
+          </label>
+          {uploadError && (
+            <p className="text-xs font-ui px-3 py-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)' }}>
+              {uploadError}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
