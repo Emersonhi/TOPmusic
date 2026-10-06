@@ -78,7 +78,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Menu links */}
-      <div className="rounded-2xl overflow-hidden divide-y" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.12)', divideColor: 'rgba(201,168,76,0.08)' }}>
+      <div className="rounded-2xl overflow-hidden divide-y" style={{ background: 'var(--surface-2)', border: '1px solid rgba(201,168,76,0.12)' }}>
         {[
           { href: '/dashboard/courses', icon: BookOpen, label: 'My Courses' },
           { href: '/dashboard?tab=book', icon: Calendar, label: 'Book a Lesson' },
